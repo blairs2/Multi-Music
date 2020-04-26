@@ -1,0 +1,23 @@
+/*!
+ * Start Bootstrap - Shop Homepage (https://startbootstrap.com/template-overviews/shop-homepage)
+ * Copyright 2013-2019 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-shop-homepage/blob/master/LICENSE)
+ */
+body {
+  padding-top: 56px;
+}
+.has-search .form-control {
+      padding-left: 2.375rem;
+}
+  
+.has-search .form-control-feedback {
+      position: absolute;
+      z-index: 2;
+      display: block;
+      width: 2.375rem;
+      height: 2.375rem;
+      line-height: 2.375rem;
+      text-align: center;
+      pointer-events: none;
+      color: #aaa;
+  }
