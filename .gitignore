@@ -2,6 +2,7 @@
 
 apple_private_key.p8
 .DS_Store
+music_user_token_test.txt
 
 # dependencies
 /node_modules/

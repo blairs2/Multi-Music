@@ -1,4 +1,3 @@
-
 // listen for MusicKit Loaded callback
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
@@ -15,147 +14,114 @@ document.addEventListener('musickitloaded', () => {
       }
     });
 
-
-    // document.getElementById('login-btn').addEventListener('click', () => {
-      /***
-        Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-        https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992701-authorize
-      ***/
-      music.authorize().then(musicUserToken => {
-        console.log(`Authorized, music-user-token: ${musicUserToken}`);
-      });
-
-      music.authorize().then(function() {
-        music.api.library.playlists().then(function(cloudPlaylists) {
-          var retval = '';
-          for(var i =0; i < cloudPlaylists.length; i++){
-            console.log(cloudPlaylists[i]);
-            var playlistName = cloudPlaylists[i].attributes.name;
-            var playlist_id = cloudPlaylists[i].id;
-            retval += `<button class='playlist-button' onclick="clickOnPlaylist('${playlist_id}')" >${playlistName}</button>`;
-          }
-          document.getElementById('user-playlists').innerHTML = retval;
-      });
-    });
-  // });
     // expose our instance globally for testing
     window.music = music;
   });
-
-
 });
 
+document.getElementById('login-btn').addEventListener('click', () => {
+  /***
+    Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
+    https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992701-authorize
+  ***/
+  music.authorize().then(musicUserToken => {
+    console.log(`Authorized, music-user-token: ${musicUserToken}`);
+  });
 
-function clickOnPlaylist(playlist_id){
-
-  music.authorize().then(function() {
-    music.api.library.playlist(playlist_id).then(function(playlist) {
-        window.history.pushState('', 'Title', playlist.href);
-
-        console.log(playlist);
-      });
-    });
-
-}
-
-function displayPlaylist(playlist){
-
-
-}
-
-// function populatePlaylistLibrary(){
-//   var xhttp = new XMLHttpRequest();
-// 	xhttp.onreadystatechange = function ReceivedCallback() {
-// 		if (this.readyState == 4 && this.status == 200) {
-// 			document.getElementById("generated-content").innerHTML = createPlayListLayout(JSON.parse(this.responseText));
-// 		}
-// 	};
-// 	xhttp.open("GET", "http://localhost/library/playlist-library", true);
-// 	xhttp.send();
-// }
-//
-// function createPlayListLayout(playlists_metadata){
-//   var retval = '<h5>Playlist Library</h5>' +
-//   '<div class="row">'+
-//     '<div class="col-lg-4 col-md-6 mb-4">' +
-//       '<div class="card h-100">';
-//   for(var i in playlists_metadata){
-//
-//     retval += `<a href="#"><img class="card-img-top" src=${img} alt=""></a>`;
-//   }
-//
-//         <div class="card-body">
-//           <h4 class="card-title">
-//             <a href="#">Playlist One</a>
-//           </h4>
-//         </div>
-//       </div>
-//     </div>
-//
-// }
-
-document.getElementById('playlist-btn').addEventListener("click", () => {
-  console.log(music.api.library);
-  var promise = music.api.library.playlists();
-  var promise2 = music.api.library.playlist('p.V7VYpJNcvW3QrM');
-  console.log(promise);
-  var searchResults = '<table style="width:100%"><tr><th>Playlists</th></tr><tr>';
-
-
-  // promise.then(function(result) {
-  //   console.log(result.albums.data[1]);
-  //   console.log(result.songs.data[1]);
-  //   var songData = result.songs.data;
-  //
-  //   console.log(songData.length);
-  //
-  //   for(var i = 0; i< songData.length; i++){
-  //     var h = songData[i].attributes.artwork.height;
-  //     var w = songData[i].attributes.artwork.width;
-  //
-  //     var url = (songData[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
-  //     console.log(url);
-  //     searchResults += `<tr><td><img src=${url} height=100 width=100></td>`;
-  //     searchResults += `<<td>${songData[i].attributes.name}</td>`;
-  //     searchResults += `<td>${songData[i].id}</td></tr>`;
-  //
-  //   }
-  //   searchResults += '</tr></table>';
-  //   document.getElementById("generated-content").innerHTML = searchResults;
-// });
-
+  retreiveUserPlaylsits();
 });
 
 document.getElementById('search-input').addEventListener("keyup", function(event) {
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.keyCode === 13) {
-    var search = document.getElementById('search-input').value;
-    console.log(search);
-    var promise = music.api.search(search);
-    console.log(promise);
-    var searchResults = '<table style="width:100%"><tr><th>Song</th></tr><tr>';
-
-    promise.then(function(result) {
-      console.log(result.albums.data[1]);
-      console.log(result.songs.data[1]);
-      var songData = result.songs.data;
-
-      console.log(songData.length);
-
-      for(var i = 0; i< songData.length; i++){
-        var h = songData[i].attributes.artwork.height;
-        var w = songData[i].attributes.artwork.width;
-
-        var url = (songData[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
-        console.log(url);
-        searchResults += `<tr><td><img src=${url} height=100 width=100></td>`;
-        searchResults += `<<td>${songData[i].attributes.name}</td>`;
-        searchResults += `<td>${songData[i].id}</td></tr>`;
-
-      }
-      searchResults += '</tr></table>';
-      document.getElementById("generated-content").innerHTML = searchResults;
-  });
-
-  }
+   var searchTerm = (document.getElementById('search-input').value).replace(' ', '+');
+   if (event.keyCode === 13) { //on enter key
+     console.log('enter');
+     searchByTerm(searchTerm);
+   }else{
+     retrieveSearchHints(searchTerm);//Creates suggestions as user is typing
+   }
 });
+
+function retreiveUserPlaylsits(){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+      var cloudPlaylists = JSON.parse(this.responseText).data;
+      var retval = '';
+      for(var i =0; i < cloudPlaylists.length; i++){
+        console.log(cloudPlaylists[i]);
+        var playlistName = cloudPlaylists[i].attributes.name;
+        var playlist_id = cloudPlaylists[i].id;
+        retval += `<button class="list-group-item" class='playlist-button' onclick="retirevePlaylist('${playlist_id}')" >${playlistName}</button>`;
+      }
+      document.getElementById('user-playlists').innerHTML = retval;
+    }
+  };
+  xhttp.open("GET", "http://localhost:8080/library/playlists", true);
+  // xhttp.setRequestHeader('music-user-token:', music_user_token);
+  xhttp.send(); // Gets the response
+}
+
+
+function retrieveSearchHints(searchTerm){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+         // document.getElementById("generated-content").innerHTML = displayPlaylist(JSON.parse(this.responseText));
+    }
+  };
+  xhttp.open("GET", "http://localhost:8080/search/apple-music/hints/" + searchTerm, true);
+  // xhttp.setRequestHeader('music-user-token:', music_user_token);
+  xhttp.send(); // Gets the response
+ }
+
+function retirevePlaylist(playlist_id){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+           // document.getElementById("generated-content").innerHTML = displayPlaylist(JSON.parse(this.responseText));
+      }
+    };
+    xhttp.open("GET", "http://localhost:8080/library/playlists/" + playlist_id, true);
+    // xhttp.setRequestHeader('music-user-token:', music_user_token);
+    xhttp.send(); // Gets the response
+   }
+
+
+function searchByTerm(searchTerm){
+     var xhttp = new XMLHttpRequest();
+     xhttp.onreadystatechange = function ReceivedCallback() {
+       if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+         console.log(JSON.parse(this.responseText));
+            // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
+       }
+     };
+     xhttp.open("GET", "http://localhost:8080/search/apple-music/" + searchTerm, true);
+     xhttp.send(); // Gets the response
+    }
+
+    // function displaySearch(searchResults){
+    // var result_ordering = searchResults.meta.results.order;
+    // var retval =
+    // for(var i =0; i<result_ordering.length; i++){
+    //   if(result_ordering[i]=='Albums'){
+    //     retval += displaySearchAlbums(searchResults.results.albums);
+    //   } else if(results_ordering[i]=='Songs'){
+    //     retval += displaySearchSongs(searchResults.results.songs);
+    //   }
+    //
+    // }
+    // //write html  to display the results
+    //  // div for songs
+    //  // div for albums
+    //  // div for artist
+    //  // div for ...
+    // }
+    //
+    // function displaySearchSongs(songs){
+    //   retval = "<div class='row'>"
+    //   for(var i =0; i<songs.length;i++){
+    //     retval += "<div class='row'>"
+    //     + "<button>"
+    //
+    //   }
+    // }
