@@ -1,31 +1,4 @@
 {
-  "name": "MultiMusic",
-  "version": "1.0.3",
-  "description": "MultiMusic",
-  "keywords": [
-    "musickit",
-    "applemusickit",
-    "musickitjs",
-    "musickit.js"
-  ],
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "author": "Stone Blair",
-  "repository": {
-    "type": "git",
-    "url": "blairs2/Multi-Music"
-  },
-  "homepage": "https://github.com/blairs2/Multi-Music",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.16.3",
-    "jsonwebtoken": "^8.3.0",
-    "request": "^2.88.2"
-  }
-=======
     "title": "Shop Homepage",
     "name": "startbootstrap-shop-homepage",
     "version": "4.2.1",
