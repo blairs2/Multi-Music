@@ -23,6 +23,11 @@ router.get('/token', function (req, res) {
   res.send(JSON.stringify({token: token}));
 });
 
+function saveJSON(name,data){
+    fs.writeFileSync(`${name}.json`, JSON.stringify(data));
+
+}
+
 
 
 router.get('/search/apple-music/:search_term', function(request, response){
@@ -45,6 +50,7 @@ router.get('/search/apple-music/:search_term', function(request, response){
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
+            saveJSON("search-results",data);
             console.log(JSON.parse(data));
             response.send(data);
           });
@@ -76,6 +82,7 @@ router.get('/library/playlists/:playlist_id', function(request, response){
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
+            saveJSON("selecting-individual-playlist",data);
             console.log(JSON.parse(data));
             response.send(data);
           });
@@ -104,6 +111,7 @@ router.get('/search/apple-music/hints/:search_term', function(request, response)
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
+             saveJSON("search-hints",data);
             console.log(JSON.parse(data));
             response.send(data);
           });
@@ -135,6 +143,7 @@ router.get('/library/playlists', function(request, response){
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
+            saveJSON("retrieve-user-playlist-library",data);
             response.send(data);
           });
     });
