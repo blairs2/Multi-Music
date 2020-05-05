@@ -1,8 +1,9 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
 
+# See https://help.github.com/ignore-files/ for more about ignoring files.
 apple_private_key.p8
 .DS_Store
 music_user_token_test.txt
 
 # dependencies
 /node_modules/
+
