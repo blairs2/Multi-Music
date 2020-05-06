@@ -16,11 +16,20 @@
   <!-- Custom styles for this template -->
   <link href="css/shop-homepage.css" rel="stylesheet">
 
-
+<script src="index.js"></script>
 
 </head>
 
+
 <body>
+  <!-- Navigation
+  <div id="homePage">
+          <h1>GeeksforGeeks</h1>
+          <p id="homePage">
+            This is the text which has already been typed into the div</p>
+      </div>
+<button onclick="addCode()">Add Stuff</button>
+-->
 
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -46,6 +55,11 @@
             <a class="nav-link" href="#">Contact</a>
           </li>
         </ul>
+        <form class="form-inline">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
+            aria-label="Search">
+        </form>
       </div>
     </div>
   </nav>
@@ -70,16 +84,23 @@
               aria-label="Search">
           </form>
           <br>
-          <a href="home.html" class="list-group-item">Home</a>
-          <a href="playlistLibrary.html" class="list-group-item">Playlist Library</a>
+          <a href="#" onclick="homeLoad()" class="list-group-item">Home</a>
+          <a href="#" onclick="playlistLoad()" class="list-group-item">Playlist Library</a>
           <a href="#" class="list-group-item">Convert</a>
         </div>
 
       </div>
       <!-- /.col-lg-3 -->
 
+
       <div class="col-lg-9">
 
+        <div id="page"></div>
+        <script>
+          document.getElementById("page").addEventListener("load", homeLoad());
+        </script>
+
+      <!-- /.OLD INNER HTML CODE FOR THE HOME PAGE
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
         <h2 class="my-4">Home</h2>
         <div>
@@ -95,7 +116,6 @@
               </div>
             </div>
           </div>
-
           <div class="col-lg-3 col-md-6 mb-4">
             <div class="card h-100">
               <a href="#"><img class="card-img-top" src="http://placehold.it/200x200" alt=""></a>
@@ -108,16 +128,15 @@
           </div>
         </div>
         </div>
-        <!-- /.row -->
-
+      -->
       </div>
-      <!-- /.col-lg-9 -->
 
     </div>
     <!-- /.row -->
 
   </div>
   <!-- /.container -->
+
 
   <!-- Footer -->
   <footer class="py-5 bg-dark">
