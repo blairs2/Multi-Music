@@ -21,48 +21,11 @@
   "homepage": "https://github.com/blairs2/Multi-Music",
   "license": "MIT",
   "dependencies": {
+    "bootstrap": "4.3.1",
+    "cors": "^2.8.5",
     "express": "^4.16.3",
+    "jquery": "3.4.1",
     "jsonwebtoken": "^8.3.0",
-    "request": "^2.88.2"
+    "querystring": "^0.2.0"
   }
-=======
-    "title": "Shop Homepage",
-    "name": "startbootstrap-shop-homepage",
-    "version": "4.2.1",
-    "scripts": {
-        "start": "node_modules/.bin/gulp watch"
-    },
-    "description": "A shop homepage HTML template built with Bootstrap",
-    "keywords": [
-        "css",
-        "sass",
-        "html",
-        "responsive",
-        "theme",
-        "template"
-    ],
-    "homepage": "https://startbootstrap.com/template-overviews/shop-homepage",
-    "bugs": {
-        "url": "https://github.com/BlackrockDigital/startbootstrap-shop-homepage/issues",
-        "email": "feedback@startbootstrap.com"
-    },
-    "license": "MIT",
-    "author": "Start Bootstrap",
-    "contributors": [
-        "David Miller (http://davidmiller.io/)"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/BlackrockDigital/startbootstrap-shop-homepage.git"
-    },
-    "dependencies": {
-        "bootstrap": "4.3.1",
-        "jquery": "3.4.1"
-    },
-    "devDependencies": {
-        "browser-sync": "2.26.7",
-        "del": "^4.1.1",
-        "gulp": "4.0.2",
-        "merge-stream": "2.0.0"
-    }
 }
