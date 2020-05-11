@@ -28,6 +28,25 @@
   margin: 4px 2px;
   cursor: pointer;
 }
+.scrolling-wrapper {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  margin-bottom: 50px
+}
+.card {
+  border: none;
+  display: inline-block;
+  height: 300px;
+  width: 300px;
+  margin: 10px;
+}
+.album-artist-label{
+  display: block;
+}
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
 </style>
 
 
@@ -110,30 +129,7 @@
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
         <h2 class="my-4">Home</h2>
         <div id="generated-content">
-        <h5>Discover</h5>
-        <div class="row">
-          <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100">
-              <a href="#"><img class="card-img-top" src="http://placehold.it/200x200" alt=""></a>
-              <div class="card-body">
-                <h4 class="card-title">
-                  <a href="#">Playlist One</a>
-                </h4>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100">
-              <a href="#"><img class="card-img-top" src="http://placehold.it/200x200" alt=""></a>
-              <div class="card-body">
-                <h4 class="card-title">
-                  <a href="#">Playlist Two</a>
-                </h4>
-              </div>
-            </div>
-          </div>
-        </div>
         </div>
         <!-- /.row -->
 
