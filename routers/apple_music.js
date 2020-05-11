@@ -34,7 +34,7 @@ router.get('/search/apple-music/:search_term', function(request, response){
     var term = request.params.search_term //ALl the spaces in the search must be replaced with '+'
     const options = {
       hostname: 'api.music.apple.com',
-      path: `/v1/catalog/us/search?term=${term}`,
+      path: `/v1/catalog/us/search?${term}`,
       method: 'GET',
       headers: {
             'Authorization' : 'Bearer ' + token

@@ -39,6 +39,12 @@
   display: inline-block;
   height: 300px;
   width: 300px;
+  margin: 50px;
+}
+.song-block{
+  border: none;
+  display: inline-block;
+  width: 500px;
   margin: 10px;
 }
 .album-artist-label{
@@ -47,6 +53,27 @@
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
+
+/* .play-pause-button {
+	 border: 0;
+	 background: transparent;
+	 box-sizing: border-box;
+	 width: 0;
+	 height: 74px;
+	 border-color: transparent transparent transparent #202020;
+	 transition: 100ms all ease;
+	 cursor: pointer;
+	 border-style: solid;
+	 border-width: 37px 0 37px 60px;
+}
+ .play-pause-button.paused {
+	 border-style: double;
+	 border-width: 0px 0 0px 60px;
+}
+ .play-pause-button:hover {
+	 border-color: transparent transparent transparent #404040;
+} */
+
 </style>
 
 
@@ -59,6 +86,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
       <a class="navbar-brand" href="#">Multi Music</a>
+
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -129,7 +157,21 @@
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
         <h2 class="my-4">Home</h2>
         <div id="generated-content">
-
+          <div class="row">
+              <div class="col-lg-3">
+                <div class="card"><img src="https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/b6/31/4b/b6314b89-4fa0-9a9b-9afe-9f4843a97998/886448429968.jpg/3000x3000bb.jpeg" style= "height: 300px;
+                  width:300px;" height=100% width=100%>
+                </div>
+              </div>
+                <div class="col-lg-9">
+                    <h3>Playlist</h3>
+                    <h2>description</h2>
+                    <hr>
+                    <ul class="list-group">
+                      <li class="list-group-item" class></li>
+                    </ul>
+                </div>
+          </div>
         </div>
         <!-- /.row -->
 

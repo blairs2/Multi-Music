@@ -35,11 +35,22 @@ document.getElementById('search-input').addEventListener("keyup", function(event
    var searchTerm = (document.getElementById('search-input').value).replace(' ', '+');
    if (event.keyCode === 13) { //on enter key
      console.log('enter');
-     searchByTerm(searchTerm); //Search for the users input
+     searchByTerm("term=" + searchTerm + "&limit=10"); //Search for the users input
+     // searchByTerm("term=" + searchTerm); //Search for the users input
+
+
    }else{
      retrieveSearchHints(searchTerm); //Creates suggestions as user is typing
    }
 });
+
+// document.getElementById("play_pause_button").addEventListener('click', () => {
+//   var btn = $(".play_pause_button");
+//   btn.click(function() {
+//     btn.toggleClass("paused");
+//     return false;
+//   });
+// });
 
 //////////////////////////////
 //GET functions
@@ -162,55 +173,58 @@ function addPlaylist(playlist_name, description){
   }
 
 function addAppleMusicUserToken(musicUserToken){
+  //Will add musicUserToken to db
   console.log(musicUserToken);
 }
 
 function displaySearch(search_response){
   //Displays albums
-  var searchResults = '<h2>Albums</h2><div class="scrolling-wrapper">';
   var albums = search_response.results.albums.data;
-  for(var i = 0; i< albums.length; i++){
-    var h = albums[i].attributes.artwork.height;
-    var w = albums[i].attributes.artwork.width;
-    var url = (albums[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
-    var artistName = albums[i].attributes.artistName;
-    var albumName = albums[i].attributes.name;
-    searchResults += `<div class="card"><img src=${url} height=100% width=100%><span class="album-artist-label">${artistName}</span><span class="album-artist-label">${albumName}</span></div>`;
-  }
-  searchResults += '</div><hr></h5> <h2>PLaylists</h2><div class="scrolling-wrapper">';
-
   var playlists = search_response.results.playlists.data;
-  for(var i = 0; i< playlists.length; i++){
-    var h = playlists[i].attributes.artwork.height;
-    var w = playlists[i].attributes.artwork.width;
-    var url = (playlists[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
-    var playlistName = playlists[i].attributes.name;
-    searchResults += `<div class="card"><img src=${url} height=100% width=100%><span class="album-artist-label">${playlistName}</span></div>`;
+  var songs = search_response.results.songs.data;
+  //If the response included albums data
+  if(albums){
+    var searchResults = '<h2>Albums</h2><div class="scrolling-wrapper">';
+    var albums = search_response.results.albums.data;
+    for(var i = 0; i< albums.length; i++){
+      var h = albums[i].attributes.artwork.height;
+      var w = albums[i].attributes.artwork.width;
+      var url = (albums[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
+      var artistName = albums[i].attributes.artistName;
+      var albumName = albums[i].attributes.name;
+      searchResults += `<div class="card"><img src=${url} height=100% width=100%><span class="album-artist-label">${artistName}</span><span class="album-artist-label">${albumName}</span></div>`;
+    }
+    searchResults += '</div><hr>';
   }
-  searchResults += '</div><hr>';
+  //If the response included song data
+  if(songs){
+    searchResults += '<h2>Songs</h2><div class="scrolling-wrapper"><div class="song-block" ><ul class="list-group">';
+    var count = 1;
+    for(var i = 0; i< songs.length; i++){
+      var h = songs[i].attributes.artwork.height;
+      var w = songs[i].attributes.artwork.width;
+      var url = (songs[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
+      var songName = songs[i].attributes.name;
+      searchResults += `<li class="list-group-item" ><img src=${url} height=50px width=50px><span>${songName}</span></li>`;
+      if(count%3==0){
+        searchResults += '</ul></div><div class="song-block"><ul class="list-group">'
+      }
+      count++;
+    }
+    searchResults += '</ul></div></div><hr>';
+  }
+  //If the response included playlist data
+  if(playlists){
+    searchResults += '<h2>PLaylists</h2><div class="scrolling-wrapper">';
+    var playlists = search_response.results.playlists.data;
+    for(var i = 0; i< playlists.length; i++){
+      var h = playlists[i].attributes.artwork.height;
+      var w = playlists[i].attributes.artwork.width;
+      var url = (playlists[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
+      var playlistName = playlists[i].attributes.name;
+      searchResults += `<div class="card"><img src=${url} height=100% width=100%><span class="album-artist-label">${playlistName}</span></div>`;
+    }
+    searchResults += '</div><hr>';
+  }
 return searchResults;
 }
-
-    function displaySearchSongs(songs){
-      retval = "<div class='row'>"
-      for(var i =0; i<songs.length;i++){
-        retval += "<div class='row'>"
-        + "<button>"
-
-      }
-    }
-
-    function q_and_play(song_id){
-      console.log('called');
-      const typeInput = 'song';
-
-/***
-  Add an item to the playback queue
-  https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992716-setqueue
-***/
-      music.setQueue({
-        [typeInput]: song_id
-      });
-
-      music.play();
-    }
