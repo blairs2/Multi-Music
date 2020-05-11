@@ -1,4 +1,4 @@
-
+/*
 // listen for MusicKit Loaded callback
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
@@ -7,6 +7,7 @@ document.addEventListener('musickitloaded', () => {
       Configure our MusicKit instance with the signed token from server, returns a configured MusicKit Instance
       https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance
     ***/
+   /*
     const music = MusicKit.configure({
       developerToken: res.token,
       app: {
@@ -19,6 +20,7 @@ document.addEventListener('musickitloaded', () => {
     window.music = music;
   });
 });
+*/
 
 document.getElementById('login-btn').addEventListener('click', () => {
   /***
@@ -101,7 +103,19 @@ function searchByTerm(searchTerm){
    };
    xhttp.open("GET", "http://localhost:8080/search/apple-music/" + searchTerm, true);
    xhttp.send(); // Gets the response
+
+   var sxhttp = new XMLHttpRequest();
+   sxhttp.onreadystatechange = function ReceivedCallback() {
+     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+       // console.log(JSON.parse(this.responseText));
+
+          // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
+     }
+   };
+   sxhttp.open("GET", "http://localhost:8080/search/spotify/" + searchTerm, true);
+   sxhttp.send(); // Gets the response
   }
+
 
 // function addPlaylist(playlist_name, description, data){
 //   var post_obj = `{
@@ -183,3 +197,18 @@ function searchByTerm(searchTerm){
 
       music.play();
     }
+
+// login to spotify button
+document.getElementById("login-spotify").onclick = function(){
+  console.log("CLICK");
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      // Typical action to be performed when the document is ready:    }
+      xhttp.open("GET", "http://localhost:8080/login", true);
+      xhttp.send();
+      console.log(xhttp.responseText);
+      var access_token = "";
+      getUserPlaylists(access_token);
+  }
+}};
