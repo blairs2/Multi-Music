@@ -5,15 +5,12 @@ const Spotify = require('spotify-web-api-node');
 //const cors = require('cors');
 const spotifyApi = new Spotify({
   clientId: '832b12a20fb943ed9ef4b49ceca24b65', // Spotify client id
-  clientSecret: 'b9422c26bc2d4d45b3c213ed1b6caf6f', // Spotify secret
+  clientSecret: 'CLIENT-SECRET-HERE', // Spotify secret
   redirectUri: 'http://localhost:8080/callback' // Spotify redirect uri
 });
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 
-//var client_id = '832b12a20fb943ed9ef4b49ceca24b65'; // Spotify client id
-//var client_secret = 'b9422c26bc2d4d45b3c213ed1b6caf6f'; // Spotify secret
-//var redirect_uri = 'http://localhost:8080/callback'; // Spotify redirect uri
 var accessToken = '';
 var refreshToken = '';
 var stateKey = 'spotify_auth_state';
