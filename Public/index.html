@@ -15,47 +15,6 @@
 
   <!-- Custom styles for this template -->
   <link href="css/shop-homepage.css" rel="stylesheet">
-  <style>
-  .playlist-button {
-
-    background: none;
-  color: black;
-  padding: 15px 32px;
-  text-align: left;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-.scrolling-wrapper {
-  overflow-x: scroll;
-  overflow-y: hidden;
-  white-space: nowrap;
-  margin-bottom: 50px
-}
-.card {
-  border: none;
-  display: inline-block;
-  height: 300px;
-  width: 300px;
-  margin: 50px;
-}
-.song-block{
-  border: none;
-  display: inline-block;
-  width: 500px;
-  margin: 10px;
-}
-.album-artist-label{
-  display: block;
-}
-.card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
-
-</style>
-
 
 
 </head>
@@ -66,6 +25,8 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
       <a class="navbar-brand" href="#">Multi Music</a>
+      <button id="play-btn" type="button" name="button">play</button>
+      <button id="pause-btn" type="button" name="button">pause</button>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

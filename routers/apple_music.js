@@ -94,7 +94,7 @@ router.get('/search/apple-music/hints/:search_term', function(request, response)
 
     const options = {
       hostname: 'api.music.apple.com',
-      path: `/v1/catalog/us/search/hints?term=${search_term}&limit=10`,
+      path: `/v1/catalog/us/search/hints?term=${search_term}`,
       method: 'GET',
       headers: {
             'Accept': 'application/a-gzip, application/json',

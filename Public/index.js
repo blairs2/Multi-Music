@@ -179,11 +179,9 @@ function addAppleMusicUserToken(musicUserToken){
 
 function displaySearch(search_response){
   //Displays albums
-  var albums = search_response.results.albums.data;
-  var playlists = search_response.results.playlists.data;
-  var songs = search_response.results.songs.data;
-  //If the response included albums data
-  if(albums){
+  var search_result_order = search_response.meta.results.order;
+  if(search_result_order.includes("albums")){
+    var albums = search_response.results.albums.data;
     var searchResults = '<h2>Albums</h2><div class="scrolling-wrapper">';
     var albums = search_response.results.albums.data;
     for(var i = 0; i< albums.length; i++){
@@ -196,8 +194,8 @@ function displaySearch(search_response){
     }
     searchResults += '</div><hr>';
   }
-  //If the response included song data
-  if(songs){
+  if(search_result_order.includes("songs")){
+    var songs = search_response.results.songs.data;
     searchResults += '<h2>Songs</h2><div class="scrolling-wrapper"><div class="song-block" ><ul class="list-group">';
     var count = 1;
     for(var i = 0; i< songs.length; i++){
@@ -205,7 +203,8 @@ function displaySearch(search_response){
       var w = songs[i].attributes.artwork.width;
       var url = (songs[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
       var songName = songs[i].attributes.name;
-      searchResults += `<li class="list-group-item" ><img src=${url} height=50px width=50px><span>${songName}</span></li>`;
+      var songId = songs[i].attributes.playParams.id;
+      searchResults += `<button type="button" class="list-group-item song-button" onclick='applePlay(${songId}, "song")'><img class="song-button-img" src=${url}><span>${songName}</span></button>`;
       if(count%3==0){
         searchResults += '</ul></div><div class="song-block"><ul class="list-group">'
       }
@@ -213,8 +212,8 @@ function displaySearch(search_response){
     }
     searchResults += '</ul></div></div><hr>';
   }
-  //If the response included playlist data
-  if(playlists){
+  if(search_result_order.includes("playlists")){
+    var playlists = search_response.results.playlists.data;
     searchResults += '<h2>PLaylists</h2><div class="scrolling-wrapper">';
     var playlists = search_response.results.playlists.data;
     for(var i = 0; i< playlists.length; i++){
@@ -228,3 +227,31 @@ function displaySearch(search_response){
   }
 return searchResults;
 }
+
+/*
+@id is a unique id of the Content
+@type is album, song, artist, playlist...
+*/
+function applePlay(id, contentType){
+  console.log(id, contentType);
+  music.setQueue({
+    [contentType]: id
+  });
+  music.play();
+}
+
+document.getElementById('play-btn').addEventListener('click', () => {
+  /***
+    Resume or start playback of media item
+    https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992709-play
+  ***/
+  music.play();
+});
+
+document.getElementById('pause-btn').addEventListener('click', () => {
+  /***
+    Pause playback of media item
+    https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992708-pause
+  ***/
+  music.pause();
+});
