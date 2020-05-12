@@ -34,7 +34,7 @@ router.get('/search/apple-music/:search_term', function(request, response){
     var term = request.params.search_term //ALl the spaces in the search must be replaced with '+'
     const options = {
       hostname: 'api.music.apple.com',
-      path: `/v1/catalog/us/search?term=${term}`,
+      path: `/v1/catalog/us/search?${term}`,
       method: 'GET',
       headers: {
             'Authorization' : 'Bearer ' + token
@@ -50,12 +50,12 @@ router.get('/search/apple-music/:search_term', function(request, response){
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
-            saveJSON("search-results",data);
-            console.log(JSON.parse(data));
             response.send(data);
           });
     });
 });
+
+
 
 router.get('/library/playlists/:playlist_id', function(request, response){
     var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
@@ -82,19 +82,19 @@ router.get('/library/playlists/:playlist_id', function(request, response){
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
-            saveJSON("selecting-individual-playlist",data);
-            console.log(JSON.parse(data));
             response.send(data);
           });
     });
 });
+
+
 
 router.get('/search/apple-music/hints/:search_term', function(request, response){
     var search_term = request.params.search_term //ALl the spaces in the search must be replaced with '+'
 
     const options = {
       hostname: 'api.music.apple.com',
-      path: `/v1/catalog/us/search/hints?term=${search_term}&limit=10`,
+      path: `/v1/catalog/us/search/hints?term=${search_term}`,
       method: 'GET',
       headers: {
             'Accept': 'application/a-gzip, application/json',
@@ -111,8 +111,6 @@ router.get('/search/apple-music/hints/:search_term', function(request, response)
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
-             saveJSON("search-hints",data);
-            console.log(JSON.parse(data));
             response.send(data);
           });
     });
@@ -143,11 +141,136 @@ router.get('/library/playlists', function(request, response){
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
-            saveJSON("retrieve-user-playlist-library",data);
             response.send(data);
           });
     });
 });
+
+//Fetch the complete library of the users albums
+router.get('/library/albums', function(request, response){
+  //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
+  var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+  const options = {
+    hostname: 'api.music.apple.com',
+    path: '/v1/me/library/albums',
+    method: 'GET',
+    headers: {
+          'Music-User-Token': music_user_token,
+          'Accept': 'application/a-gzip, application/json',
+          'Authorization' : 'Bearer ' + token
+    }
+  }
+  https.get(options, function (res, body) {
+        let data = '';
+        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
+        res.setEncoding('utf8');
+        //Collect  all the response
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        // The whole response has been received. send the result.
+        res.on('end', () => {
+          response.send(data);
+        });
+  });
+});
+
+//Fetch the library of the users songs (default 25)
+router.get('/library/songs', function(request, response){
+  //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
+  var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+  const options = {
+    hostname: 'api.music.apple.com',
+    path: '/v1/me/library/songs',
+    method: 'GET',
+    headers: {
+          'Music-User-Token': music_user_token,
+          'Accept': 'application/a-gzip, application/json',
+          'Authorization' : 'Bearer ' + token
+    }
+  }
+  https.get(options, function (res, body) {
+        let data = '';
+        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
+        res.setEncoding('utf8');
+        //Collect  all the response
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        // The whole response has been received. send the result.
+        res.on('end', () => {
+          response.send(data);
+        });
+  });
+});
+
+//Fetch the library of the users artists (default 25)
+router.get('/library/artists', function(request, response){
+  //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
+  var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+  const options = {
+    hostname: 'api.music.apple.com',
+    path: '/v1/me/library/artists',
+    method: 'GET',
+    headers: {
+          'Music-User-Token': music_user_token,
+          'Accept': 'application/a-gzip, application/json',
+          'Authorization' : 'Bearer ' + token
+    }
+  }
+  https.get(options, function (res, body) {
+        let data = '';
+        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
+        res.setEncoding('utf8');
+        //Collect  all the response
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        // The whole response has been received. send the result.
+        res.on('end', () => {
+          response.send(data);
+        });
+  });
+});
+
+
+
+
+//gets all the users playlists in alphebetical order
+router.post('/library/playlist', function(request, response){
+  var post_obj = JSON.stringify(request.body); //Need to include bodyParser in server.js
+  console.log(post_obj);
+    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
+    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+    const options = {
+      hostname: 'api.music.apple.com',
+      path: `/v1/me/library/playlists`,
+      method: 'POST',
+      headers: {
+            'Music-User-Token': music_user_token,
+            'Accept': 'application/a-gzip, application/json',
+            'Authorization' : 'Bearer ' + token,
+            'Content-Length': Buffer.byteLength(post_obj)
+      }
+    }
+  const req = https.request(options, res => {
+    console.log(`statusCode: ${res.statusCode}`)
+
+  res.on('data', d => {
+      process.stdout.write(d)
+    });
+  });
+
+req.on('error', error => {
+  console.error(error)
+});
+
+  req.write(post_obj);
+  req.end();
+
+
+});
+
 
 
 module.exports = router;

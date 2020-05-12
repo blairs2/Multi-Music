@@ -1,5 +1,5 @@
 
-// listen for MusicKit Loaded callback
+//Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
   fetch('/token').then(response => response.json()).then(res => {
@@ -11,7 +11,7 @@ document.addEventListener('musickitloaded', () => {
       developerToken: res.token,
       app: {
         name: 'MultiMusic',
-        build: '1978.4.1'
+        build: '2020.5.7'
       }
     });
 
@@ -21,39 +21,53 @@ document.addEventListener('musickitloaded', () => {
 });
 
 document.getElementById('login-btn').addEventListener('click', () => {
-  /***
-    Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-    https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992701-authorize
-  ***/
+  //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
   music.authorize().then(musicUserToken => {
-    console.log(`Authorized, music-user-token: ${musicUserToken}`);
+    addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
   });
 
-  retreiveUserPlaylists();
+
+  retreiveUserPlaylists(); //Populates the left hand side of screen with all the playlsits in the users library
 });
 
-document.getElementById('search-input').addEventListener("keyup", function(event) {
+document.getElementById('search-input').addEventListener("keyup", function(event){
+  //When user clicks enter in our search bar
    var searchTerm = (document.getElementById('search-input').value).replace(' ', '+');
    if (event.keyCode === 13) { //on enter key
      console.log('enter');
-     searchByTerm(searchTerm);
+     searchByTerm("term=" + searchTerm + "&limit=10"); //Search for the users input
+     // searchByTerm("term=" + searchTerm); //Search for the users input
+
+
    }else{
-     retrieveSearchHints(searchTerm);//Creates suggestions as user is typing
+     retrieveSearchHints(searchTerm); //Creates suggestions as user is typing
    }
 });
+
+// document.getElementById("play_pause_button").addEventListener('click', () => {
+//   var btn = $(".play_pause_button");
+//   btn.click(function() {
+//     btn.toggleClass("paused");
+//     return false;
+//   });
+// });
+
+//////////////////////////////
+//GET functions
+/////////////////////////////
 
 function retreiveUserPlaylists(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-
+      //This block of code generates the list of playlists on the left hand side of the screen
       var cloudPlaylists = JSON.parse(this.responseText).data;
       var retval = '';
       for(var i =0; i < cloudPlaylists.length; i++){
         console.log(cloudPlaylists[i]);
         var playlistName = cloudPlaylists[i].attributes.name;
         var playlist_id = cloudPlaylists[i].id;
-        retval += `<button class="list-group-item" class='playlist-button' onclick="retirevePlaylist('${playlist_id}')" >${playlistName}</button>`;
+        retval += `<button class="list-group-item" class='playlist-button' onclick="retirevePlaylist('${playlist_id}')" >${playlistName}</button>`; //Each button includes playlist id
       }
       document.getElementById('user-playlists').innerHTML = retval;
     }
@@ -63,34 +77,89 @@ function retreiveUserPlaylists(){
   xhttp.send(); // Gets the response
 }
 
+//Gets the users library of songs (default 25)
+function retrieveUserSongs(){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+      console.log(JSON.parse(this.responseText));
+      //Code to change the generated-content inner html
+    }
+  };
+  xhttp.open("GET", "http://localhost:8080/library/songs", true);
+  xhttp.send(); // Gets the response
+ }
 
+//Gets the users library of artists (default 25)
+function retrieveUserArtists(){
+ var xhttp = new XMLHttpRequest();
+ xhttp.onreadystatechange = function ReceivedCallback() {
+   if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+     console.log(JSON.parse(this.responseText));
+     //Code to change the generated-content inner html
+   }
+ };
+ xhttp.open("GET", "http://localhost:8080/library/artists", true);
+ xhttp.send(); // Gets the response
+}
+
+//Gets the users library of albums (defualt 25)
+function retrieveUserAlbums(){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+      console.log(JSON.parse(this.responseText));
+      //Code to change the generated-content inner html
+    }
+  };
+  xhttp.open("GET", "http://localhost:8080/library/albums", true);
+  xhttp.send(); // Gets the response
+ }
+
+//As the user is typing into the search bar. this will fetch search hits for the drop down
 function retrieveSearchHints(searchTerm){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-         // document.getElementById("generated-content").innerHTML = displayPlaylist(JSON.parse(this.responseText));
+         //Code to change the generated-content inner html
 
     }
   };
   xhttp.open("GET", "http://localhost:8080/search/apple-music/hints/" + searchTerm, true);
-  // xhttp.setRequestHeader('music-user-token:', music_user_token);
   xhttp.send(); // Gets the response
  }
 
+//Gets an individual playlist by id.
+//Buttons for each playlist's are generated when retrieveUserPlaylsits() is run. Each playlist button has the corresponding id attached
 function retirevePlaylist(playlist_id){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-           // document.getElementById("generated-content").innerHTML = displayPlaylist(JSON.parse(this.responseText));
+          //Code to change the generated-content inner html
       }
     };
     xhttp.open("GET", "http://localhost:8080/library/playlists/" + playlist_id, true);
-    // xhttp.setRequestHeader('music-user-token:', music_user_token);
     xhttp.send(); // Gets the response
    }
 
-
+//Searches for term across every catagory
 function searchByTerm(searchTerm){
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function ReceivedCallback() {
+     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+       document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
+     }
+   };
+   xhttp.open("GET", "http://localhost:8080/search/apple-music/" + searchTerm, true);
+   xhttp.send(); // Gets the response
+  }
+
+//////////////////////////////
+//POST functions
+/////////////////////////////
+
+//Creates a new empty playlist
+function addPlaylist(playlist_name, description){
    var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function ReceivedCallback() {
      if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -99,87 +168,90 @@ function searchByTerm(searchTerm){
           // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
      }
    };
-   xhttp.open("GET", "http://localhost:8080/search/apple-music/" + searchTerm, true);
+   xhttp.open("POST", "http://localhost:8080/library/playlist", true);
    xhttp.send(); // Gets the response
   }
 
-// function addPlaylist(playlist_name, description, data){
-//   var post_obj = `{
-//        "attributes":{
-//           "name":${playlist_name},
-//           "description":${description}}
-//        },
-//        "relationships":{
-//           "tracks":{`;
-//
-//             for(var i = 0; i<data.length; i++){
-//               post_obj +=
-//
-//             }
-//              "data":[
-//                 {
-//                    "id":"900032829",
-//                    "type":"songs"
-//                 }
-//              ]
-//           }
-//        }
-// }`
-//      var xhttp = new XMLHttpRequest();
-//      xhttp.onreadystatechange = function ReceivedCallback() {
-//        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-//          // console.log(JSON.parse(this.responseText));
-//
-//             // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
-//        }
-//      };
-//      xhttp.open("POST", "http://localhost:8080/library/playlist/", true);
-//      xhttp.send(); // Gets the response
-//     }
+function addAppleMusicUserToken(musicUserToken){
+  //Will add musicUserToken to db
+  console.log(musicUserToken);
+}
 
-
-    function displaySearch(result){
-      var searchResults = '<table style="width:100%"><tr><th>Song</th></tr><tr>';
-        var songData = result.results.songs.data;
-        console.log(songData);
-      for(var i = 0; i< songData.length; i++){
-        var h = songData[i].attributes.artwork.height;
-        var w = songData[i].attributes.artwork.width;
-        var url = (songData[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
-
-        searchResults += `<tr><td><img src=${url} height=100 width=100></td>`;
-        searchResults += `<<td><button onclick=q_and_play(${songData[i].id})>${songData[i].attributes.name}</button></td>`;
-
-      searchResults += '</tr></table>';
-      return searchResults;
+function displaySearch(search_response){
+  //Displays albums
+  var search_result_order = search_response.meta.results.order;
+  if(search_result_order.includes("albums")){
+    var albums = search_response.results.albums.data;
+    var searchResults = '<h2>Albums</h2><div class="scrolling-wrapper">';
+    var albums = search_response.results.albums.data;
+    for(var i = 0; i< albums.length; i++){
+      var h = albums[i].attributes.artwork.height;
+      var w = albums[i].attributes.artwork.width;
+      var url = (albums[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
+      var artistName = albums[i].attributes.artistName;
+      var albumName = albums[i].attributes.name;
+      searchResults += `<div class="card"><img src=${url} height=100% width=100%><span class="album-artist-label">${artistName}</span><span class="album-artist-label">${albumName}</span></div>`;
     }
-    //write html  to display the results
-     // div for songs
-     // div for albums
-     // div for artist
-     // div for ...
-    }
-
-    function displaySearchSongs(songs){
-      retval = "<div class='row'>"
-      for(var i =0; i<songs.length;i++){
-        retval += "<div class='row'>"
-        + "<button>"
-
+    searchResults += '</div><hr>';
+  }
+  if(search_result_order.includes("songs")){
+    var songs = search_response.results.songs.data;
+    searchResults += '<h2>Songs</h2><div class="scrolling-wrapper"><div class="song-block" ><ul class="list-group">';
+    var count = 1;
+    for(var i = 0; i< songs.length; i++){
+      var h = songs[i].attributes.artwork.height;
+      var w = songs[i].attributes.artwork.width;
+      var url = (songs[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
+      var songName = songs[i].attributes.name;
+      var songId = songs[i].attributes.playParams.id;
+      searchResults += `<button type="button" class="list-group-item song-button" onclick='applePlay(${songId}, "song")'><img class="song-button-img" src=${url}><span>${songName}</span></button>`;
+      if(count%3==0){
+        searchResults += '</ul></div><div class="song-block"><ul class="list-group">'
       }
+      count++;
     }
-
-    function q_and_play(song_id){
-      console.log('called');
-      const typeInput = 'song';
-
-/***
-  Add an item to the playback queue
-  https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992716-setqueue
-***/
-      music.setQueue({
-        [typeInput]: song_id
-      });
-
-      music.play();
+    searchResults += '</ul></div></div><hr>';
+  }
+  if(search_result_order.includes("playlists")){
+    var playlists = search_response.results.playlists.data;
+    searchResults += '<h2>PLaylists</h2><div class="scrolling-wrapper">';
+    var playlists = search_response.results.playlists.data;
+    for(var i = 0; i< playlists.length; i++){
+      var h = playlists[i].attributes.artwork.height;
+      var w = playlists[i].attributes.artwork.width;
+      var url = (playlists[i].attributes.artwork.url).replace('{w}', w).replace('{h}',h);
+      var playlistName = playlists[i].attributes.name;
+      searchResults += `<div class="card"><img src=${url} height=100% width=100%><span class="album-artist-label">${playlistName}</span></div>`;
     }
+    searchResults += '</div><hr>';
+  }
+return searchResults;
+}
+
+/*
+@id is a unique id of the Content
+@type is album, song, artist, playlist...
+*/
+function applePlay(id, contentType){
+  console.log(id, contentType);
+  music.setQueue({
+    [contentType]: id
+  });
+  music.play();
+}
+
+document.getElementById('play-btn').addEventListener('click', () => {
+  /***
+    Resume or start playback of media item
+    https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992709-play
+  ***/
+  music.play();
+});
+
+document.getElementById('pause-btn').addEventListener('click', () => {
+  /***
+    Pause playback of media item
+    https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance/2992708-pause
+  ***/
+  music.pause();
+});
