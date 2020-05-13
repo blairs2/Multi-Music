@@ -13,14 +13,44 @@
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
-  <link href="css/shop-homepage.css" rel="stylesheet">
+
+  <!-- Latest compiled and minified CSS
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+-->
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css"
+integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+
+<!-- Custom styles for this template -->
+<link href="css/shop-homepage.css" rel="stylesheet">
+
+
+
+<script src="index.js"></script>
 
 
 
 </head>
 
+
 <body>
+  <!-- Navigation
+  <div id="homePage">
+          <h1>GeeksforGeeks</h1>
+          <p id="homePage">
+            This is the text which has already been typed into the div</p>
+      </div>
+<button onclick="addCode()">Add Stuff</button>
+-->
 
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -32,25 +62,17 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home
+            <a class="nav-link" onclick="homeLoad()" href="#">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+            <a class="nav-link" onclick="aboutLoad()" href="#">About</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
+            <a class="nav-link" onclick="contactLoad()" href="#">Contact</a>
           </li>
         </ul>
-        <form class="form-inline">
-          <i class="fas fa-search" aria-hidden="true"></i>
-          <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
-            aria-label="Search">
-        </form>
       </div>
     </div>
   </nav>
@@ -75,54 +97,30 @@
               aria-label="Search">
           </form>
           <br>
-          <a href="#" class="list-group-item">Home</a>
-          <a href="#" class="list-group-item">Playlist Library</a>
-          <a href="#" class="list-group-item">Convert</a>
+          <a href="#" onclick="homeLoad()" class="list-group-item">Home</a>
+          <a href="#" onclick="playlistLoad()" class="list-group-item">Playlist Library</a>
+          <a href="#" onclick="makePlaylist()" class="list-group-item">Create Playlist</a>
+          <a href="#" onclick="convertPlaylist()" class="list-group-item">Convert</a>
         </div>
 
       </div>
       <!-- /.col-lg-3 -->
 
+
       <div class="col-lg-9">
 
-        <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
-        <h2 class="my-4">Home</h2>
-        <div>
-        <h5>Discover</h5>
-        <div class="row">
-          <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100">
-              <a href="#"><img class="card-img-top" src="http://placehold.it/200x200" alt=""></a>
-              <div class="card-body">
-                <h4 class="card-title">
-                  <a href="#">Playlist One</a>
-                </h4>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100">
-              <a href="#"><img class="card-img-top" src="http://placehold.it/200x200" alt=""></a>
-              <div class="card-body">
-                <h4 class="card-title">
-                  <a href="#">Playlist Two</a>
-                </h4>
-              </div>
-            </div>
-          </div>
-        </div>
-        </div>
-        <!-- /.row -->
-
+        <div id="page"></div>
+        <script>
+          document.getElementById("page").addEventListener("load", homeLoad());
+        </script>
       </div>
-      <!-- /.col-lg-9 -->
 
     </div>
     <!-- /.row -->
 
   </div>
   <!-- /.container -->
+
 
   <!-- Footer -->
   <footer class="py-5 bg-dark">
