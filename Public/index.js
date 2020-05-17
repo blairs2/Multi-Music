@@ -103,17 +103,6 @@ function searchByTerm(searchTerm){
    };
    xhttp.open("GET", "http://localhost:8080/search/apple-music/" + searchTerm, true);
    xhttp.send(); // Gets the response
-
-   var sxhttp = new XMLHttpRequest();
-   sxhttp.onreadystatechange = function ReceivedCallback() {
-     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-       // console.log(JSON.parse(this.responseText));
-
-          // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
-     }
-   };
-   sxhttp.open("GET", "http://localhost:8080/search/spotify/" + searchTerm, true);
-   sxhttp.send(); // Gets the response
   }
 
 
