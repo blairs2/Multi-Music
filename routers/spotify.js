@@ -326,7 +326,7 @@ router.get('/spotify/search/:keyword', function(req, response){
 
         console.log(retval);
 
-        response.send(body);
+        response.send(retval);
       }
     });
 });

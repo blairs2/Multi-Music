@@ -17,7 +17,7 @@ function spotifyLogin(){
 /**
  * Get the user data for the currently logged in user
  */
-function getSpotifyUser(){
+function spotifyGetUser(){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -31,7 +31,7 @@ function getSpotifyUser(){
 /**
  * Get a list of the the user playlists and all the tracks in each playlist
  */
-function getSpotifyUserPlaylists(){
+function spotifyGetUserPlaylists(){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -46,7 +46,7 @@ function getSpotifyUserPlaylists(){
  * Get the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get 
  */
-function getSpotifyPlaylist(playlistid){
+function spotifyGetPlaylist(playlistid){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -62,7 +62,7 @@ function getSpotifyPlaylist(playlistid){
  * @param {string} playlistid id of the playlist to be edited 
  * @param {sting} trackURI URI of the track to be deleted
  */
-function deleteTrackFromSpotifyPlaylist(playlistid, trackURI){
+function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -78,7 +78,7 @@ function deleteTrackFromSpotifyPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited  
  * @param {sting} trackURI URI of the track to be added
  */
-function addTrackToSpotifyPlaylist(playlistid, trackURI){
+function spotifyAddTrackToPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -94,7 +94,7 @@ function addTrackToSpotifyPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited  
  * @param {string} name the new name of the playlist 
  */
-function renameSpotifyPlaylist(playlistid, name){
+function spotifyRenamePlaylist(playlistid, name){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -113,7 +113,7 @@ function renameSpotifyPlaylist(playlistid, name){
  * @param {string} description a description of the playlist
  * @param {boolean} collaborative true if playlist can be edited by other users
  */
-function createNewSpotifyPlaylist(userID, name, public = false, description = '', collaborative = false){
+function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -131,7 +131,7 @@ function createNewSpotifyPlaylist(userID, name, public = false, description = ''
  * @param {int} index the index where the tracks are to be moved to
  * @param {int} length the number of tracks to be moved
  */
-function reorderTracksInSpotifyPlaylist(playlistid, start, index, length = 1){
+function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -146,7 +146,7 @@ function reorderTracksInSpotifyPlaylist(playlistid, start, index, length = 1){
  * Search Spotify for tracks containing the search term
  * @param {string} searchTerm what to search the spotify library for 
  */
-function searchSpotifyByTerm(searchTerm){
+function spotifySearch(searchTerm){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response

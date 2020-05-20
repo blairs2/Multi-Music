@@ -194,7 +194,7 @@ document.getElementById("login-spotify").onclick = function(){
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       // Typical action to be performed when the document is ready:    }
-      xhttp.open("GET", "http://localhost:8080/login", true);
+      xhttp.open("GET", "http://localhost:8080/spotify/login", true);
       xhttp.send();
       console.log(xhttp.responseText);
       var access_token = "";
