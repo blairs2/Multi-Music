@@ -9,7 +9,7 @@ body {
 .has-search .form-control {
       padding-left: 2.375rem;
 }
-  
+
 .has-search .form-control-feedback {
       position: absolute;
       z-index: 2;
@@ -21,3 +21,68 @@ body {
       pointer-events: none;
       color: #aaa;
   }
+  .playlist-button {
+
+  background: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.song-button {
+
+background: none;
+border: 1px solid LightGrey;
+color: black;
+text-align: left;
+text-decoration: none;
+display: inline-block;
+font-size: 16px;
+height: 100%;
+width: 100%;
+cursor: pointer;
+}
+
+.song-button-img{
+  align-self: left;
+  height:50px;
+  width:50px;
+  margin-right: 10px;
+}
+
+.song-button:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
+.scrolling-wrapper {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  margin-bottom: 50px
+}
+.card {
+  border: none;
+  display: inline-block;
+  height: 300px;
+  width: 300px;
+  margin: 50px;
+  cursor: pointer;
+}
+.song-block{
+  border: none;
+  display: inline-block;
+  height: auto;
+  width: 500px;
+  margin: 10px;
+}
+.album-artist-label{
+  display: block;
+}
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}

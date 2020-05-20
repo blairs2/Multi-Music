@@ -6,10 +6,18 @@ const port = parseInt(process.env.PORT, 10) || 8080;
 const publicDir =  __dirname + '/public';
 const path = require('path');
 const https = require('https');
+
 const request = require('request'); // "Request" library
 const cors = require('cors');
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
+
+var bodyParser = require('body-parser');
+
+// configure app to use bodyParser()
+// This allows us to read body of post request
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // respond with displaying homepage (index.html) when a GET request is made to the homepage
 app.get('/', function (req, res) {
