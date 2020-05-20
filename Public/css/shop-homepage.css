@@ -86,3 +86,13 @@ cursor: pointer;
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
+.search_hint{
+  border: 1px solid LightGrey;
+}
+.search_hint:hover{
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+.autocomplete-items{
+  margin-right: 50px;
+  margin-left: 10px;
+}
