@@ -1,5 +1,9 @@
 
+/*
+// listen for MusicKit Loaded callback
+
 //Gives front end access to apple musickit js
+
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
   fetch('/token').then(response => response.json()).then(res => {
@@ -7,6 +11,7 @@ document.addEventListener('musickitloaded', () => {
       Configure our MusicKit instance with the signed token from server, returns a configured MusicKit Instance
       https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance
     ***/
+   /*
     const music = MusicKit.configure({
       developerToken: res.token,
       app: {
@@ -19,6 +24,7 @@ document.addEventListener('musickitloaded', () => {
     window.music = music;
   });
 });
+*/
 
 document.getElementById('login-btn').addEventListener('click', () => {
   //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
@@ -177,6 +183,7 @@ function addAppleMusicUserToken(musicUserToken){
   console.log(musicUserToken);
 }
 
+
 function displaySearch(search_response){
   //Displays albums
   var search_result_order = search_response.meta.results.order;
@@ -255,3 +262,18 @@ document.getElementById('pause-btn').addEventListener('click', () => {
   ***/
   music.pause();
 });
+
+// login to spotify button
+document.getElementById("login-spotify").onclick = function(){
+  console.log("CLICK");
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      // Typical action to be performed when the document is ready:    }
+      xhttp.open("GET", "http://localhost:8080/spotify/login", true);
+      xhttp.send();
+      console.log(xhttp.responseText);
+      var access_token = "";
+      getUserPlaylists(access_token);
+  }
+}};
