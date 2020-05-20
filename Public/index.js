@@ -1,5 +1,8 @@
 
+// listen for MusicKit Loaded callback
+
 //Gives front end access to apple musickit js
+
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
   fetch('/token').then(response => response.json()).then(res => {
@@ -294,6 +297,7 @@ function addAppleMusicUserToken(musicUserToken){
   console.log(musicUserToken);
 }
 
+
 function getPlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
@@ -318,6 +322,7 @@ function getPlaylistAttributes(playlist_id){
 }
 
 //This will recieve a multi music format JSON
+
 function displaySearch(search_response){
   //Displays albums
   var searchResults = '';
@@ -366,7 +371,10 @@ return searchResults;
 }
 
 function displayPlaylist(playlist_id){
-  var playlist_attributes = retirevePlaylist(playlist_id);
+  //Triggers two get requests
+  //One has playlist's attributes
+  //second has tracks in playlist
+  var playlist_attributes = retirevePlaylist(playlist_id); //
   var playlist_tracks = retrievePlaylistTracks(playlist_id);
   // console.log(playlist_tracks);
   // console.log(playlist_attributes);
@@ -380,3 +388,21 @@ function applePlay(id, contentType){
   console.log(id, contentType);
   music.setQueue({[contentType]: id }).then(music.play());
 }
+
+
+
+// login to spotify button
+document.getElementById("login-spotify").onclick = function(){
+  console.log("CLICK");
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      // Typical action to be performed when the document is ready:    }
+      xhttp.open("GET", "http://localhost:8080/spotify/login", true);
+      xhttp.send();
+      console.log(xhttp.responseText);
+      var access_token = "";
+      getUserPlaylists(access_token);
+  }
+}};
+
