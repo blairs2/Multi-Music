@@ -398,7 +398,6 @@ req.on('error', error => {
   req.write(post_obj);
   req.end();
 
-
 });
 
 //adds tracks to playlist
@@ -440,6 +439,5 @@ req.on('error', error => {
 
 
 });
-
 
 module.exports = router;

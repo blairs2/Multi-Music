@@ -240,10 +240,11 @@ function retrievePlaylistTracks(playlist_id){
 
 //Searches for term across every catagory
 function searchByTerm(searchTerm){
+  document.getElementById("generated-content").innerHTML = ""; //clear generated content
    var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function ReceivedCallback() {
      if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-       document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
+       document.getElementById("generated-content").innerHTML = document.getElementById("generated-content").innerHTML + displaySearch(JSON.parse(this.responseText), "Apple Music");
        var song_elements = document.getElementsByClassName("song-button");
        var elements = document.getElementsByClassName("card");
 
@@ -323,13 +324,14 @@ function getPlaylistAttributes(playlist_id){
 
 //This will recieve a multi music format JSON
 
-function displaySearch(search_response){
+function displaySearch(search_response, source){
   //Displays albums
   var searchResults = '';
   var h, w, url;
   if(search_response.hasOwnProperty("albums")){
     var albums = search_response.albums.data;
-    searchResults += '<h2>Albums</h2><div class="scrolling-wrapper">';
+    searchResults += '<h2>' + source + ' Albums</h2><div class="scrolling-wrapper">';
+    
     for(var i = 0; i< albums.length; i++){
       url = albums[i].artwork;
       var artistName = albums[i].artist;
@@ -341,7 +343,8 @@ function displaySearch(search_response){
   }
   if(search_response.hasOwnProperty("songs")){
     var songs = search_response.songs.data;
-    searchResults += '<h2>Songs</h2><div class="scrolling-wrapper"><div class="song-block" ><ul class="list-group">';
+    searchResults += '<h2>' + source + ' Songs</h2><div class="scrolling-wrapper"><div class="song-block" ><ul class="list-group">';
+
     var count = 1;
     for(var i = 0; i< songs.length; i++){
 
@@ -358,7 +361,7 @@ function displaySearch(search_response){
   }
   if(search_response.hasOwnProperty("playlists")){
     var playlists = search_response.playlists.data;
-    searchResults += '<h2>PLaylists</h2><div class="scrolling-wrapper">';
+    searchResults += '<h2>' + source + ' Playlists</h2><div class="scrolling-wrapper">';
     for(var i = 0; i< playlists.length; i++){
       url = playlists[i].artwork;
       var playlistName = playlists[i].title;
@@ -388,21 +391,4 @@ function applePlay(id, contentType){
   console.log(id, contentType);
   music.setQueue({[contentType]: id }).then(music.play());
 }
-
-
-
-// login to spotify button
-document.getElementById("login-spotify").onclick = function(){
-  console.log("CLICK");
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      // Typical action to be performed when the document is ready:    }
-      xhttp.open("GET", "http://localhost:8080/spotify/login", true);
-      xhttp.send();
-      console.log(xhttp.responseText);
-      var access_token = "";
-      getUserPlaylists(access_token);
-  }
-}};
 

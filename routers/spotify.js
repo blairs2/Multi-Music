@@ -158,8 +158,8 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
                 id: body.tracks.items[i].track.uri,
                 artwork: body.tracks.items[i].track.album.images.length != 0 ?
                            body.tracks.items[i].track.album.images.length == 1 ? 
-                           body.tracks.items[i].track.album.images[0].url : 
-                           body.tracks.items[i].track.album.images[1].url : null, 
+                           body.tracks.items[i].track.album.images[1].url : 
+                           body.tracks.items[i].track.album.images[0].url : null, 
                 href: body.tracks.items[i].track.href
               });
             }
@@ -317,15 +317,17 @@ router.get('/spotify/search/:keyword', function(req, response){
           if(body.playlists.items[i] != null){
               retval.playlists.data.push({ //append playlists to retval.playlists
                 title: body.playlists.items[i].name,
-                artwork: body.playlists.items[i].images.length != 0 ? body.playlists.items[i].images.url : null,
+                artwork: body.playlists.items[i].images.length != 0 ?
+                         body.playlists.items[i].length == 1 ? 
+                         body.playlists.items[i].images[1].url : 
+                         body.playlists.items[i].images[0].url : null,
                 id: body.playlists.items[i].id, 
                 href: body.playlists.items[i].href 
               });
             }
           }
 
-        console.log(retval);
-
+        //response.send(body);
         response.send(retval);
       }
     });
