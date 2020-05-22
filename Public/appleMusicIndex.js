@@ -479,20 +479,3 @@ function applePlay(id, contentType){
   console.log(id, contentType);
   music.setQueue({[contentType]: id });
 }
-
-
-
-// login to spotify button
-document.getElementById("login-spotify").onclick = function(){
-  console.log("CLICK");
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      // Typical action to be performed when the document is ready:    }
-      xhttp.open("GET", "http://localhost:8080/spotify/login", true);
-      xhttp.send();
-      console.log(xhttp.responseText);
-      var access_token = "";
-      getUserPlaylists(access_token);
-  }
-}};

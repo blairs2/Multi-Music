@@ -18,7 +18,7 @@ var stateKey = 'spotify_auth_state';
  // your application requests authorization
  var scopes = [
   'user-read-playback-state', //used to get currently playing track
-  'user-modify-playback-state', //used to pause shuffle skip users current song and add songs to queue 
+  'user-modify-playback-state', //used to pause shuffle skip users current song and add songs to queue
   'playlist-read-collaborative', //used to get users collaborative playlists
   'playlist-read-private', //used to get users private playlists
   'streaming', //used for web playback
@@ -47,7 +47,7 @@ router.get('/spotify/login', function(req, responce) {
     responce.cookie(stateKey, state);
     responce.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
   });
-  
+
 router.get('/spotify/callback', function(req, responce) {
       // request refresh and access tokens
       // after checking the state parameter
@@ -69,15 +69,15 @@ router.get('/spotify/callback', function(req, responce) {
           responce.redirect('/#/error/invalid token');
         });
       };
-      
-      
+
+
 });
 
 router.get('/spotify/refresh', function(req, responce) {
   spotifyApi.refreshAccessToken().then(
     function(data) {
       console.log('The access token has been refreshed!');
-  
+
       // Save the access token so that it's used in future calls
       spotifyApi.setAccessToken(data.body['access_token']);
     },
@@ -104,7 +104,7 @@ router.get('/spotify/user', function(req, response){
   });
 })
 
-//Get a list of all the user playlists    
+//Get a list of all the user playlists
 router.get('/spotify/playlists', function(req, responce){
     options = { //set request options
         uri: 'https://api.spotify.com/v1/me/playlists',
@@ -124,9 +124,9 @@ router.get('/spotify/playlists', function(req, responce){
                   href: body.items[i].href,
                   id: body.items[i].id,
                   artwork: body.items[i].images.length != 0 ?
-                           body.items[i].images.length == 1 ? 
-                           body.items[i].images[0].url : 
-                           body.items[i].images[1].url : null 
+                           body.items[i].images.length == 1 ?
+                           body.items[i].images[0].url :
+                           body.items[i].images[1].url : null
                 });
             }
             responce.send(retval);
@@ -136,7 +136,7 @@ router.get('/spotify/playlists', function(req, responce){
     });
 });
 
-//Get a playlist specified by the playlistid 
+//Get a playlist specified by the playlistid
 router.get('/spotify/playlist/:playlistid', function(req, response){
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
@@ -149,7 +149,7 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
         } else {
           console.log(body);
           retval = { tracks: []};
-          
+
           for(i = 0; i < body.tracks.limit; i++){
             if(body.tracks.items[i] != null){
               retval.tracks.push({
@@ -157,14 +157,14 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
                 artist: body.tracks.items[i].track.artists[0].name,
                 id: body.tracks.items[i].track.uri,
                 artwork: body.tracks.items[i].track.album.images.length != 0 ?
-                           body.tracks.items[i].track.album.images.length == 1 ? 
-                           body.tracks.items[i].track.album.images[0].url : 
-                           body.tracks.items[i].track.album.images[1].url : null, 
+                           body.tracks.items[i].track.album.images.length == 1 ?
+                           body.tracks.items[i].track.album.images[0].url :
+                           body.tracks.items[i].track.album.images[1].url : null,
                 href: body.tracks.items[i].track.href
               });
             }
           }
-          
+
           response.send(retval);
         }
       });
@@ -222,16 +222,16 @@ router.put('/spotify/playlist/details/:playlistid/:name', function(req, response
         }
       });
 });
-    
+
 //Create a new empty spotify playlist
 router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collaborative', function(req, response){
     options = {
         uri: 'https://api.spotify.com/v1/users/' + req.params.userID + '/playlists',
         headers: { 'Authorization': 'Bearer ' + accessToken },
         body: {
-            name: req.params.name, 
-            public: req.params.public, 
-            description: req.params.description, 
+            name: req.params.name,
+            public: req.params.public,
+            description: req.params.description,
             collaborative: req.params.collaborative},
         json: true
       };
@@ -244,7 +244,7 @@ router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collab
       }
     })
   });
-  
+
 // reorder the songs in the specifed playlist
 // move first length songs at start to index
 router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', function(req, response){
@@ -252,8 +252,8 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
     uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks',
     headers: { 'Authorization': 'Bearer ' + accessToken },
     body: {
-      range_start: req.params.start, 
-      range_length: req.params.length, 
+      range_start: req.params.start,
+      range_length: req.params.length,
       insert_before: req.params.index},
     json: true
   };
@@ -295,9 +295,9 @@ router.get('/spotify/search/:keyword', function(req, response){
           if(body.tracks.items[i] != null){
             retval.songs.data.push({ //append songs to retval.songs
               title: body.tracks.items[i].name,
-              artist: body.tracks.items[i].artists[0].name, 
-              artwork: body.tracks.items[i].album.images[1].url, 
-              id: body.tracks.items[i].id, 
+              artist: body.tracks.items[i].artists[0].name,
+              artwork: body.tracks.items[i].album.images[1].url,
+              id: body.tracks.items[i].id,
               href: body.tracks.items[i].href});
             }
           }
@@ -306,9 +306,9 @@ router.get('/spotify/search/:keyword', function(req, response){
           if(body.albums.items[i] != null){
             retval.albums.data.push({ //append albums to retval.albums
               title: body.albums.items[i].name,
-              artist: body.albums.items[i].artists[0].name, 
-              artwork: body.albums.items[i].images[1].url, 
-              id: body.albums.items[i].id, 
+              artist: body.albums.items[i].artists[0].name,
+              artwork: body.albums.items[i].images[1].url,
+              id: body.albums.items[i].id,
               href: body.albums.items[i].href});
             }
           }
@@ -318,8 +318,8 @@ router.get('/spotify/search/:keyword', function(req, response){
               retval.playlists.data.push({ //append playlists to retval.playlists
                 title: body.playlists.items[i].name,
                 artwork: body.playlists.items[i].images.length != 0 ? body.playlists.items[i].images.url : null,
-                id: body.playlists.items[i].id, 
-                href: body.playlists.items[i].href 
+                id: body.playlists.items[i].id,
+                href: body.playlists.items[i].href
               });
             }
           }
