@@ -41,5 +41,4 @@ var spotify_router = require('./routers/spotify.js');
 app.use(spotify_router);
 
 console.log('Listening at', publicDir, hostname, port);
-app.listen(port, hostname);app.listen(port, hostname);
 app.listen(port, hostname);
