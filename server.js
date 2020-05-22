@@ -34,9 +34,11 @@ app.use(express.static(publicDir));
 
 //var apple_music_router = require('./routers/apple_music.js');
 //app.use(apple_music_router);
+var apple_music_router = require('./routers/apple_music.js');
+app.use(apple_music_router);
 
 var spotify_router = require('./routers/spotify.js');
 app.use(spotify_router);
 
 console.log('Listening at', publicDir, hostname, port);
-app.listen(port, hostname);
+app.listen(port, hostname);app.listen(port, hostname);
