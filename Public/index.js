@@ -1,5 +1,4 @@
-const URL = window.location.host;
-console.log(URL);
+
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
@@ -133,14 +132,14 @@ function retreiveUserPlaylists(){
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
       //This block of code generates the list of playlists on the left hand side of the screen
-      var cloudPlaylists = JSON.parse(this.responseText).playlists;
+      var cloudPlaylists = JSON.parse(this.responseText).data;
       var retval = '';
       for(var i =0; i < cloudPlaylists.length; i++){
         console.log(cloudPlaylists[i]);
-        var playlistName = cloudPlaylists[i].title;
+        var playlistName = cloudPlaylists[i].attributes.name;
         var playlist_id = cloudPlaylists[i].id;
 
-        retval += `<button class="list-group-item playlist-button" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
+        retval += `<button class="list-group-item playlist-button" data-id="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
       }
       document.getElementById('user-playlists').innerHTML = retval;
       var user_playlists = document.getElementsByClassName("playlist-button");
@@ -148,17 +147,13 @@ function retreiveUserPlaylists(){
       //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
       for (var i = 0; i < user_playlists.length; i++) {
          user_playlists[i].addEventListener('click', function() {
-           //Generates the div to be populated in playlist view
-           document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-4"> </div> <div id="playlist-songs" class="col-8"> </div> </div>';
-           //Gets the attributes of a user's playlist
-           //Function being called will produce display upon recieving a json response
-           getPlaylistAttributes(this.getAttribute("data-value"));
-           getPlaylistTracks(this.getAttribute("data-value"));
+           getPlaylistAttributes(this.getAttribute("data-id"));
+           getPlaylistTracks(this.getAttribute("data-id"));
             },false);
        }
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists", true);
+  xhttp.open("GET", "http://localhost:8080/apple-music/library/playlists", true);
   // xhttp.setRequestHeader('music-user-token:', music_user_token);
   xhttp.send(); // Gets the response
 }
@@ -172,7 +167,7 @@ function retrieveUserSongs(){
       //Code to change the generated-content inner html
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/songs", true);
+  xhttp.open("GET", "http://localhost:8080/apple-music/library/songs", true);
   xhttp.send(); // Gets the response
  }
 
@@ -185,7 +180,7 @@ function retrieveUserArtists(){
      //Code to change the generated-content inner html
    }
  };
- xhttp.open("GET", "http://" + URL + "/apple-music/library/artists", true);
+ xhttp.open("GET", "http://localhost:8080/apple-music/library/artists", true);
  xhttp.send(); // Gets the response
 }
 
@@ -198,7 +193,7 @@ function retrieveUserAlbums(){
       //Code to change the generated-content inner html
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/albums", true);
+  xhttp.open("GET", "http://localhost:8080/apple-music/library/albums", true);
   xhttp.send(); // Gets the response
  }
 
@@ -211,7 +206,7 @@ function retrieveSearchHints(searchTerm){
 
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/search/hints/" + searchTerm, true);
+  xhttp.open("GET", "http://localhost:8080/apple-music/catalog/search/hints/" + searchTerm, true);
   xhttp.send(); // Gets the response
  }
 
@@ -223,7 +218,7 @@ function retirevePlaylist(playlist_id){
 
       }
     };
-    xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id, true);
+    xhttp.open("GET", "http://localhost:8080/apple-music/library/playlists/" + playlist_id, true);
     xhttp.send(); // Gets the response
    }
 
@@ -236,7 +231,7 @@ function retrievePlaylistTracks(playlist_id){
 
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/"+ playlist_id +"/relationships", true);
+  xhttp.open("GET", "http://localhost:8080/apple-music/library/playlists/"+ playlist_id +"/relationships", true);
   xhttp.send(); // Gets the response
 }
 
@@ -248,8 +243,6 @@ function searchByTerm(searchTerm){
        document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
        var song_elements = document.getElementsByClassName("song-button");
        var elements = document.getElementsByClassName("card");
-       var playlist_elements = document.getElementsByClassName("playlist-card");
-
 
       for (var i = 0; i < song_elements.length; i++) {
           console.log(song_elements[i].value);
@@ -258,22 +251,10 @@ function searchByTerm(searchTerm){
       for (var i = 0; i < elements.length; i++) {
           elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
       }
-      //add event listener to playlists in search results
-      for (var i = 0; i < playlist_elements.length; i++) {
-          playlist_elements[i].addEventListener('click', function() {
-            //sets up divs to be populated
-            document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-4"> </div> <div id="playlist-songs" class="col-8"> </div> </div>';
-            //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
-            //upon retriving a response the function being called will generate attribute content to dislay on the screen
-            getCatalogPlaylistAttributes(this.getAttribute("data-value"));
-            //triggers get request to retrieve the playlists tracks from apple music's catalog (NOT USER Library)
-            //upon retriving a response the function being called will generate track content to dislay on the screen
-            getCatalogPlaylistTracks(this.getAttribute("data-value"));
-          },false);
-      }
+
      }
    };
-   xhttp.open("GET", "http://" + URL + "/apple-music/catalog/search/" + searchTerm, true);
+   xhttp.open("GET", "http://localhost:8080/apple-music/catalog/search/" + searchTerm, true);
    xhttp.send(); // Gets the response
   }
 
@@ -291,7 +272,7 @@ function addPlaylist(playlist_name, description){
           // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
      }
    };
-   xhttp.open("POST", "http://" + URL + "/apple-music/library/playlist", true);
+   xhttp.open("POST", "http://localhost:8080/apple-music/library/playlist", true);
    xhttp.send(); // Gets the response
   }
 
@@ -304,7 +285,7 @@ function addTrackToPlaylist(playlist_id){
             // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
        }
      };
-     xhttp.open("POST", "http://" + URL + "/apple-music/library/" + playlist_id + "/playlist", true);
+     xhttp.open("POST", "http://localhost:8080/apple-music/library/" + playlist_id + "/playlist", true);
      xhttp.send(); // Gets the response
 }
 
@@ -317,16 +298,11 @@ function getPlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      var retval = displayPlaylistTracks(JSON.parse(this.responseText).tracks);
-      document.getElementById("playlist-songs").innerHTML = retval;
-      var song_elements = document.getElementsByClassName("song-button");
-     for (var i = 0; i < song_elements.length; i++) {
-         console.log(song_elements[i].value);
-         song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-     }
+      console.log(JSON.parse(this.responseText));
+
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
+  xhttp.open("GET", "http://localhost:8080/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
   xhttp.send(); // Gets the response
 }
 
@@ -334,46 +310,10 @@ function getPlaylistAttributes(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0]);
-      document.getElementById("playlist-attributes").innerHTML = retval;
+      console.log(JSON.parse(this.responseText));
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id , true);
-  xhttp.send(); // Gets the response
-}
-
-/*Gets tracks of a playlist on apple musics catalog, not a users library*/
-function getCatalogPlaylistTracks(playlist_id){
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function ReceivedCallback() {
-    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      var retval = displayPlaylistTracks(JSON.parse(this.responseText).tracks);
-      //Assumes that whatever function calling this already generated a div with the id="playlist-songs"
-      document.getElementById("playlist-songs").innerHTML = retval;
-      //Add event listener for each song button. Upon click it will queue up the song to be played
-      var song_elements = document.getElementsByClassName("song-button");
-     for (var i = 0; i < song_elements.length; i++) {
-         console.log(song_elements[i].value);
-         song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-     }
-    }
-  };
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/playlists/" + playlist_id + "/relationships" , true);
-  xhttp.send(); // Gets the response
-}
-
-/*Gets attributes of a playlist on apple musics catalog, not a users library*/
-function getCatalogPlaylistAttributes(playlist_id){
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function ReceivedCallback() {
-    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      //The response should be a list with only one element
-      var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0]);
-      //Assumes that whatever function calling this already generated a div with the id="playlist-attributes"
-      document.getElementById("playlist-attributes").innerHTML = retval;
-    }
-  };
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/playlists/" + playlist_id , true);
+  xhttp.open("GET", "http://localhost:8080/apple-music/library/playlists/" + playlist_id , true);
   xhttp.send(); // Gets the response
 }
 
@@ -413,55 +353,23 @@ function displaySearch(search_response){
   }
   if(search_response.hasOwnProperty("playlists")){
     var playlists = search_response.playlists.data;
-    searchResults += '<h2>Playlists</h2><div class="scrolling-wrapper">';
+    searchResults += '<h2>PLaylists</h2><div class="scrolling-wrapper">';
     for(var i = 0; i< playlists.length; i++){
       url = playlists[i].artwork;
       var playlistName = playlists[i].title;
       var playlistId = playlists[i].id;
-      searchResults += `<div class="playlist-card" value="playlist" data-value="${playlistId}"><img src=${url} height=100% width=100%><span class="album-artist-label">${playlistName}</span></div>`;
+      searchResults += `<div class="card" value="playlist" data-value="${playlistId}"><img src=${url} height=100% width=100%><span class="album-artist-label">${playlistName}</span></div>`;
     }
     searchResults += '</div><hr>';
   }
 return searchResults;
 }
 
-/* This function will generate the playlist attributes display
- @param playlist_attributes is a multi music json containing a single playlist's attributes
-*/
-function displayPlaylistAttributes(playlist_attributes){
-  var retval = "";
-  var playlistTitle = playlist_attributes.title;
-  retval += `<h4>${playlistTitle}</h4>`;
-  if (playlist_attributes.hasOwnProperty("artwork")) {
-      var artworkDisplay = playlist_attributes.artwork;
-      retval += `<a href="#"><img class='card-img-top' src="${artworkDisplay}" alt=''></a>`;
-  } else{
-    retval += '<a href="#"><img class="card-img-top" src="http://placehold.it/200x200" alt=""></a>';
-  }
-  retval += '<div style="text-align:center">';
-  if (playlist_attributes.hasOwnProperty("description")){
-    var playlistDescription = playlist_attributes.description;
-    retval += `<h7>"${playlistDescription}"</h7>`;
-  }
-  retval += '<button type="button"  class="btn btn-default btn-small">Play</button> </div>';
-  return retval;
-}
-
-/* This function will generate the playlist tracks display
- @param playlist_tracks is a multi music json containing a list of all the tracks belonging to a playlist
-*/
-function displayPlaylistTracks(playlist_tracks){
-  var retval = "";
-  retval += '<ul class="list-group">';
-  for(var i = 0; i< playlist_tracks.length; i++){
-    var title = playlist_tracks[i].title;
-    var artist = playlist_tracks[i].artist;
-    var songId = playlist_tracks[i].id;
-    var url = playlist_tracks[i].artwork;
-    retval += `<button type="button" class="list-group-item song-button" value="song" data-value="${songId}"><img class="song-button-img" src=${url}><span>${title}</span>&emsp;<span>${artist}</span></button>`;
-  }
-  retval += "</div>";
-  return retval
+function displayPlaylist(playlist_id){
+  var playlist_attributes = retirevePlaylist(playlist_id);
+  var playlist_tracks = retrievePlaylistTracks(playlist_id);
+  // console.log(playlist_tracks);
+  // console.log(playlist_attributes);
 }
 
 /*
@@ -470,5 +378,5 @@ function displayPlaylistTracks(playlist_tracks){
 */
 function applePlay(id, contentType){
   console.log(id, contentType);
-  music.setQueue({[contentType]: id });
+  music.setQueue({[contentType]: id }).then(music.play());
 }
