@@ -73,6 +73,14 @@ cursor: pointer;
   margin: 50px;
   cursor: pointer;
 }
+.playlist-card {
+  border: none;
+  display: inline-block;
+  height: 300px;
+  width: 300px;
+  margin: 50px;
+  cursor: pointer;
+}
 .song-block{
   border: none;
   display: inline-block;
@@ -84,6 +92,9 @@ cursor: pointer;
   display: block;
 }
 .card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+.playlist-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 .search_hint{

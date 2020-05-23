@@ -1,6 +1,0 @@
-
-> MultiMusic@1.0.3 start /mnt/c/development/multiMusic/Multi-Music
-> node server.js
-
-Listening at /mnt/c/development/multiMusic/Multi-Music/public localhost 8080
-{ spotify_auth_state: 'Bx2YvIKH0QmdP4DB' } 'Bx2YvIKH0QmdP4DB'

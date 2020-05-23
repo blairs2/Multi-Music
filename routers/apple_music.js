@@ -56,14 +56,42 @@ function AM_to_MM_search(am_response){
 Converts the apple music json repsonse containing tracks of a specific playlist to the multi music equal
 */
 function AM_to_MM_playlist_tracks(am_response){
+  const multi_music_obj = {};
+  const tracks = am_response.data;
+  var track, track_attributes, data = [];
 
+  for(var i = 0; i < tracks.length; i++){
+    track = tracks[i];
+    track_attributes = {id:track.id, href:track.href, title:track.attributes.name,artist: track.attributes.artistName};
+    track_attributes.artwork = (track.attributes.artwork.url).replace('{w}', 300).replace('{h}',300); // Adds a artwork attribute with the artwork url (300x300)
+    data.push(track_attributes);
+    }
+    multi_music_obj.tracks = data;
+  return JSON.stringify(multi_music_obj);
 }
 /*
 Converts the apple music json repsonse contianing attributes of specific playlist to the multi music equal
 */
 function AM_to_MM_playlist_attributes(am_response){
+  const multi_music_obj = {};
+  const playlists = am_response.data;
+  var playlist, attributes, data = [];
 
+  for(var i = 0; i < playlists.length; i++){
+    playlist = playlists[i];
+    attributes = {id:playlist.id, href:playlist.href, title: playlist.attributes.name, canEdit:playlist.attributes.canEdit};
+    if(playlist.attributes.hasOwnProperty("description")){
+      attributes.description = playlist.attributes.description.standard;
+    }
+    if(playlist.attributes.hasOwnProperty("artwork")){
+      attributes.artwork = (playlist.attributes.artwork.url).replace('{w}', 300).replace('{h}',300); // Adds a artwork attribute with the artwork url (300x300)
+    }
+      data.push(attributes);
+    }
+    multi_music_obj.playlists = data;
+  return JSON.stringify(multi_music_obj);
 }
+
 
 
 router.get('/apple-music/catalog/search/:search_term', function(request, response){
@@ -87,70 +115,6 @@ router.get('/apple-music/catalog/search/:search_term', function(request, respons
           // The whole response has been received. send the result.
           res.on('end', () => {
             response.send(AM_to_MM_search(JSON.parse(data))); //Convert apple music json to multi music json
-          });
-    });
-});
-
-
-//Retrieve a user's playlists by id
-//NOTE this only returns information about the playlist, not any tracks associated to it
-router.get('/apple-music/library/playlists/:playlist_id', function(request, response){
-    var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
-    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
-    console.log(music_user_token);
-    const options = {
-      hostname: 'api.music.apple.com',
-      path: `/v1/me/library/playlists/${playlist}?include=relationships`,
-      method: 'GET',
-      headers: {
-            'Music-User-Token': music_user_token,
-            'Accept': 'application/a-gzip, application/json',
-            'Authorization' : 'Bearer ' + token
-      }
-    }
-    https.get(options, function (res, body) {
-          let data = '';
-          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
-          res.setEncoding('utf8');
-          //Collect  all the response
-          res.on('data', (chunk) => {
-            data += chunk;
-          });
-          // The whole response has been received. send the result.
-          res.on('end', () => {
-            response.send(data);
-          });
-    });
-});
-
-//Get the tracks that are inside of a playlist
-router.get('/apple-music/library/playlists/:playlist_id/relationships', function(request, response){
-    var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
-    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
-    console.log(music_user_token);
-    const options = {
-      hostname: 'api.music.apple.com',
-      path: `/v1/me/library/playlists/${playlist}/tracks`,
-      method: 'GET',
-      headers: {
-            'Music-User-Token': music_user_token,
-            'Accept': 'application/a-gzip, application/json',
-            'Authorization' : 'Bearer ' + token
-      }
-    }
-    https.get(options, function (res, body) {
-          let data = '';
-          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
-          res.setEncoding('utf8');
-          //Collect  all the response
-          res.on('data', (chunk) => {
-            data += chunk;
-          });
-          // The whole response has been received. send the result.
-          res.on('end', () => {
-            response.send(data);
           });
     });
 });
@@ -181,40 +145,40 @@ router.get('/apple-music/catalog/playlists/:playlist_id', function(request, resp
         });
         // The whole response has been received. send the result.
         res.on('end', () => {
-          response.send(data);
+          response.send(AM_to_MM_playlist_attributes(JSON.parse(data)));
         });
   });
 });
 
-// /*
-// Gets attributes of a playlists on apples catalog. NOT USER'S
-// */
-// router.get('/apple-music/catalog/playlists/:playlist_id/relationships', function(request, response){
-//   var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
-//   /* Apple API GET https://api.music.apple.com/v1/catalog/{storefront}/playlists/{id}/{relationship}*/
-//   const options = {
-//     hostname: 'api.music.apple.com',
-//     path: `/v1/catalog/us/playlists/${playlist}/tracks`,
-//     method: 'GET',
-//     headers: {
-//           'Accept': 'application/a-gzip, application/json',
-//           'Authorization' : 'Bearer ' + token
-//     }
-//   }
-//   https.get(options, function (res, body) {
-//         let data = '';
-//         console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
-//         res.setEncoding('utf8');
-//         //Collect  all the response
-//         res.on('data', (chunk) => {
-//           data += chunk;
-//         });
-//         // The whole response has been received. send the result.
-//         res.on('end', () => {
-//           response.send(data);
-//         });
-//   });
-// });
+/*
+Gets attributes of a playlists on apples catalog. NOT USER'S
+*/
+router.get('/apple-music/catalog/playlists/:playlist_id/relationships', function(request, response){
+  var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
+  /* Apple API GET https://api.music.apple.com/v1/catalog/{storefront}/playlists/{id}/{relationship}*/
+  const options = {
+    hostname: 'api.music.apple.com',
+    path: `/v1/catalog/us/playlists/${playlist}/tracks`,
+    method: 'GET',
+    headers: {
+          'Accept': 'application/a-gzip, application/json',
+          'Authorization' : 'Bearer ' + token
+    }
+  }
+  https.get(options, function (res, body) {
+        let data = '';
+        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
+        res.setEncoding('utf8');
+        //Collect  all the response
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        // The whole response has been received. send the result.
+        res.on('end', () => {
+          response.send(AM_to_MM_playlist_tracks(JSON.parse(data)));
+        });
+  });
+});
 
 /*
 Get search hints from the apple's search catalog
@@ -245,6 +209,77 @@ router.get('/apple-music/catalog/search/hints/:search_term', function(request, r
           });
     });
 });
+
+
+
+///////////////////////////////////
+//Following routers access a users library
+///////////////////////////////////
+
+//Retrieve a user's playlists by id
+//NOTE this only returns information about the playlist, not any tracks associated to it
+router.get('/apple-music/library/playlists/:playlist_id', function(request, response){
+    var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
+    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
+    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+    console.log(music_user_token);
+    const options = {
+      hostname: 'api.music.apple.com',
+      path: `/v1/me/library/playlists/${playlist}?include=relationships`,
+      method: 'GET',
+      headers: {
+            'Music-User-Token': music_user_token,
+            'Accept': 'application/a-gzip, application/json',
+            'Authorization' : 'Bearer ' + token
+      }
+    }
+    https.get(options, function (res, body) {
+          let data = '';
+          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
+          res.setEncoding('utf8');
+          //Collect  all the response
+          res.on('data', (chunk) => {
+            data += chunk;
+          });
+          // The whole response has been received. send the result.
+          res.on('end', () => {
+            response.send(AM_to_MM_playlist_attributes(JSON.parse(data)));
+          });
+    });
+});
+
+//Get the tracks that are inside of a playlist
+router.get('/apple-music/library/playlists/:playlist_id/relationships', function(request, response){
+    var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
+    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
+    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+    console.log(music_user_token);
+    const options = {
+      hostname: 'api.music.apple.com',
+      path: `/v1/me/library/playlists/${playlist}/tracks`,
+      method: 'GET',
+      headers: {
+            'Music-User-Token': music_user_token,
+            'Accept': 'application/a-gzip, application/json',
+            'Authorization' : 'Bearer ' + token
+      }
+    }
+    https.get(options, function (res, body) {
+          let data = '';
+          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
+          res.setEncoding('utf8');
+          //Collect  all the response
+          res.on('data', (chunk) => {
+            data += chunk;
+          });
+          // The whole response has been received. send the result.
+          res.on('end', () => {
+            response.send(AM_to_MM_playlist_tracks(JSON.parse(data)));
+          });
+    });
+});
+
+
 //gets all the users playlists in alphebetical order
 router.get('/apple-music/library/playlists', function(request, response){
     var search_term = request.params.search_term //ALl the spaces in the search must be replaced with '+'
@@ -270,7 +305,7 @@ router.get('/apple-music/library/playlists', function(request, response){
           });
           // The whole response has been received. send the result.
           res.on('end', () => {
-            response.send(data);
+            response.send(AM_to_MM_playlist_attributes(JSON.parse(data)));
           });
     });
 });
