@@ -1,5 +1,14 @@
 
+<<<<<<< HEAD:Public/index.js
+=======
+const URL = window.location.host;
+
+
+// listen for MusicKit Loaded callback
+
+>>>>>>> af311277e2763751625af49f7a05f67e366761bf:Public/appleMusicIndex.js
 //Gives front end access to apple musickit js
+
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
   fetch('/token').then(response => response.json()).then(res => {
@@ -294,6 +303,7 @@ function addAppleMusicUserToken(musicUserToken){
   console.log(musicUserToken);
 }
 
+
 function getPlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
@@ -318,6 +328,7 @@ function getPlaylistAttributes(playlist_id){
 }
 
 //This will recieve a multi music format JSON
+
 function displaySearch(search_response){
   //Displays albums
   var searchResults = '';
