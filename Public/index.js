@@ -1,5 +1,4 @@
 const URL = window.location.host;
-console.log(URL);
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
