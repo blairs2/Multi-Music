@@ -304,6 +304,7 @@ function retrievePlaylistTracks(playlist_id){
 }
 
 //Searches for term across every catagory
+
 async function searchByTerm(searchTerm){
    var xhttp = new XMLHttpRequest();
    return new Promise(function(resolve, reject) {
@@ -429,6 +430,7 @@ async function getCatalogPlaylistAttributes(playlist_id){
  });
 }
 
+
 //This will recieve a multi music format JSON
 function displaySearch(search_response, source){
   //Displays albums
@@ -468,6 +470,7 @@ function displaySearch(search_response, source){
   if(search_response.hasOwnProperty("playlists")){
     var playlists = search_response.playlists.data;
     searchResults += '<h2>Playlists</h2><div class="scrolling-wrapper">';
+
     for(var i = 0; i< playlists.length; i++){
       url = playlists[i].artwork;
       var playlistName = playlists[i].title;

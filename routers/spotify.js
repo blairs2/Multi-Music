@@ -68,6 +68,7 @@ router.get('/spotify/callback', function(req, responce) {
         }).catch(err => {
           responce.redirect('/#/error/invalid token');
         });
+
       };
       
       
@@ -164,7 +165,6 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
               });
             }
           }
-
           response.send(retval);
         }
       });
@@ -280,11 +280,10 @@ router.get('/spotify/search/:keyword', function(req, response){
         console.log("ERROR searching Spotify " + error);
       } else {
         //console.log(body);
-        retval = { //json to but returned to multimusic
-
-        }
+        retval = {} //json to but returned to multimusic
+        
         if(body.hasOwnProperty("tracks")){
-            retval.songs = {data:[]};
+          retval.songs = {data:[]};
           for (i = 0; i < body.tracks.limit; i++){
             if(body.tracks.items[i] != null){
               retval.songs.data.push({ //append songs to retval.songs
@@ -310,7 +309,7 @@ router.get('/spotify/search/:keyword', function(req, response){
             }
           }
         if(body.hasOwnProperty("playlists")){
-            retval.playlists = {data:[]};
+          retval.playlists = {data:[]};
           for (i = 0; i < body.playlists.limit; i++){
             if(body.playlists.items[i] != null){
                 retval.playlists.data.push({ //append playlists to retval.playlists

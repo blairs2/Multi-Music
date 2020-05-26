@@ -164,7 +164,6 @@ async function spotifySearch(searchTerm){
   });
 }
 
-
 document.getElementById("login-spotify").addEventListener('click', () => {
     //console.log("CLICK");
     location.href = "http://localhost:8080/spotify/login";
@@ -174,6 +173,26 @@ document.getElementById("login-spotify").addEventListener('click', () => {
         // Typical action to be performed when the document is ready:    }
         console.log(xhttp.responseText);
     }
+
     xhttp.open("GET", "http://localhost:8080/spotify/login", true);
     xhttp.send();
-  }});
+    }
+});
+
+document.getElementById('search-input').addEventListener("keyup", function(event){
+    //When user clicks enter in our search bar
+     var searchTerm = (document.getElementById('search-input').value).replace(/ /g, '+'); // '/ /g' is a regular expression that replaces all space instances with '+'
+     if (event.keyCode === 13) { //on enter key
+       //console.log('enterSpotify');
+       spotifySearch(searchTerm); //Search for the users input
+     }else{
+    //    if(searchTerm.length > 0){ //Only send get request if there is something to search
+    //      retrieveSearchHints("term=" + searchTerm); //Creates suggestions as user is typing
+    //    }
+     }
+  });
+
+// get token
+//     tokens = window.location.href.split('#/user/').pop();
+//     token = tokens.slice(0, tokens.indexOf('/'));
+//     console.log(token);
