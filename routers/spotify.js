@@ -68,6 +68,7 @@ router.get('/spotify/callback', function(req, responce) {
         }).catch(err => {
           responce.redirect('/#/error/invalid token');
         });
+
       };
       
       

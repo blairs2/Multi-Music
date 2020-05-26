@@ -186,3 +186,8 @@ document.getElementById("login-spotify").addEventListener('click', () => {
     xhttp.open("GET", "http://localhost:8080/spotify/login", true); 
     xhttp.send();
   }});
+
+// get token
+//     tokens = window.location.href.split('#/user/').pop();
+//     token = tokens.slice(0, tokens.indexOf('/'));
+//     console.log(token);
