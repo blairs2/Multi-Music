@@ -281,25 +281,7 @@ function retrievePlaylistTracks(playlist_id){
 }
 
 //Searches for term across every catagory
-<<<<<<< HEAD
-function searchByTerm(searchTerm){
-  document.getElementById("generated-content").innerHTML = ""; //clear generated content
-   var xhttp = new XMLHttpRequest();
-   xhttp.onreadystatechange = function ReceivedCallback() {
-     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-       document.getElementById("generated-content").innerHTML = document.getElementById("generated-content").innerHTML + displaySearch(JSON.parse(this.responseText), "Apple Music");
-       var song_elements = document.getElementsByClassName("song-button");
-       var elements = document.getElementsByClassName("card");
 
-      for (var i = 0; i < song_elements.length; i++) {
-          console.log(song_elements[i].value);
-          song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-      }
-      for (var i = 0; i < elements.length; i++) {
-          elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-      }
-
-=======
 async function searchByTerm(searchTerm){
    var xhttp = new XMLHttpRequest();
    return new Promise(function(resolve, reject) {
@@ -310,7 +292,6 @@ async function searchByTerm(searchTerm){
          resolve(this.responseText);
        } else {
        reject("Error");
->>>>>>> stoneblair
      }
     }
    };
@@ -422,23 +403,16 @@ function getCatalogPlaylistAttributes(playlist_id){
   xhttp.send(); // Gets the response
 }
 
-<<<<<<< HEAD
-=======
+
 //This will recieve a multi music format JSON
->>>>>>> stoneblair
 function displaySearch(search_response, source){
   //Displays albums
   var searchResults = '<h3>'+source+'</h3><hr><br>';
   var h, w, url;
   if(search_response.hasOwnProperty("albums")){
     var albums = search_response.albums.data;
-<<<<<<< HEAD
-    searchResults += '<h2>' + source + ' Albums</h2><div class="scrolling-wrapper">';
-    
-=======
     searchResults += '<h2>Albums</h2><div class="scrolling-wrapper">';
 
->>>>>>> stoneblair
     for(var i = 0; i< albums.length; i++){
       url = albums[i].artwork;
       var artistName = albums[i].artist;
@@ -450,11 +424,7 @@ function displaySearch(search_response, source){
   }
   if(search_response.hasOwnProperty("songs")){
     var songs = search_response.songs.data;
-<<<<<<< HEAD
-    searchResults += '<h2>' + source + ' Songs</h2><div class="scrolling-wrapper"><div class="song-block" ><ul class="list-group">';
-=======
     searchResults += '<h2>Songs</h2><div class="scrolling-wrapper"><div class="song-block" ><ul class="list-group">';
->>>>>>> stoneblair
 
     var count = 1;
     for(var i = 0; i< songs.length; i++){
@@ -472,11 +442,8 @@ function displaySearch(search_response, source){
   }
   if(search_response.hasOwnProperty("playlists")){
     var playlists = search_response.playlists.data;
-<<<<<<< HEAD
-    searchResults += '<h2>' + source + ' Playlists</h2><div class="scrolling-wrapper">';
-=======
     searchResults += '<h2>Playlists</h2><div class="scrolling-wrapper">';
->>>>>>> stoneblair
+
     for(var i = 0; i< playlists.length; i++){
       url = playlists[i].artwork;
       var playlistName = playlists[i].title;
@@ -540,7 +507,3 @@ function applePlay(id, contentType){
   console.log(id, contentType);
   music.setQueue({[contentType]: id });
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> stoneblair

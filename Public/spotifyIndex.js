@@ -164,23 +164,20 @@ async function spotifySearch(searchTerm){
   });
 }
 
-
 document.getElementById("login-spotify").addEventListener('click', () => {
     //console.log("CLICK");
     location.href = "http://localhost:8080/spotify/login";
     var xhttp = new XMLHttpRequest();
-<<<<<<< HEAD
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-            document.getElementById("generated-content").innerHTML = 
-                document.getElementById("generated-content").innerHTML +
-                displaySearch(JSON.parse(this.responseText), "Spotify");
-        }
-    };
-    xhttp.open('GET', URL + '/spotify/search/' + searchTerm, true);
-    xhttp.send(); // Gets the response
-}
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        // Typical action to be performed when the document is ready:    }
+        console.log(xhttp.responseText);
+    }
+
+    xhttp.open("GET", "http://localhost:8080/spotify/login", true);
+    xhttp.send();
+    }
+});
 
 document.getElementById('search-input').addEventListener("keyup", function(event){
     //When user clicks enter in our search bar
@@ -195,29 +192,7 @@ document.getElementById('search-input').addEventListener("keyup", function(event
      }
   });
 
-
-document.getElementById("login-spotify").addEventListener('click', () => {
-    //console.log("CLICK");
-    location.href = "http://localhost:8080/spotify/login";
-    var xhttp = new XMLHttpRequest();
-=======
->>>>>>> stoneblair
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        // Typical action to be performed when the document is ready:    }
-        console.log(xhttp.responseText);
-    }
-<<<<<<< HEAD
-    xhttp.open("GET", "http://localhost:8080/spotify/login", true); 
-    xhttp.send();
-  }});
-
 // get token
 //     tokens = window.location.href.split('#/user/').pop();
 //     token = tokens.slice(0, tokens.indexOf('/'));
 //     console.log(token);
-=======
-    xhttp.open("GET", "http://localhost:8080/spotify/login", true);
-    xhttp.send();
-  }});
->>>>>>> stoneblair

@@ -165,7 +165,6 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
               });
             }
           }
-          
           response.send(retval);
         }
       });
