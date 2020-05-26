@@ -37,38 +37,46 @@ document.getElementById('search-input').addEventListener("keyup", async function
      console.log('enter');
      document.getElementById('generated-content').innerHTML = ''; //Clear the screen for the search results
      //Using promises ensures that both functions will be completed before the final step
-    await searchByTerm("term=" + searchTerm + "&limit=10&types=songs,albums,playlists");
-    await spotifySearch(searchTerm);
-
-    console.log("finished promises");
-    var song_elements = document.getElementsByClassName("song-button");
-     // var elements = document.getElementsByClassName("card");
-     var playlist_elements = document.getElementsByClassName("playlist-card");
-     for (var i = 0; i < song_elements.length; i++) {
-        if(song_elements[i].getAttribute("data-service") == "Apple Music"){
-          song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
+     try {
+       var applePromise = await searchByTerm("term=" + searchTerm + "&limit=10&types=songs,albums,playlists");
+     } catch(e) {
+       console.log(e);
+     }
+     try {
+       var spotifyPromise = await spotifySearch(searchTerm);
+     } catch(e) {
+       console.log(e);
+     }
+    Promise.all([applePromise, spotifyPromise]).then((values) => {
+      //first value is apple music results
+      document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(values[0]), "Apple Music");
+      //second value is spotify results
+      document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(values[1]), "Spotify");
+      var song_elements = document.getElementsByClassName("song-button");
+       // var elements = document.getElementsByClassName("card");
+      var playlist_elements = document.getElementsByClassName("playlist-card");
+      for (var i = 0; i < song_elements.length; i++) {
+          if(song_elements[i].getAttribute("data-service") == "Apple Music"){
+            song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
+          }
         }
+      // for (var i = 0; i < elements.length; i++) {
+      //     elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
+      // }
+      //add event listener to playlists in search results
+      for (var i = 0; i < playlist_elements.length; i++) {
+          if(playlist_elements[i].getAttribute("data-service")=="Apple Music"){
+            playlist_elements[i].addEventListener('click', function() {
+            //sets up divs to be populated
+            document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+              //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
+              //upon retriving a response the function being called will generate attribute content to dislay on the screen
+              getCatalogPlaylistAttributes(this.getAttribute("data-value"));
+              //triggers get request to retrieve the playlists tracks from apple music's catalog (NOT USER Library)
+              //upon retriving a response the function being called will generate track content to dislay on the screen
+              getCatalogPlaylistTracks(this.getAttribute("data-value"));},false); }
       }
-    // for (var i = 0; i < elements.length; i++) {
-    //     elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-    // }
-    //add event listener to playlists in search results
-    console.log(playlist_elements);
-    for (var i = 0; i < playlist_elements.length; i++) {
-      console.log(playlist_elements[i]);
-        playlist_elements[i].addEventListener('click', function() {
-          //sets up divs to be populated
-          document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
-            console.log("open playlist");
-            //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
-            //upon retriving a response the function being called will generate attribute content to dislay on the screen
-            getCatalogPlaylistAttributes(this.getAttribute("data-value"));
-            //triggers get request to retrieve the playlists tracks from apple music's catalog (NOT USER Library)
-            //upon retriving a response the function being called will generate track content to dislay on the screen
-            getCatalogPlaylistTracks(this.getAttribute("data-value"));
-        },false);
-    }
-
+    });
      //Search Spotify (Function in spotifyIndex.js)
      // searchByTerm("term=" + searchTerm); //Search for the users input
    }else{
@@ -169,7 +177,6 @@ function retreiveUserPlaylists(){
       var cloudPlaylists = JSON.parse(this.responseText).playlists;
       var retval = '';
       for(var i =0; i < cloudPlaylists.length; i++){
-        console.log(cloudPlaylists[i]);
         var playlistName = cloudPlaylists[i].title;
         var playlist_id = cloudPlaylists[i].id;
 
@@ -274,16 +281,23 @@ function retrievePlaylistTracks(playlist_id){
 }
 
 //Searches for term across every catagory
-function searchByTerm(searchTerm){
+async function searchByTerm(searchTerm){
    var xhttp = new XMLHttpRequest();
-   xhttp.onreadystatechange = function ReceivedCallback() {
-     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-       document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+   return new Promise(function(resolve, reject) {
+     xhttp.onreadystatechange = function ReceivedCallback() {
+     if (this.readyState == 4) { //Upon getting a response
+       if(this.status == 200){
+         // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+         resolve(this.responseText);
+       } else {
+       reject("Error");
      }
+    }
    };
    xhttp.open("GET", "http://" + URL + "/apple-music/catalog/search/" + searchTerm, true);
    xhttp.send(); // Gets the response
-  }
+  });
+}
 
 //////////////////////////////
 //POST functions
@@ -325,7 +339,6 @@ function getPlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      console.log(JSON.parse(this.responseText));
       if(JSON.parse(this.responseText).hasOwnProperty("errors")){
 
       }
@@ -334,13 +347,11 @@ function getPlaylistTracks(playlist_id){
         document.getElementById("playlist-songs").innerHTML = retval;
         var song_elements = document.getElementsByClassName("song-button");
        for (var i = 0; i < song_elements.length; i++) {
-           console.log(song_elements[i].value);
            song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
        }
      }
     }
   };
-  console.log("http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/relationships" );
   xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
   xhttp.send(); // Gets the response
 }
@@ -368,7 +379,6 @@ function getCatalogPlaylistTracks(playlist_id){
       //Add event listener for each song button. Upon click it will queue up the song to be played
       var song_elements = document.getElementsByClassName("song-button");
      for (var i = 0; i < song_elements.length; i++) {
-         console.log(song_elements[i].value);
          song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
      }
     }

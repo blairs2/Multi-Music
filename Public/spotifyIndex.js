@@ -146,18 +146,23 @@ function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
  * Search Spotify for tracks containing the search term
  * @param {string} searchTerm what to search the spotify library for
  */
-function spotifySearch(searchTerm){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-            document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Spotify");
-        }
-    };
-    xhttp.open('GET', 'http://' + URL + '/spotify/search/' + searchTerm, true);
-    xhttp.send(); // Gets the response
+async function spotifySearch(searchTerm){
+   var xhttp = new XMLHttpRequest();
+   return new Promise(function(resolve, reject) {
+     xhttp.onreadystatechange = function ReceivedCallback() {
+       if (this.readyState == 4) { //Upon getting a response
+         if(this.status == 200){
+           // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+           resolve(this.responseText);
+         } else {
+         reject("Error");
+       }
+      }
+     };
+   xhttp.open('GET', 'http://' + URL + '/spotify/search/' + searchTerm, true);
+   xhttp.send(); // Gets the response
+  });
 }
-
 
 
 document.getElementById("login-spotify").addEventListener('click', () => {
