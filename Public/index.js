@@ -43,7 +43,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
        console.log(e);
      }
      try {
-       var spotifyPromise = await spotifySearch(searchTerm);
+       var spotifyPromise = await spotifySearch('q=' + searchTerm + '&type=track,album,playlist');
      } catch(e) {
        console.log(e);
      }
@@ -66,15 +66,37 @@ document.getElementById('search-input').addEventListener("keyup", async function
       //add event listener to playlists in search results
       for (var i = 0; i < playlist_elements.length; i++) {
           if(playlist_elements[i].getAttribute("data-service")=="Apple Music"){
-            playlist_elements[i].addEventListener('click', function() {
+            playlist_elements[i].addEventListener('click', async function() {
             //sets up divs to be populated
             document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
               //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
               //upon retriving a response the function being called will generate attribute content to dislay on the screen
-              getCatalogPlaylistAttributes(this.getAttribute("data-value"));
+              try {
+                var playlistAttributesPromise = await getCatalogPlaylistAttributes(this.getAttribute("data-value"));
+              } catch(e) {
+                console.log(e);
+              }
               //triggers get request to retrieve the playlists tracks from apple music's catalog (NOT USER Library)
               //upon retriving a response the function being called will generate track content to dislay on the screen
-              getCatalogPlaylistTracks(this.getAttribute("data-value"));},false); }
+              try {
+                var playlistTracksPromise = await getCatalogPlaylistTracks(this.getAttribute("data-value"));
+              } catch(e) {
+                console.log(e);
+              }
+              Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
+                convertPlaylist(this.getAttribute("data-value"), "Apple Music", "Spotify");
+                //The response should be a list with only one element
+                document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0]);
+                //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
+                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
+                //Add event listener for each song button. Upon click it will queue up the song to be played
+                var song_elements = document.getElementsByClassName("song-button");
+                for (var i = 0; i < song_elements.length; i++) {
+                   song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
+               }
+             });
+           },false);
+         }
       }
     });
      //Search Spotify (Function in spotifyIndex.js)
@@ -85,6 +107,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
      }
    }
 });
+
 document.getElementById('next-btn').addEventListener("click", () =>{
   music.skipToNextItem();
 });
@@ -369,37 +392,41 @@ function getPlaylistAttributes(playlist_id){
 }
 
 /*Gets tracks of a playlist on apple musics catalog, not a users library*/
-function getCatalogPlaylistTracks(playlist_id){
+async function getCatalogPlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function ReceivedCallback() {
-    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      var retval = displayPlaylistTracks(JSON.parse(this.responseText).tracks);
-      //Assumes that whatever function calling this already generated a div with the id="playlist-songs"
-      document.getElementById("playlist-songs").innerHTML = retval;
-      //Add event listener for each song button. Upon click it will queue up the song to be played
-      var song_elements = document.getElementsByClassName("song-button");
-     for (var i = 0; i < song_elements.length; i++) {
-         song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-     }
+  return new Promise(function(resolve, reject) {
+    xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4) { //Upon getting a response
+      if(this.status == 200){
+        // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+        resolve(this.responseText);
+      } else {
+      reject("Error");
     }
+   }
   };
   xhttp.open("GET", "http://" + URL + "/apple-music/catalog/playlists/" + playlist_id + "/relationships" , true);
   xhttp.send(); // Gets the response
+ });
 }
 
 /*Gets attributes of a playlist on apple musics catalog, not a users library*/
-function getCatalogPlaylistAttributes(playlist_id){
+async function getCatalogPlaylistAttributes(playlist_id){
   var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function ReceivedCallback() {
-    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      //The response should be a list with only one element
-      var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0]);
-      //Assumes that whatever function calling this already generated a div with the id="playlist-attributes"
-      document.getElementById("playlist-attributes").innerHTML = retval;
+  return new Promise(function(resolve, reject) {
+    xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4) { //Upon getting a response
+      if(this.status == 200){
+        // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+        resolve(this.responseText);
+      } else {
+        reject("Error");
     }
+   }
   };
   xhttp.open("GET", "http://" + URL + "/apple-music/catalog/playlists/" + playlist_id , true);
   xhttp.send(); // Gets the response
+ });
 }
 
 //This will recieve a multi music format JSON
@@ -503,4 +530,41 @@ function displayPlaylistTracks(playlist_tracks){
 function applePlay(id, contentType){
   console.log(id, contentType);
   music.setQueue({[contentType]: id });
+}
+
+/*
+will convert playlist from current_service to new_service
+*/
+async function convertPlaylist(playlist_id, current_service, new_service){
+  if(current_service = "Apple Music"){
+    try {
+      var playlistTracks = await getCatalogPlaylistTracks(playlist_id);
+    } catch(e) {
+      console.log(e);
+    }
+  } else {
+    try {
+      //var playlistTracks = await //spotify get playlist tracks function
+    } catch(e) {
+      console.log(e);
+    }
+
+  }
+ Promise.all([playlistTracks]).then((values) => {
+   var tracks = JSON.parse(playlistTracks).tracks;
+   var search, track, matches;
+   for(var i = 0; i < tracks.length; i++){
+     track = tracks[i];
+     search = (track.title + "+" + track.artist).replace(/ /g, '+');
+     console.log(search);
+     spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
+       var song_matches = JSON.parse(value).songs.data;
+       if(song_matches.length > 0){
+         console.log("spotify match", song_matches[0].title);
+       } else {
+         console.log("NOT FOUND");
+       }
+     });
+   }
+ });
 }
