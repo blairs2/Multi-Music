@@ -6,13 +6,18 @@ const port = parseInt(process.env.PORT, 10) || 8080;
 const publicDir =  __dirname + '/public';
 const path = require('path');
 const https = require('https');
+
+const request = require('request'); // "Request" library
+const cors = require('cors');
+const querystring = require('querystring');
+const cookieParser = require('cookie-parser');
+
 var bodyParser = require('body-parser');
 
 // configure app to use bodyParser()
 // This allows us to read body of post request
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 
 // respond with displaying homepage (index.html) when a GET request is made to the homepage
 app.get('/', function (req, res) {
@@ -21,12 +26,17 @@ app.get('/', function (req, res) {
 
 // library for signing tokens
 
-var apple_music_router = require('./routers/apple_music.js');
+app.use(express.static(__dirname + '/Public'))
+   .use(cors())
+   .use(cookieParser());
 
-
-app.use(apple_music_router);
 app.use(express.static(publicDir));
 
+var apple_music_router = require('./routers/apple_music.js');
+app.use(apple_music_router);
+
+var spotify_router = require('./routers/spotify.js');
+app.use(spotify_router);
 
 console.log('Listening at', publicDir, hostname, port);
 app.listen(port, hostname);

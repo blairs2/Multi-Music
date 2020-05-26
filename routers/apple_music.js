@@ -57,13 +57,18 @@ Converts the apple music json repsonse containing tracks of a specific playlist 
 */
 function AM_to_MM_playlist_tracks(am_response){
   const multi_music_obj = {};
+  if(am_response.hasOwnProperty("errors")){
+    return JSON.stringify(am_response);
+  }
   const tracks = am_response.data;
   var track, track_attributes, data = [];
 
   for(var i = 0; i < tracks.length; i++){
     track = tracks[i];
     track_attributes = {id:track.id, href:track.href, title:track.attributes.name,artist: track.attributes.artistName};
-    track_attributes.artwork = (track.attributes.artwork.url).replace('{w}', 300).replace('{h}',300); // Adds a artwork attribute with the artwork url (300x300)
+    if(track.attributes.hasOwnProperty("artwork")){
+      track_attributes.artwork = (track.attributes.artwork.url).replace('{w}', 300).replace('{h}',300); // Adds a artwork attribute with the artwork url (300x300)
+    }
     data.push(track_attributes);
     }
     multi_music_obj.tracks = data;
@@ -222,7 +227,6 @@ router.get('/apple-music/library/playlists/:playlist_id', function(request, resp
     var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
     //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
     var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
-    console.log(music_user_token);
     const options = {
       hostname: 'api.music.apple.com',
       path: `/v1/me/library/playlists/${playlist}?include=relationships`,
@@ -253,7 +257,6 @@ router.get('/apple-music/library/playlists/:playlist_id/relationships', function
     var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
     //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
     var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
-    console.log(music_user_token);
     const options = {
       hostname: 'api.music.apple.com',
       path: `/v1/me/library/playlists/${playlist}/tracks`,
