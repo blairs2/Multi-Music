@@ -18,7 +18,7 @@ var stateKey = 'spotify_auth_state';
  // your application requests authorization
  var scopes = [
   'user-read-playback-state', //used to get currently playing track
-  'user-modify-playback-state', //used to pause shuffle skip users current song and add songs to queue 
+  'user-modify-playback-state', //used to pause shuffle skip users current song and add songs to queue
   'playlist-read-collaborative', //used to get users collaborative playlists
   'playlist-read-private', //used to get users private playlists
   'streaming', //used for web playback
@@ -136,7 +136,7 @@ router.get('/spotify/playlists', function(req, responce){
     });
 });
 
-//Get a playlist specified by the playlistid 
+//Get a playlist specified by the playlistid
 router.get('/spotify/playlist/:playlistid', function(req, response){
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
@@ -281,17 +281,10 @@ router.get('/spotify/search/:keyword', function(req, response){
       } else {
         //console.log(body);
         retval = { //json to but returned to multimusic
-          songs: {
-            data: []
-          },
-          albums: {
-            data: []
-          },
-          playlists: {
-            data: []
-          },
+
         }
         if(body.hasOwnProperty("tracks")){
+            retval.songs = {data:[]};
           for (i = 0; i < body.tracks.limit; i++){
             if(body.tracks.items[i] != null){
               retval.songs.data.push({ //append songs to retval.songs
@@ -304,6 +297,7 @@ router.get('/spotify/search/:keyword', function(req, response){
             }
         }
         if(body.hasOwnProperty("albums")){
+          retval.albums = {data:[]};
           for (i = 0; i < body.albums.limit; i++){
             if(body.albums.items[i] != null){
               retval.albums.data.push({ //append albums to retval.albums
@@ -316,6 +310,7 @@ router.get('/spotify/search/:keyword', function(req, response){
             }
           }
         if(body.hasOwnProperty("playlists")){
+            retval.playlists = {data:[]};
           for (i = 0; i < body.playlists.limit; i++){
             if(body.playlists.items[i] != null){
                 retval.playlists.data.push({ //append playlists to retval.playlists

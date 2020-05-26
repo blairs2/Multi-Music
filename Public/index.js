@@ -557,6 +557,7 @@ async function convertPlaylist(playlist_id, current_service, new_service){
      track = tracks[i];
      search = (track.title + "+" + track.artist).replace(/ /g, '+');
      console.log(search);
+     //check db first
      spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
        var song_matches = JSON.parse(value).songs.data;
        if(song_matches.length > 0){
