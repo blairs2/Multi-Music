@@ -1,4 +1,4 @@
-var URL = "http://localhost:8080"
+// var URL = "http://localhost:8080";
 
 /**
  * Redirects to the spotify login for user to authorize our program
@@ -24,7 +24,7 @@ function spotifyGetUser(){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/user', true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/user', true);
     xhttp.send(); // Gets the response
 }
 
@@ -38,13 +38,13 @@ function spotifyGetUserPlaylists(){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/playlists', true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/playlists', true);
     xhttp.send(); // Gets the response
 }
 
 /**
  * Get the Spotify playlist specifed by the playlistid
- * @param {string} playlistid the id of the playlist to get 
+ * @param {string} playlistid the id of the playlist to get
  */
 function spotifyGetPlaylist(playlistid){
     var xhttp = new XMLHttpRequest();
@@ -53,13 +53,13 @@ function spotifyGetPlaylist(playlistid){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/playlist/' + playlistid, true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/' + playlistid, true);
     xhttp.send(); // Gets the response
 }
 
 /**
  * Deletes the track from the Spotify playlist
- * @param {string} playlistid id of the playlist to be edited 
+ * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be deleted
  */
 function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
@@ -69,13 +69,13 @@ function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/playlist/delete/' + playlistid + '/' + trackURI, true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/delete/' + playlistid + '/' + trackURI, true);
     xhttp.send(); // Gets the response
 }
 
 /**
  * Add the track to the Spotify playlist
- * @param {string} playlistid id of the playlist to be edited  
+ * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be added
  */
 function spotifyAddTrackToPlaylist(playlistid, trackURI){
@@ -85,14 +85,14 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/playlist/add/' + playlistid + '/' + trackURI, true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/add/' + playlistid + '/' + trackURI, true);
     xhttp.send(); // Gets the response
 }
 
 /**
  * Reaname the Spotify playlist
- * @param {string} playlistid id of the playlist to be edited  
- * @param {string} name the new name of the playlist 
+ * @param {string} playlistid id of the playlist to be edited
+ * @param {string} name the new name of the playlist
  */
 function spotifyRenamePlaylist(playlistid, name){
     var xhttp = new XMLHttpRequest();
@@ -101,7 +101,7 @@ function spotifyRenamePlaylist(playlistid, name){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/playlist/details/' + playlistid + '/' + name, true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/details/' + playlistid + '/' + name, true);
     xhttp.send(); // Gets the response
 }
 
@@ -120,7 +120,7 @@ function spotifyCreateNewPlaylist(userID, name, public = false, description = ''
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative, true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative, true);
     xhttp.send(); // Gets the response
 }
 
@@ -138,16 +138,38 @@ function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/playlist/reorder/'+ playlistid + '/' + start + '/' + index + '/' + length , true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/reorder/'+ playlistid + '/' + start + '/' + index + '/' + length , true);
     xhttp.send(); // Gets the response
 }
 
 /**
  * Search Spotify for tracks containing the search term
- * @param {string} searchTerm what to search the spotify library for 
+ * @param {string} searchTerm what to search the spotify library for
  */
-function spotifySearch(searchTerm){
+async function spotifySearch(searchTerm){
+   var xhttp = new XMLHttpRequest();
+   return new Promise(function(resolve, reject) {
+     xhttp.onreadystatechange = function ReceivedCallback() {
+       if (this.readyState == 4) { //Upon getting a response
+         if(this.status == 200){
+           // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+           resolve(this.responseText);
+         } else {
+         reject("Error");
+       }
+      }
+     };
+   xhttp.open('GET', 'http://' + URL + '/spotify/search/' + searchTerm, true);
+   xhttp.send(); // Gets the response
+  });
+}
+
+
+document.getElementById("login-spotify").addEventListener('click', () => {
+    //console.log("CLICK");
+    location.href = "http://localhost:8080/spotify/login";
     var xhttp = new XMLHttpRequest();
+<<<<<<< HEAD
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
@@ -178,11 +200,14 @@ document.getElementById("login-spotify").addEventListener('click', () => {
     //console.log("CLICK");
     location.href = "http://localhost:8080/spotify/login";
     var xhttp = new XMLHttpRequest();
+=======
+>>>>>>> stoneblair
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         // Typical action to be performed when the document is ready:    }
         console.log(xhttp.responseText);
     }
+<<<<<<< HEAD
     xhttp.open("GET", "http://localhost:8080/spotify/login", true); 
     xhttp.send();
   }});
@@ -191,3 +216,8 @@ document.getElementById("login-spotify").addEventListener('click', () => {
 //     tokens = window.location.href.split('#/user/').pop();
 //     token = tokens.slice(0, tokens.indexOf('/'));
 //     console.log(token);
+=======
+    xhttp.open("GET", "http://localhost:8080/spotify/login", true);
+    xhttp.send();
+  }});
+>>>>>>> stoneblair
