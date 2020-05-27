@@ -43,7 +43,22 @@ function spotifyGetUserPlaylists(){
 }
 
 /**
- * Get the Spotify playlist specifed by the playlistid
+ * Get the tracks from the Spotify playlist specifed by the playlistid
+ * @param {string} playlistid the id of the playlist to get
+ */
+function spotifyGetPlaylistTracks(playlistid){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+            console.log(JSON.parse(this.responseText));
+        }
+    };
+    xhttp.open('GET', 'http://' + URL + '/spotify/tracks/playlist/' + playlistid, true);
+    xhttp.send(); // Gets the response
+}
+
+/**
+ * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
 function spotifyGetPlaylist(playlistid){

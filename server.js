@@ -14,6 +14,8 @@ const cookieParser = require('cookie-parser');
 
 var bodyParser = require('body-parser');
 
+//var port = 3306;
+
 // configure app to use bodyParser()
 // This allows us to read body of post request
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,6 +39,16 @@ app.use(apple_music_router);
 
 var spotify_router = require('./routers/spotify.js');
 app.use(spotify_router);
+
+// var db = require('./routers/database.js');
+
+// db.connect(function connectionHandler(err){
+//   if (err){
+//     console.log('Unable to connect to MySQL')
+//   } else {
+//     console.log("Connection to MySQL successfull");
+//   }
+// });
 
 console.log('Listening at', publicDir, hostname, port);
 app.listen(port, hostname);
