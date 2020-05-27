@@ -157,7 +157,9 @@ router.get('/spotify/playlists', function(req, responce){
     });
 });
 
+
 //Get the tracks of a playlist specified by the playlistid
+
 router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
@@ -166,7 +168,7 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
       };
       if (accessToken == ""){ // use sever token if user is not logged in
         options.headers = { 'Authorization': 'Bearer ' + serverToken }
-      }
+      } 
       request.get(options, function(error, res, body) {
         if (error){ // if request fails
           console.log("ERROR getting user playlist")
@@ -181,9 +183,9 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
                 artist: body.tracks.items[i].track.artists[0].name,
                 id: body.tracks.items[i].track.uri,
                 artwork: body.tracks.items[i].track.album.images.length != 0 ?
-                           body.tracks.items[i].track.album.images.length == 1 ?
-                           body.tracks.items[i].track.album.images[1].url :
-                           body.tracks.items[i].track.album.images[0].url : null,
+                           body.tracks.items[i].track.album.images.length == 1 ? 
+                           body.tracks.items[i].track.album.images[1].url : 
+                           body.tracks.items[i].track.album.images[0].url : null, 
                 href: body.tracks.items[i].track.href,
                 contentRating: body.tracks.items[i].track.explicit ? "explicit" : "clean",
                 album: body.tracks.items[i].track.album.name
@@ -194,6 +196,7 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
         }
       });
 });
+
 
 //Get a playlist specified by the playlistid
 router.get('/spotify/playlist/:playlistid', function(req, response){
@@ -217,9 +220,9 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
           href: body.href,
           id: body.id,
           artwork: body.images.length != 0 ?
-            body.images.length == 1 ?
-            body.images[0].url :
-            body.images[1].url : null
+            body.images.length == 1 ? 
+            body.images[0].url : 
+            body.images[1].url : null 
           });
       }
         response.send(retval);
@@ -314,6 +317,8 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
       insert_before: req.params.index},
     json: true
   };
+
+
 
   request.put(options, function(error, res, body){
     if (error) { // if request fails
