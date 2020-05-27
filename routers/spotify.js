@@ -32,7 +32,7 @@ var stateKey = 'spotify_auth_state';
 var options = { //request options for getting sever token
   url: 'https://accounts.spotify.com/api/token',
     headers: {
-      'Authorization': 'Basic ' + (new Buffer(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))
+      'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))
     },
     form: {grant_type: 'client_credentials'},
     json: true
@@ -66,7 +66,7 @@ router.get('/spotify/login', function(req, responce) {
     responce.cookie(stateKey, state);
     responce.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
   });
-  
+
 router.get('/spotify/callback', function(req, responce) {
       // request refresh and access tokens
       // after checking the state parameter
@@ -90,15 +90,15 @@ router.get('/spotify/callback', function(req, responce) {
         });
 
       };
-      
-      
+
+
 });
 
 router.get('/spotify/refresh', function(req, responce) {
   spotifyApi.refreshAccessToken().then(
     function(data) {
       console.log('The access token has been refreshed!');
-  
+
       // Save the access token so that it's used in future calls
       spotifyApi.setAccessToken(data.body['access_token']);
     },
@@ -125,7 +125,7 @@ router.get('/spotify/user', function(req, response){
   });
 })
 
-//Get a list of all the user playlists    
+//Get a list of all the user playlists
 router.get('/spotify/playlists', function(req, responce){
     options = { //set request options
         uri: 'https://api.spotify.com/v1/me/playlists',
@@ -145,9 +145,9 @@ router.get('/spotify/playlists', function(req, responce){
                   href: body.items[i].href,
                   id: body.items[i].id,
                   artwork: body.items[i].images.length != 0 ?
-                           body.items[i].images.length == 1 ? 
-                           body.items[i].images[0].url : 
-                           body.items[i].images[1].url : null 
+                           body.items[i].images.length == 1 ?
+                           body.items[i].images[0].url :
+                           body.items[i].images[1].url : null
                 });
             }
             responce.send(retval);
@@ -157,7 +157,9 @@ router.get('/spotify/playlists', function(req, responce){
     });
 });
 
-//Get the tracks of a playlist specified by the playlistid 
+
+//Get the tracks of a playlist specified by the playlistid
+
 router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
@@ -173,7 +175,7 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
         } else {
           //console.log(body);
           retval = { tracks: []};
-          
+
           for(i = 0; i < body.tracks.limit; i++){
             if(body.tracks.items[i] != null){
               retval.tracks.push({
@@ -195,7 +197,8 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
       });
 });
 
-//Get a playlist specified by the playlistid 
+
+//Get a playlist specified by the playlistid
 router.get('/spotify/playlist/:playlistid', function(req, response){
   options = { // set request options
       uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
@@ -204,7 +207,7 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
     };
     if (accessToken == ""){ // use sever token if user is not logged in
       options.headers = { 'Authorization': 'Bearer ' + serverToken }
-    } 
+    }
     request.get(options, function(error, res, body) {
       if (error){ // if request fails
         console.log("ERROR getting user playlist")
@@ -314,7 +317,9 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
       insert_before: req.params.index},
     json: true
   };
-  
+
+
+
   request.put(options, function(error, res, body){
     if (error) { // if request fails
       console.log("ERROR reordering playlist " + error);
@@ -328,7 +333,6 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
 // search spotify for tracks containing the keyword
 router.get('/spotify/search/:keyword', function(req, response){
   var search_term  = req.params.keyword.split(' ').join('+'); // replace spaces in search term
-<<<<<<< HEAD
   options = { // set request options
     uri: 'https://api.spotify.com/v1/search?' + search_term,
     headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -336,7 +340,7 @@ router.get('/spotify/search/:keyword', function(req, response){
   };
   if (accessToken == ""){ // use sever token if user is not logged in
     options.headers = { 'Authorization': 'Bearer ' + serverToken }
-  } 
+  }
     request.get(options, function(error, res, body){
       if (error){
         console.log("ERROR searching Spotify " + error);

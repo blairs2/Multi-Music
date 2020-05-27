@@ -34,7 +34,6 @@ document.getElementById('search-input').addEventListener("keyup", async function
   //When user clicks enter in our search bar
    var searchTerm = (document.getElementById('search-input').value).replace(/ /g, '+'); // '/ /g' is a regular expression that replaces all space instances with '+'
    if (event.keyCode === 13) { //on enter key
-     console.log('enter');
      document.getElementById('generated-content').innerHTML = ''; //Clear the screen for the search results
      //Using promises ensures that both functions will be completed before the final step
      try {
@@ -65,43 +64,52 @@ document.getElementById('search-input').addEventListener("keyup", async function
       // }
       //add event listener to playlists in search results
       for (var i = 0; i < playlist_elements.length; i++) {
-          if(playlist_elements[i].getAttribute("data-service")=="Apple Music"){
-            playlist_elements[i].addEventListener('click', async function() {
-            //sets up divs to be populated
-            document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
-              //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
-              //upon retriving a response the function being called will generate attribute content to dislay on the screen
-              try {
+           playlist_elements[i].addEventListener('click', async function() {
+           //sets up divs to be populated
+           document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+             //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
+             //upon retriving a response the function being called will generate attribute content to dislay on the screen
+             try {
+               if(this.getAttribute("data-service")=="Spotify"){
+                var playlistAttributesPromise = await spotifyGetPlaylistAttributes(this.getAttribute("data-value"));
+              } else {
                 var playlistAttributesPromise = await getCatalogPlaylistAttributes(this.getAttribute("data-value"));
-              } catch(e) {
-                console.log(e);
               }
-              //triggers get request to retrieve the playlists tracks from apple music's catalog (NOT USER Library)
-              //upon retriving a response the function being called will generate track content to dislay on the screen
-              try {
+             } catch(e) {
+               console.log(e);
+             }
+             //triggers get request to retrieve the playlists tracks from apple music's catalog (NOT USER Library)
+             //upon retriving a response the function being called will generate track content to dislay on the screen
+             try {
+               if(this.getAttribute("data-service")=="Spotify"){
+                var playlistTracksPromise = await spotifyGetPlaylistTracks(this.getAttribute("data-value"));
+              } else {
                 var playlistTracksPromise = await getCatalogPlaylistTracks(this.getAttribute("data-value"));
-              } catch(e) {
-                console.log(e);
               }
-              Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
-                convertPlaylist(this.getAttribute("data-value"), "Apple Music", "Spotify");
-                //The response should be a list with only one element
-                document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0]);
-                //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
-                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
-                //Add event listener for each song button. Upon click it will queue up the song to be played
-                var song_elements = document.getElementsByClassName("song-button");
-                for (var i = 0; i < song_elements.length; i++) {
-                   song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-               }
-             });
-           },false);
-         }
+             } catch(e) {
+               console.log(e);
+             }
+             convertPlaylist(this.getAttribute("data-value"), this.getAttribute("data-service")); //causing error for spotify to apple music
+
+             Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
+               //The response should be a list with only one element
+               document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0]);
+               //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
+               document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
+               if(this.getAttribute("data-service")=="Apple Music"){
+               //Add event listener for each song button. Upon click it will queue up the song to be played
+               var song_elements = document.getElementsByClassName("song-button");
+               for (var i = 0; i < song_elements.length; i++) {
+                  song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
+              }
+            }
+            });
+          },false);
       }
     });
      //Search Spotify (Function in spotifyIndex.js)
      // searchByTerm("term=" + searchTerm); //Search for the users input
-   }else{
+   } else { // Enter key not pressed
      if(searchTerm.length > 0){ //Only send get request if there is something to search
        retrieveSearchHints("term=" + searchTerm); //Creates suggestions as user is typing
      }
@@ -538,37 +546,53 @@ function applePlay(id, contentType){
 /*
 will convert playlist from current_service to new_service
 */
-async function convertPlaylist(playlist_id, current_service, new_service){
+async function convertPlaylist(playlist_id, current_service){
+  console.log(playlist_id);
+  var new_sercie;
   if(current_service = "Apple Music"){
+    new_service = "Spotify";
     try {
       var playlistTracks = await getCatalogPlaylistTracks(playlist_id);
     } catch(e) {
       console.log(e);
     }
-  } else {
-    try {
-      //var playlistTracks = await //spotify get playlist tracks function
+  } else if (current_service = "Spotify"){
+    new_service = "Apple Music";
+    try{
+      var playlistTracks = await spotifyGetPlaylistTracks(playlist_id);
     } catch(e) {
       console.log(e);
     }
 
   }
  Promise.all([playlistTracks]).then((values) => {
+   console.log(values);
    var tracks = JSON.parse(playlistTracks).tracks;
    var search, track, matches;
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
      search = (track.title + "+" + track.artist).replace(/ /g, '+');
-     console.log(search);
      //check db first
-     spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
-       var song_matches = JSON.parse(value).songs.data;
-       if(song_matches.length > 0){
-         console.log("spotify match", song_matches[0].title);
-       } else {
-         console.log("NOT FOUND");
-       }
-     });
+     if(new_service == "Spotify"){
+       spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
+         var song_matches = JSON.parse(value).songs.data;
+         if(song_matches.length > 0){
+           console.log(new_service + " Match", song_matches[0].title);
+         } else {
+           console.log("NOT FOUND");
+         }
+       });
+     } else if(new_service == "Apple Music") {
+       searchByTerm('term=' + searchTerm + '&limit=1&types=songs').then((value) => {
+         var song_matches = JSON.parse(value).songs.data;
+         if(song_matches.length > 0){
+           console.log(new_service + " Match", song_matches[0].title);
+         } else {
+           console.log("NOT FOUND");
+         }
+       });
+     }
+
    }
  });
 }
