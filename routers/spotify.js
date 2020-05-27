@@ -13,6 +13,7 @@ const cookieParser = require('cookie-parser');
 
 var accessToken = '';
 var refreshToken = '';
+var serverToken = '';
 var stateKey = 'spotify_auth_state';
 
  // your application requests authorization
@@ -26,6 +27,24 @@ var stateKey = 'spotify_auth_state';
   'playlist-modify-public', //used to mofify public playlists
   'user-read-email', //used to get users email address *we may not need this?
   'user-read-private']; //used to read the users account details to so if they have premium
+
+
+var options = { //request options for getting sever token
+  url: 'https://accounts.spotify.com/api/token',
+    headers: {
+      'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))
+    },
+    form: {grant_type: 'client_credentials'},
+    json: true
+  };
+request.post(options, function(error, response, body) {
+  if (!error && response.statusCode === 200) {
+    // sever token to access the Spotify Web API without logging in.
+    serverToken = body.access_token;
+  } else {
+    console.log("ERROR getting server token");
+  }
+});
 
 /**
  * Generates a random string containing numbers and letters
@@ -47,7 +66,7 @@ router.get('/spotify/login', function(req, responce) {
     responce.cookie(stateKey, state);
     responce.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
   });
-  
+
 router.get('/spotify/callback', function(req, responce) {
       // request refresh and access tokens
       // after checking the state parameter
@@ -62,22 +81,24 @@ router.get('/spotify/callback', function(req, responce) {
         spotifyApi.authorizationCodeGrant(code).then(data => {
           const { expires_in, access_token, refresh_token } = data.body;
           accessToken = access_token;
+          refreshToken = refresh_token;
           console.log(accessToken);
           refreshToken = refresh_token;
           responce.redirect(`/#/user/${access_token}/${refresh_token}`);
         }).catch(err => {
           responce.redirect('/#/error/invalid token');
         });
+
       };
-      
-      
+
+
 });
 
 router.get('/spotify/refresh', function(req, responce) {
   spotifyApi.refreshAccessToken().then(
     function(data) {
       console.log('The access token has been refreshed!');
-  
+
       // Save the access token so that it's used in future calls
       spotifyApi.setAccessToken(data.body['access_token']);
     },
@@ -104,7 +125,7 @@ router.get('/spotify/user', function(req, response){
   });
 })
 
-//Get a list of all the user playlists    
+//Get a list of all the user playlists
 router.get('/spotify/playlists', function(req, responce){
     options = { //set request options
         uri: 'https://api.spotify.com/v1/me/playlists',
@@ -124,9 +145,9 @@ router.get('/spotify/playlists', function(req, responce){
                   href: body.items[i].href,
                   id: body.items[i].id,
                   artwork: body.items[i].images.length != 0 ?
-                           body.items[i].images.length == 1 ? 
-                           body.items[i].images[0].url : 
-                           body.items[i].images[1].url : null 
+                           body.items[i].images.length == 1 ?
+                           body.items[i].images[0].url :
+                           body.items[i].images[1].url : null
                 });
             }
             responce.send(retval);
@@ -136,20 +157,23 @@ router.get('/spotify/playlists', function(req, responce){
     });
 });
 
-//Get a playlist specified by the playlistid
-router.get('/spotify/playlist/:playlistid', function(req, response){
+//Get the tracks of a playlist specified by the playlistid
+router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
         headers: { 'Authorization': 'Bearer ' + accessToken },
         json: true
       };
+      if (accessToken == ""){ // use sever token if user is not logged in
+        options.headers = { 'Authorization': 'Bearer ' + serverToken }
+      }
       request.get(options, function(error, res, body) {
         if (error){ // if request fails
           console.log("ERROR getting user playlist")
         } else {
           //console.log(body);
           retval = { tracks: []};
-          
+
           for(i = 0; i < body.tracks.limit; i++){
             if(body.tracks.items[i] != null){
               retval.tracks.push({
@@ -160,14 +184,47 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
                            body.tracks.items[i].track.album.images.length == 1 ?
                            body.tracks.items[i].track.album.images[1].url :
                            body.tracks.items[i].track.album.images[0].url : null,
-                href: body.tracks.items[i].track.href
+                href: body.tracks.items[i].track.href,
+                contentRating: body.tracks.items[i].track.explicit ? "explicit" : "clean",
+                album: body.tracks.items[i].track.album.name
               });
             }
           }
-
           response.send(retval);
         }
       });
+});
+
+//Get a playlist specified by the playlistid
+router.get('/spotify/playlist/:playlistid', function(req, response){
+  options = { // set request options
+      uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
+      headers: { 'Authorization': 'Bearer ' + accessToken },
+      json: true
+    };
+    if (accessToken == ""){ // use sever token if user is not logged in
+      options.headers = { 'Authorization': 'Bearer ' + serverToken }
+    }
+    request.get(options, function(error, res, body) {
+      if (error){ // if request fails
+        console.log("ERROR getting user playlist")
+      } else {
+        console.log(body);
+        retval = { playlists: []}
+        retval.playlists.push({
+          name: body.name,
+          description: body.description,
+          href: body.href,
+          id: body.id,
+          artwork: body.images.length != 0 ?
+            body.images.length == 1 ?
+            body.images[0].url :
+            body.images[1].url : null
+          });
+      }
+        response.send(retval);
+        //response.send(body);
+    });
 });
 
 //Delete the specified track from the specified playlist
@@ -257,6 +314,7 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
       insert_before: req.params.index},
     json: true
   };
+
   request.put(options, function(error, res, body){
     if (error) { // if request fails
       console.log("ERROR reordering playlist " + error);
@@ -270,21 +328,23 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
 // search spotify for tracks containing the keyword
 router.get('/spotify/search/:keyword', function(req, response){
   var search_term  = req.params.keyword.split(' ').join('+'); // replace spaces in search term
-    options = { // set request options
-      uri: 'https://api.spotify.com/v1/search?' + search_term,
-      headers: { 'Authorization': 'Bearer ' + accessToken },
-      json: true
-    };
+  options = { // set request options
+    uri: 'https://api.spotify.com/v1/search?' + search_term,
+    headers: { 'Authorization': 'Bearer ' + accessToken },
+    json: true
+  };
+  if (accessToken == ""){ // use sever token if user is not logged in
+    options.headers = { 'Authorization': 'Bearer ' + serverToken }
+  }
     request.get(options, function(error, res, body){
       if (error){
         console.log("ERROR searching Spotify " + error);
       } else {
         //console.log(body);
-        retval = { //json to but returned to multimusic
+        retval = {} //json to but returned to multimusic
 
-        }
         if(body.hasOwnProperty("tracks")){
-            retval.songs = {data:[]};
+          retval.songs = {data:[]};
           for (i = 0; i < body.tracks.limit; i++){
             if(body.tracks.items[i] != null){
               retval.songs.data.push({ //append songs to retval.songs
@@ -310,7 +370,7 @@ router.get('/spotify/search/:keyword', function(req, response){
             }
           }
         if(body.hasOwnProperty("playlists")){
-            retval.playlists = {data:[]};
+          retval.playlists = {data:[]};
           for (i = 0; i < body.playlists.limit; i++){
             if(body.playlists.items[i] != null){
                 retval.playlists.data.push({ //append playlists to retval.playlists
@@ -328,8 +388,8 @@ router.get('/spotify/search/:keyword', function(req, response){
 
         //response.send(body);
         response.send(retval);
-      }
-    });
+    }
+  });
 });
 
 module.exports = router;

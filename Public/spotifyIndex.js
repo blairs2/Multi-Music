@@ -43,18 +43,47 @@ function spotifyGetUserPlaylists(){
 }
 
 /**
- * Get the Spotify playlist specifed by the playlistid
+ * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-function spotifyGetPlaylist(playlistid){
-    var xhttp = new XMLHttpRequest();
+async function spotifyGetPlaylistTracks(playlistid){
+   var xhttp = new XMLHttpRequest();
+   return new Promise(function(resolve, reject) {
+     xhttp.onreadystatechange = function ReceivedCallback() {
+     if (this.readyState == 4) { //Upon getting a response
+       if(this.status == 200){
+         // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+         resolve(this.responseText);
+       } else {
+         reject("Error");
+     }
+    }
+   };
+   xhttp.open('GET', 'http://' + URL + '/spotify/playlist/tracks/' + playlistid, true);
+   xhttp.send(); // Gets the response
+  });
+}
+
+/**
+ * Get the tracks from the Spotify playlist specifed by the playlistid
+ * @param {string} playlistid the id of the playlist to get
+ */
+async function spotifyGetPlaylistAttributes(playlistid){
+  var xhttp = new XMLHttpRequest();
+  return new Promise(function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
+    if (this.readyState == 4) { //Upon getting a response
+      if(this.status == 200){
+        // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+        resolve(this.responseText);
+      } else {
+      reject("Error");
+    }
+   }
+  };
     xhttp.open('GET', 'http://' + URL + '/spotify/playlist/' + playlistid, true);
     xhttp.send(); // Gets the response
+  });
 }
 
 /**
@@ -164,7 +193,6 @@ async function spotifySearch(searchTerm){
   });
 }
 
-
 document.getElementById("login-spotify").addEventListener('click', () => {
     //console.log("CLICK");
     location.href = "http://localhost:8080/spotify/login";
@@ -174,6 +202,14 @@ document.getElementById("login-spotify").addEventListener('click', () => {
         // Typical action to be performed when the document is ready:    }
         console.log(xhttp.responseText);
     }
+
     xhttp.open("GET", "http://localhost:8080/spotify/login", true);
     xhttp.send();
-  }});
+    }
+});
+
+
+// get token
+//     tokens = window.location.href.split('#/user/').pop();
+//     token = tokens.slice(0, tokens.indexOf('/'));
+//     console.log(token);
