@@ -541,7 +541,7 @@ function displayPlaylistAttributes(playlist_attributes){
         }
     }
     btn.addEventListener('click', showMenu, false);
-    retval += '<div class="container"><div class="more"><button id="more-btn" class="more-btn">';
+    retval += '<div class="container2"><div class="more"><button id="more-btn" class="more-btn">';
     retval += '<span class="more-dot"></span><span class="more-dot"></span><span class="more-dot"></span></button>';
     retval += '<div class="more-menu"><div class="more-menu-caret"><div class="more-menu-caret-outer"></div><div class="more-menu-caret-inner"></div>';
     retval += '</div><ul class="more-menu-items" tabindex="-1" role="menu" aria-labelledby="more-btn" aria-hidden="true">';
