@@ -515,7 +515,39 @@ function displayPlaylistAttributes(playlist_attributes){
     var playlistDescription = playlist_attributes.description;
     retval += `<h7>"${playlistDescription}"</h7>`;
   }
-  retval += '<button type="button"  class="btn btn-default btn-small">Play</button> </div>';
+    retval += '<button type="button"  class="btn btn-default btn-small">Play</button> </div>';
+    var el = document.querySelector('.more');
+    var btn = el.querySelector('.more-btn');
+    var menu = el.querySelector('.more-menu');
+    var visible = false;
+    function showMenu(e) {
+        e.preventDefault();
+        if (!visible) {
+            visible = true;
+            el.classList.add('show-more-menu');
+            menu.setAttribute('aria-hidden', false);
+            document.addEventListener('mousedown', hideMenu, false);
+        }
+    }
+    function hideMenu(e) {
+        if (btn.contains(e.target)) {
+            return;
+        }
+        if (visible) {
+            visible = false;
+            el.classList.remove('show-more-menu');
+            menu.setAttribute('aria-hidden', true);
+            document.removeEventListener('mousedown', hideMenu);
+        }
+    }
+    btn.addEventListener('click', showMenu, false);
+    retval += '<div class="container"><div class="more"><button id="more-btn" class="more-btn">';
+    retval += '<span class="more-dot"></span><span class="more-dot"></span><span class="more-dot"></span></button>';
+    retval += '<div class="more-menu"><div class="more-menu-caret"><div class="more-menu-caret-outer"></div><div class="more-menu-caret-inner"></div>';
+    retval += '</div><ul class="more-menu-items" tabindex="-1" role="menu" aria-labelledby="more-btn" aria-hidden="true">';
+    retval += '<li class="more-menu-item" role="presentation"><button type="button" class="more-menu-btn" role="menuitem">Convert to AppleMusic</button>';
+    retval += '</li><li class="more-menu-item" role="presentation"><button type="button" class="more-menu-btn" role="menuitem">Convert to Spotify</button>';
+    retval += '</li></ul></div></div></div>';
   return retval;
 }
 
