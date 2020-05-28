@@ -1,5 +1,5 @@
 function homeLoad() {
-    document.getElementById("page").innerHTML =
+    document.getElementById("generated-content").innerHTML =
          '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>' +
          '<h2 class="my-4">Home</h2>' +
          '<div>' +
@@ -40,7 +40,7 @@ function homeLoad() {
 }
 
 function aboutLoad() {
-    document.getElementById("page").innerHTML =
+    document.getElementById("generated-content").innerHTML =
          '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>' +
          '<h2 class="my-4">About Us</h2>' +
          '<div>' +
@@ -54,7 +54,7 @@ function aboutLoad() {
 }
 
 function contactLoad() {
-    document.getElementById("page").innerHTML =
+    document.getElementById("generated-content").innerHTML =
          '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>' +
          '<h2 class="my-4">Contact Us</h2>' +
          '<div>' +
@@ -67,7 +67,7 @@ function contactLoad() {
 
 
 function playlistLoad() {
-    document.getElementById("page").innerHTML =
+    document.getElementById("generated-content").innerHTML =
          '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>' +
          '<div>' +
          '<h4>My Music</h4>' +
@@ -103,7 +103,7 @@ function playlistLoad() {
 }
 
 function makePlaylist() {
-    document.getElementById("page").innerHTML =
+    document.getElementById("generated-content").innerHTML =
          '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>' +
          '<div>' +
          '<h4>New Playlist</h4>' +
@@ -133,7 +133,7 @@ function makePlaylist() {
 }
 
 function convertPlaylist() {
-    document.getElementById("page").innerHTML =
+    document.getElementById("generated-content").innerHTML =
          '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>' +
          '<div>' +
          '<h4>Convert Playlist</h4>' +
