@@ -1,3 +1,11 @@
+document.getElementById("test-button").addEventListener('click', () => {
+    console.log("CLICK");
+    dbAddUser("testuser", 12345);
+});
+
+
+
+
 /**
  * check if song exists in database
  * @param {string} title the title of the song
@@ -62,6 +70,7 @@ function dbUpdateSpotifyToken(id, token){
     xhttp.open('POST', URL + '/db/user/spotify/' + id + '/' + token , true);
     xhttp.send(); // Gets the response
 }
+
 /**
  * update user record with apple token
  * @param {string} id the id of the user to be updated
@@ -139,6 +148,7 @@ function dbAddSongToPlaylist(playlistID, songID){
  */
 function dbAddUser(name, code){
     var xhttp = new XMLHttpRequest();
+    console.log("1");
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
@@ -162,3 +172,4 @@ function dbGetUserTokens(id){
     xhttp.open('GET', URL + '/db/userToken/' + id, true);
     xhttp.send(); // Gets the response
 }
+
