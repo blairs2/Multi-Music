@@ -46,30 +46,44 @@ function spotifyGetUserPlaylists(){
  * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-function spotifyGetPlaylistTracks(playlistid){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-    xhttp.open('GET', 'http://' + URL + '/spotify/tracks/playlist/' + playlistid, true);
-    xhttp.send(); // Gets the response
+async function spotifyGetPlaylistTracks(playlistid){
+   var xhttp = new XMLHttpRequest();
+   return new Promise(function(resolve, reject) {
+     xhttp.onreadystatechange = function ReceivedCallback() {
+     if (this.readyState == 4) { //Upon getting a response
+       if(this.status == 200){
+         // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+         resolve(this.responseText);
+       } else {
+         reject("Error");
+     }
+    }
+   };
+   xhttp.open('GET', 'http://' + URL + '/spotify/playlist/tracks/' + playlistid, true);
+   xhttp.send(); // Gets the response
+  });
 }
 
 /**
  * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-function spotifyGetPlaylist(playlistid){
-    var xhttp = new XMLHttpRequest();
+async function spotifyGetPlaylistAttributes(playlistid){
+  var xhttp = new XMLHttpRequest();
+  return new Promise(function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
+    if (this.readyState == 4) { //Upon getting a response
+      if(this.status == 200){
+        // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+        resolve(this.responseText);
+      } else {
+      reject("Error");
+    }
+   }
+  };
     xhttp.open('GET', 'http://' + URL + '/spotify/playlist/' + playlistid, true);
     xhttp.send(); // Gets the response
+  });
 }
 
 /**
@@ -194,18 +208,6 @@ document.getElementById("login-spotify").addEventListener('click', () => {
     }
 });
 
-document.getElementById('search-input').addEventListener("keyup", function(event){
-    //When user clicks enter in our search bar
-     var searchTerm = (document.getElementById('search-input').value).replace(/ /g, '+'); // '/ /g' is a regular expression that replaces all space instances with '+'
-     if (event.keyCode === 13) { //on enter key
-       //console.log('enterSpotify');
-       spotifySearch(searchTerm); //Search for the users input
-     }else{
-    //    if(searchTerm.length > 0){ //Only send get request if there is something to search
-    //      retrieveSearchHints("term=" + searchTerm); //Creates suggestions as user is typing
-    //    }
-     }
-  });
 
 // get token
 //     tokens = window.location.href.split('#/user/').pop();
