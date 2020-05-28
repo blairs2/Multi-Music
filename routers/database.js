@@ -22,7 +22,9 @@ exports.get = function GetHandler(){
 
 //checks db for song if found returns appleID and spotifyID else returns false
 router.get('/db/hasSong/:title/:artist/:album/:explicit', function(req, response){
-    pool.query( "SELECT spotify_Song_ID, apple_Song_ID, song_ID FROM song WHERE title = " + req.params.title + 
+    pool.query( "SELECT spotify_Song_ID, apple_Song_ID, song_ID " +
+                "FROM Song " +
+                "WHERE title = " + req.params.title + 
                 " AND artist = " + req.params.artist + 
                 " AND album = " + req.params.album +
                 " AND explicit = " + req.params.explicit, function (err, result, fields) {
@@ -40,8 +42,8 @@ router.get('/db/hasSong/:title/:artist/:album/:explicit', function(req, response
 
 //get playlist from db using spotify/apple playlist id
 router.get('/db/playlist/:playlistID', function(req, response){
-    pool.query( "SELECT p.playlist_Name, p.spotify_Playlist_ID, p.apple_Playlist_ID, p.playlist_ID," + 
-                "s.song_Name, s.spotify_Song_ID, s.apple_Song_ID, s.artist s.explicit s.album " + 
+    pool.query( "SELECT p.playlist_Name, p.spotify_Playlist_ID, p.apple_Playlist_ID, p.playlist_ID, " + 
+                "s.title, s.spotify_Song_ID, s.apple_Song_ID, s.artist, s.explicit, s.album " + 
                 "FROM Playlist p " +
                 "JOIN Song_Playlist sXp on p.playlist_ID = sXp.playlist_ID " +
                 "JOIN Song s ON s.song_ID = sXp.song_ID " +
@@ -77,7 +79,7 @@ router.get('/db/user/:name/:code', function(req, response){
 });
 
 //update users spotify token
-router.put('/db/user/spotify/:id/:token', function(req, response){
+router.post('/db/user/spotify/:id/:token', function(req, response){
     pool.query( "UPDATE User " +
                 "SET spotify_Token = " + req.params.token + 
                 "WHERE user_ID = " + req.params.id, function (err, result, fields) {
@@ -90,7 +92,7 @@ router.put('/db/user/spotify/:id/:token', function(req, response){
 });
 
 //update users apple token
-router.put('/db/user/apple/:id/:token', function(req, response){
+router.post('/db/user/apple/:id/:token', function(req, response){
     pool.query( "UPDATE User " +
                 "SET apple_Token = " + req.params.token + 
                 "WHERE user_ID = " + req.params.id, function (err, result, fields) {
@@ -104,7 +106,7 @@ router.put('/db/user/apple/:id/:token', function(req, response){
 
 //add song to db
 router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleId', function(req, response){
-    pool.query( "INSERT INTO Song(song_Name, artist, album, explicit, spotify_Song_ID, apple_Song_ID) " +
+    pool.query( "INSERT INTO Song(title, artist, album, explicit, spotify_Song_ID, apple_Song_ID) " +
                 "VALUES (" + req.params.title + ", " +
                         req.params.artist + ", " +
                         req.params.album + ", " +
@@ -162,7 +164,7 @@ router.put('/db/user/:name/:code', function(req, response){
 
 //get tokens from user id
 router.get('/db/userToken/:id', function(req, response){
-    pool.query( "SELECT spotify_ID, apple_ID " + 
+    pool.query( "SELECT spotify_Token, apple_Token " + 
                 "FROM User " + 
                 "WHERE user_ID = " + req.params.id, function (err, result, fields) {
         if (err) {

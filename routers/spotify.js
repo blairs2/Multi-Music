@@ -32,7 +32,7 @@ var stateKey = 'spotify_auth_state';
 var options = { //request options for getting sever token
   url: 'https://accounts.spotify.com/api/token',
     headers: {
-      'Authorization': 'Basic ' + (new Buffer(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))
+      'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))
     },
     form: {grant_type: 'client_credentials'},
     json: true
@@ -41,6 +41,7 @@ request.post(options, function(error, response, body) {
   if (!error && response.statusCode === 200) {
     // sever token to access the Spotify Web API without logging in.
     serverToken = body.access_token;
+    console.log(serverToken);
   } else {
     console.log("ERROR getting server token");
   }
@@ -328,7 +329,6 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
 // search spotify for tracks containing the keyword
 router.get('/spotify/search/:keyword', function(req, response){
   var search_term  = req.params.keyword.split(' ').join('+'); // replace spaces in search term
-<<<<<<< HEAD
   options = { // set request options
     uri: 'https://api.spotify.com/v1/search?' + search_term,
     headers: { 'Authorization': 'Bearer ' + accessToken },

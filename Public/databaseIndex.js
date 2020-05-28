@@ -1,9 +1,9 @@
 /**
  * check if song exists in database
  * @param {string} title the title of the song
- * @param {*} artist the songs artist
- * @param {*} album the title of the album the song is on
- * @param {*} explicit if the song is explicit or clean
+ * @param {string} artist the songs artist
+ * @param {string} album the title of the album the song is on
+ * @param {string} explicit if the song is explicit or clean
  */
 function dbHasSong(title, artist, album, explicit){
     var xhttp = new XMLHttpRequest();
@@ -59,7 +59,7 @@ function dbUpdateSpotifyToken(id, token){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/db/user/spotify/' + id + '/' + token , true);
+    xhttp.open('POST', URL + '/db/user/spotify/' + id + '/' + token , true);
     xhttp.send(); // Gets the response
 }
 /**
@@ -74,7 +74,7 @@ function dbUpdateAppleToken(id, token){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/db/user/apple/' + id + '/' + token, true);
+    xhttp.open('POST', URL + '/db/user/apple/' + id + '/' + token, true);
     xhttp.send(); // Gets the response
 }
 
@@ -94,7 +94,7 @@ function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/db/song/' + title + '/' + artist + '/' + album + '/' + explicit == "clean" ? false : true, true + '/' + spotifyID + '/' + appleID, true);
+    xhttp.open('PUT', URL + '/db/song/' + title + '/' + artist + '/' + album + '/' + explicit == "clean" ? false : true, true + '/' + spotifyID + '/' + appleID, true);
     xhttp.send(); // Gets the response
 }
 
@@ -112,7 +112,7 @@ function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '.db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleId, true);
+    xhttp.open('PUT', URL + '.db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleId, true);
     xhttp.send(); // Gets the response
 }
 
@@ -128,7 +128,7 @@ function dbAddSongToPlaylist(playlistID, songID){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/db/playlist/song/' + playlistID + '/' + songID, true);
+    xhttp.open('PUT', URL + '/db/playlist/song/' + playlistID + '/' + songID, true);
     xhttp.send(); // Gets the response
 }
 
@@ -144,7 +144,7 @@ function dbAddUser(name, code){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/db/user/' + name + '/' + code, true);
+    xhttp.open('PUT', URL + '/db/user/' + name + '/' + code, true);
     xhttp.send(); // Gets the response
 }
 
