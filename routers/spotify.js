@@ -41,6 +41,7 @@ request.post(options, function(error, response, body) {
   if (!error && response.statusCode === 200) {
     // sever token to access the Spotify Web API without logging in.
     serverToken = body.access_token;
+    console.log(serverToken);
   } else {
     console.log("ERROR getting server token");
   }
