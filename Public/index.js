@@ -1,7 +1,6 @@
 const URL = window.location.host;
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
-  console.log("loaded");
   // MusicKit global is now defined
   fetch('/token').then(response => response.json()).then(res => {
     /***
@@ -103,6 +102,35 @@ document.getElementById('search-input').addEventListener("keyup", async function
                document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0]);
                //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
+               var el = document.querySelector('.more');
+               var btn = el.querySelector('.more-btn');
+               var menu = el.querySelector('.more-menu');
+               var visible = false;
+
+               function showMenu(e) {
+                  e.preventDefault();
+                  if (!visible) {
+                      visible = true;
+                      el.classList.add('show-more-menu');
+                      menu.setAttribute('aria-hidden', false);
+                      document.addEventListener('mousedown', hideMenu, false);
+                  }
+               }
+
+               function hideMenu(e) {
+                  if (btn.contains(e.target)) {
+                      return;
+                  }
+                  if (visible) {
+                      visible = false;
+                      el.classList.remove('show-more-menu');
+                      menu.setAttribute('aria-hidden', true);
+                      document.removeEventListener('mousedown', hideMenu);
+                  }
+               }
+
+               btn.addEventListener('click', showMenu, false);
+
                if(this.getAttribute("data-service")=="Apple Music"){
                //Add event listener for each song button. Upon click it will queue up the song to be played
                var song_elements = document.getElementsByClassName("song-button");
@@ -401,6 +429,31 @@ function getPlaylistAttributes(playlist_id){
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
       var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0]);
       document.getElementById("playlist-attributes").innerHTML = retval;
+      var el = document.querySelector('.more');
+      var btn = el.querySelector('.more-btn');
+      var menu = el.querySelector('.more-menu');
+      var visible = false;
+      function showMenu(e) {
+          e.preventDefault();
+          if (!visible) {
+              visible = true;
+              el.classList.add('show-more-menu');
+              menu.setAttribute('aria-hidden', false);
+              document.addEventListener('mousedown', hideMenu, false);
+          }
+      }
+      function hideMenu(e) {
+          if (btn.contains(e.target)) {
+              return;
+          }
+          if (visible) {
+              visible = false;
+              el.classList.remove('show-more-menu');
+              menu.setAttribute('aria-hidden', true);
+              document.removeEventListener('mousedown', hideMenu);
+          }
+      }
+      btn.addEventListener('click', showMenu, false);
     }
   };
   xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id , true);
@@ -510,14 +563,23 @@ function displayPlaylistAttributes(playlist_attributes){
   } else{
     retval += '<a href="#"><img class="card-img-top" src="/assets/Missing_content.png" alt=""></a>';
   }
-  retval += '<div style="text-align:center">';
+  retval += '<div style="text-align:left">';
   if (playlist_attributes.hasOwnProperty("description")){
     var playlistDescription = playlist_attributes.description;
     retval += `<h7>"${playlistDescription}"</h7>`;
   }
-  retval += '<button type="button"  class="btn btn-default btn-small">Play</button> </div>';
+  retval += '</div>';
+  retval += '<div class="option-container">';
+  retval += '<div class="more">';
+  retval += '<button id="more-btn" class="more-btn"><span class="more-dot"></span><span class="more-dot"></span><span class="more-dot"></span></button>';
+  retval += '<div class="more-menu"><div class="more-menu-caret"><div class="more-menu-caret-outer"></div><div class="more-menu-caret-inner"></div></div>';
+  retval += '<ul class="more-menu-items" tabindex="-1" role="menu" aria-labelledby="more-btn" aria-hidden="true">';
+  retval += '<li class="more-menu-item" role="presentation"><button type="button" class="more-menu-btn" role="menuitem">Convert to AppleMusic</button></li>';
+  retval += '<li class="more-menu-item" role="presentation"><button type="button" class="more-menu-btn" role="menuitem">Convert to Spotify</button></li>';
+  retval += '</ul></div></div></div>';
   return retval;
 }
+
 
 /* This function will generate the playlist tracks display
  @param playlist_tracks is a multi music json containing a list of all the tracks belonging to a playlist

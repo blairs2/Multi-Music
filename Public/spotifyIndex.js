@@ -10,7 +10,7 @@ function spotifyLogin(){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', URL + '/spotify/login', true);
+    xhttp.open('GET', 'http://' + URL + '/spotify/login', true);
     xhttp.send(); // Gets the response
 }
 
