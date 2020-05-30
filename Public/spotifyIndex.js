@@ -195,7 +195,6 @@ async function spotifySearch(searchTerm){
 
 document.getElementById("login-spotify").addEventListener('click', () => {
     //console.log("CLICK");
-    location.href = "http://localhost:8080/spotify/login";
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
@@ -203,7 +202,7 @@ document.getElementById("login-spotify").addEventListener('click', () => {
         console.log(xhttp.responseText);
     }
 
-    xhttp.open("GET", "http://localhost:8080/spotify/login", true);
+    xhttp.open("GET", "http://"+ URL +"/spotify/login", true);
     xhttp.send();
     }
 });

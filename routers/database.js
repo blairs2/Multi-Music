@@ -25,6 +25,7 @@ exports.get = function GetHandler(){
 }
 
 //checks db for song if found returns appleID and spotifyID else returns false
+
 router.get('/db/hasSong/:ID', function(req, response){
     con.query( "SELECT spotify_Song_ID, apple_Song_ID, song_ID " +
                 "FROM Song " +

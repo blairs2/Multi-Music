@@ -15,7 +15,8 @@
 
   <!-- Custom styles for this template -->
   <link href="css/shop-homepage.css" rel="stylesheet">
-
+    <script src="publicIndex.js"></script>
+    <link rel="shortcut icon" href="">
 </head>
 
 <body>
@@ -36,24 +37,31 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
-          </li>
-          <li class="nav-item">
+            <li class="nav-item active">
+             <a class="nav-link" href="#">Home
+               <span class="sr-only">(current)</span>
+             </a>
+           </li>
+           <li class="nav-item">
+             <a class="nav-link" onclick="aboutLoad()" href="#">About</a>
+           </li>
+           <li class="nav-item">
+             <a class="nav-link" onclick="contactLoad()" href="#">Contact</a>
+           </li>
+          <!-- <li class="nav-item">
             <button id="login-btn">Login to Apple Music</button>
-          </li>
+          </li> -->
           <li class="nav-item">
             <button id="login-spotify">Login to Spotify</button>
+          </li>
+          <li class="nav-item">
+            <button id="test-button">TESTBUTTON</button>
+          </li>
+          <li class="nav-item">
+            <button id="test2">test2</button>
+          </li>
+          <li class="nav-item">
+            <button id="test3">test3</button>
           </li>
         </ul>
 
@@ -105,7 +113,6 @@
       <div class="col-lg-10">
 
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
-        <h2 class="my-4">Home</h2>
         <div id="generated-content">
         </div>
         <!-- /.row -->
