@@ -1,23 +1,37 @@
 document.getElementById("test-button").addEventListener('click', () => {
     console.log("CLICK");
     dbAddUser("testuser", 12345);
+        console.log("1");
     dbAddPlaylist("testPlaylist", 1, "Spotify", "Apple"); // send user id
+        console.log("2");
     dbAddSong("testsong", "me", "album", "clean", "Spotify1", "Apple");
+        console.log("3");
     dbAddSong("testsong2", "me", "album", "g", "Spotify", "Apple");
+        console.log("4");
     dbAddSongToPlaylist(1, 1);
+        console.log("5");
     dbAddSongToPlaylist(1, 2);
+        console.log("6");
 });
 document.getElementById("test2").addEventListener('click', () => {
     console.log("clicking");
     dbUpdateAppleToken(1,"apple2");
-    dbUpdateSpotifyToken(1, "spotfy2")
-})
+        console.log("1");
+    dbUpdateSpotifyToken(1, "spotfy2");
+        console.log("2");
+});
 document.getElementById("test3").addEventListener('click', () => {
+    console.log("string".hashCode());
     console.log("click");
+    
     dbGetUser("testuser", 12345);
+        console.log("1");
     dbGetPlaylist("Spotify"); // ad check for playlist id
+        console.log("2");
     dbGetUserTokens(1);
+        console.log("3");
     dbHasSong("testsong", "me", "album", "clean");
+        console.log("4");
 })
 
 /**
@@ -135,7 +149,7 @@ function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', 'http://' + URL + '.db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleId, true);
+    xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleId, true);
     xhttp.send(); // Gets the response
 }
 
