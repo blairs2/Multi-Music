@@ -11,6 +11,7 @@ con = mysql.createConnection({
         database: ""
     });
 
+
 con.connect(function ConnectionHandler(err){
     if (err){
         console.log('Unable to connect to MySQL')
