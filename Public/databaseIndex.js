@@ -1,3 +1,4 @@
+
 function hashCode(str){
 	var hash = 0;
 	for (var i = 0; i < str.length; i++) {
@@ -21,6 +22,7 @@ function dbHasSong(ID){
             console.log(JSON.parse(this.responseText));
         }
     };
+
     xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + ID, true);
     xhttp.send(); // Gets the response
 }

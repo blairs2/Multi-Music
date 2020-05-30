@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 // respond with displaying homepage (index.html) when a GET request is made to the homepage
 app.get('/', function (req, res) {
-  res.sendFile(path.join(publicDir, '/index.html'));
+  res.sendFile(path.join(publicDir, '/login.html'));
 });
 
 // library for signing tokens

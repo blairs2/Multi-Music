@@ -1,6 +1,7 @@
 const URL = window.location.host;
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
+  console.log("loaded");
   // MusicKit global is now defined
   fetch('/token').then(response => response.json()).then(res => {
     /***
@@ -17,18 +18,23 @@ document.addEventListener('musickitloaded', () => {
 
     // expose our instance globally for testing
     window.music = music;
+    //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
+    music.authorize().then(musicUserToken => {
+      addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
+      retreiveUserPlaylists(); //Populates the left hand side of screen with all the playlsits in the users library
+    });
   });
 });
 
-document.getElementById('login-btn').addEventListener('click', () => {
-  //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-  music.authorize().then(musicUserToken => {
-    addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
-  });
-
-
-  retreiveUserPlaylists(); //Populates the left hand side of screen with all the playlsits in the users library
-});
+// document.getElementById('login-btn').addEventListener('click', () => {
+//   //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
+//   music.authorize().then(musicUserToken => {
+//     addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
+//   });
+//
+//
+//   retreiveUserPlaylists(); //Populates the left hand side of screen with all the playlsits in the users library
+// });
 
 document.getElementById('search-input').addEventListener("keyup", async function(event){
   //When user clicks enter in our search bar
@@ -89,9 +95,10 @@ document.getElementById('search-input').addEventListener("keyup", async function
              } catch(e) {
                console.log(e);
              }
-             convertPlaylist(this.getAttribute("data-value"), this.getAttribute("data-service")); //causing error for spotify to apple music
+
 
              Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
+               // convertPlaylist(this.getAttribute("data-value"), this.getAttribute("data-service")); //causing error for spotify to apple music
                //The response should be a list with only one element
                document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0]);
                //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
@@ -547,16 +554,15 @@ function applePlay(id, contentType){
 will convert playlist from current_service to new_service
 */
 async function convertPlaylist(playlist_id, current_service){
-  console.log(playlist_id);
   var new_sercie;
-  if(current_service = "Apple Music"){
+  if(current_service == "Apple Music"){
     new_service = "Spotify";
     try {
       var playlistTracks = await getCatalogPlaylistTracks(playlist_id);
     } catch(e) {
       console.log(e);
     }
-  } else if (current_service = "Spotify"){
+  } else if (current_service == "Spotify"){
     new_service = "Apple Music";
     try{
       var playlistTracks = await spotifyGetPlaylistTracks(playlist_id);
@@ -566,7 +572,6 @@ async function convertPlaylist(playlist_id, current_service){
 
   }
  Promise.all([playlistTracks]).then((values) => {
-   console.log(values);
    var tracks = JSON.parse(playlistTracks).tracks;
    var search, track, matches;
    for(var i = 0; i < tracks.length; i++){
@@ -583,7 +588,7 @@ async function convertPlaylist(playlist_id, current_service){
          }
        });
      } else if(new_service == "Apple Music") {
-       searchByTerm('term=' + searchTerm + '&limit=1&types=songs').then((value) => {
+       searchByTerm('term=' + search + '&limit=1&types=songs').then((value) => {
          var song_matches = JSON.parse(value).songs.data;
          if(song_matches.length > 0){
            console.log(new_service + " Match", song_matches[0].title);
