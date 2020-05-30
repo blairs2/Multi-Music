@@ -19,9 +19,15 @@ document.getElementById("test2").addEventListener('click', () => {
 	console.log("1");
     dbUpdateSpotifyToken(1, "spotfy2");
 	console.log("2");
+        console.log("1");
+    dbUpdateSpotifyToken(1, "spotfy2");
+        console.log("2");
 });
+
 document.getElementById("test3").addEventListener('click', () => {
+    console.log("string".hashCode());
     console.log("click");
+    
     dbGetUser("testuser", 12345);
 	console.log("1");
     dbGetPlaylist("Spotify"); // ad check for playlist id
@@ -30,7 +36,7 @@ document.getElementById("test3").addEventListener('click', () => {
 	console.log("3");
     dbHasSong("testsong", "me", "album", "clean");
 	console.log("4");
-})
+});
 
 /**
  * check if song exists in database
@@ -147,7 +153,7 @@ function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', 'http://' + URL + '.db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleId, true);
+    xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleId, true);
     xhttp.send(); // Gets the response
 }
 

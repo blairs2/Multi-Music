@@ -25,6 +25,7 @@ exports.get = function GetHandler(){
 
 //checks db for song if found returns appleID and spotifyID else returns false
 router.get('/db/hasSong/:title/:artist/:album/:explicit', function(req, response){
+    console.log("router");
     con.query( "SELECT spotify_Song_ID, apple_Song_ID, song_ID " +
                 "FROM Song " +
                 "WHERE title = \"" + req.params.title + 
@@ -45,6 +46,7 @@ router.get('/db/hasSong/:title/:artist/:album/:explicit', function(req, response
 
 //get playlist from db using spotify/apple or playlist id
 router.get('/db/playlist/:playlistID', function(req, response){
+    console.log("router");
     con.query( "SELECT p.playlist_Name, p.spotify_Playlist_ID, p.apple_Playlist_ID, p.playlist_ID, " + 
                 "s.title, s.spotify_Song_ID, s.apple_Song_ID, s.artist, s.explicit, s.album " + 
                 "FROM Playlist p " +
@@ -67,9 +69,10 @@ router.get('/db/playlist/:playlistID', function(req, response){
 
 //get user id from username and password
 router.get('/db/user/:name/:code', function(req, response){
+    console.log("router");
     con.query( "SELECT username, user_ID " + 
                 "FROM User " + 
-                "WHERE username = \"" + name + "\" AND password = \"" + code + "\";", function (err, result, fields) {
+                "WHERE username = \"" + name + "\" AND password = " + code + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db user", err);
         }  else {
@@ -84,6 +87,7 @@ router.get('/db/user/:name/:code', function(req, response){
 
 //update users spotify token
 router.post('/db/user/spotify/:id/:token', function(req, response){
+    console.log("router");
     con.query( "UPDATE User " +
                 "SET spotify_Token = \"" + req.params.token + 
                 "\" WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
@@ -97,6 +101,7 @@ router.post('/db/user/spotify/:id/:token', function(req, response){
 
 //update users apple token
 router.post('/db/user/apple/:id/:token', function(req, response){
+    console.log("router");
     con.query( "UPDATE User " +
                 "SET apple_Token = \"" + req.params.token + 
                 "\" WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
@@ -109,7 +114,8 @@ router.post('/db/user/apple/:id/:token', function(req, response){
 });
 
 //add song to db
-router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleId', function(req, response){
+router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleID', function(req, response){
+    console.log("router");
     con.query( "INSERT INTO Song(title, artist, album, explicit, spotify_Song_ID, apple_Song_ID) " +
                 "VALUES (\"" + req.params.title + "\", \"" +
                         req.params.artist + "\", \"" +
@@ -126,7 +132,8 @@ router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleId', funct
 });
 
 //add playlist to db
-router.put('/db/playlist/:title/:userID/:spotifyID/:appleId', function(req, response){
+router.put('/db/playlist/:title/:userID/:spotifyID/:appleID', function(req, response){
+    console.log("router");
     con.query( "INSERT INTO Playlist(playlist_Name, user_ID, spotify_Playlist_ID, apple_Playlist_ID) " +
                 "VALUES (\"" + req.params.title + "\", " +
                         req.params.userID + ", \"" +
@@ -135,13 +142,14 @@ router.put('/db/playlist/:title/:userID/:spotifyID/:appleId', function(req, resp
         if (err) {
             console.log("ERROR adding playlist to db", err);
         }  else {
-            response.send(result);      
+            response.send(result);     
         }
     });
 });
 
 //add song to playlist in db
 router.put('/db/playlist/song/:playlistID/:songID', function(req, response){
+    console.log("router");
     con.query( "INSERT INTO Song_Playlist(song_ID, playlist_ID) " +
                 "VALUES " + req.params.songID + ", " +
                         req.params.playlistID + ");", function (err, result, fields) {
@@ -155,7 +163,7 @@ router.put('/db/playlist/song/:playlistID/:songID', function(req, response){
 
 //add user to db
 router.put('/db/user/:name/:code', function(req, response){
-	console.log("route");
+    console.log("router");
     con.query( "INSERT INTO User(username, password) " +
                 "VALUES (\"" + req.params.name + "\", " +
                         req.params.code + ");", function (err, result, fields) {
@@ -170,6 +178,7 @@ router.put('/db/user/:name/:code', function(req, response){
 
 //get tokens from user id
 router.get('/db/userToken/:id', function(req, response){
+    console.log("router");
     con.query( "SELECT spotify_Token, apple_Token " + 
                 "FROM User " + 
                 "WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
