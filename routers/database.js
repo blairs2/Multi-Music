@@ -25,14 +25,11 @@ exports.get = function GetHandler(){
 }
 
 //checks db for song if found returns appleID and spotifyID else returns false
-router.get('/db/hasSong/:title/:artist/:album/:explicit', function(req, response){
-    console.log("router");
+router.get('/db/hasSong/:ID', function(req, response){
     con.query( "SELECT spotify_Song_ID, apple_Song_ID, song_ID " +
                 "FROM Song " +
-                "WHERE title = \"" + req.params.title + 
-                "\" AND artist = \"" + req.params.artist + 
-                "\" AND album = \"" + req.params.album +
-                "\" AND explicit = \"" + req.params.explicit + "\";", function (err, result, fields) {
+                "WHERE spotify_Song_ID = \"" + req.params.ID + 
+                "\" OR apple_Song_ID = \"" + req.params.ID +  "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db hasSong", err);
         }  else {
