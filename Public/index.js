@@ -115,14 +115,15 @@ document.getElementById('search-input').addEventListener("keyup", async function
 
              Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
                //The response should be a list with only one element
-               document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0], this.getAttribute("data-service"));
+               var playlistAttr = JSON.parse(values[0]).playlists[0];
+               document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(playlistAttr, this.getAttribute("data-service"));
                //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
                document.getElementById("playlist-convert").addEventListener("click", () => {
                  var playlist_id = document.getElementById("playlist-convert").getAttribute("data-value");
                  var user = "SampleUser"; //change this to read username from cookie
                  var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
-                 mm_playlist_id = establishPlaylist(playlist_id, values[0].playlists[0].title, user, current_service); //checks if playlist is already in the db, makes it if not
+                 mm_playlist_id = establishPlaylist(playlist_id, playlistAttr.title, user, current_service); //checks if playlist is already in the db, makes it if not
                  convertPlaylist(playlist_id, current_service);
 
                },false);
