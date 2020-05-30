@@ -34,11 +34,11 @@ app.use(express.static(__dirname + '/Public'))
 
 app.use(express.static(publicDir));
 
-//var apple_music_router = require('./routers/apple_music.js');
-//app.use(apple_music_router);
+var apple_music_router = require('./routers/apple_music.js');
+app.use(apple_music_router);
 
-//var spotify_router = require('./routers/spotify.js');
-//app.use(spotify_router);
+var spotify_router = require('./routers/spotify.js');
+app.use(spotify_router);
 
 var db = require('./routers/database.js');
 
