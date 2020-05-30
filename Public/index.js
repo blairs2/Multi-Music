@@ -659,6 +659,9 @@ function removeFeatureFromSong(song_title){
 *
 */
 async function establishPlaylist(playlist_id){
+      dbGetPlaylist(playlistID).then(response => {
+        console.log(response);
 
+      });
 
 }

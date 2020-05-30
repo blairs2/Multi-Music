@@ -31,16 +31,22 @@ function dbHasSong(ID){
  * get playlist from database
  * @param {string} playlistID the spotify or apple id of the playlist to get
  */
-function dbGetPlaylist(playlistID){
+ async function dbGetPlaylist(playlistID){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+          reject("Error");
+      }
+     }
     };
     xhttp.open('GET', 'http://' + URL + '/db/playlist/' + playlistID, true);
     xhttp.send(); // Gets the response
-}
+   });
+ }
 
 /**
  * take username and password and checks db if user exists
@@ -114,8 +120,8 @@ function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
  * add playlist to database
  * @param {string} title the title of the playlist
  * @param {string} user the id of the author of the playlist
- * @param {string} spotifyID the spotifyID of the playlist 
- * @param {string} appleID the appleID of the playlist 
+ * @param {string} spotifyID the spotifyID of the playlist
+ * @param {string} appleID the appleID of the playlist
  */
 function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
     var xhttp = new XMLHttpRequest();
@@ -177,7 +183,7 @@ function dbGetUserTokens(id){
 
 /**
  * delete all tracks from the playlist in db
- * @param {string} id the playlist db id of playlist to delete tracks from 
+ * @param {string} id the playlist db id of playlist to delete tracks from
  */
 function dbDeleteTracks(id){
     var xhttp = new XMLHttpRequest();
