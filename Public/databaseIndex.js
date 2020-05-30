@@ -23,7 +23,7 @@ document.getElementById("test3").addEventListener('click', () => {
     console.log("click"); 
     dbGetUser("testuser", 12345);
 	console.log("1");
-    dbGetPlaylist("Spotify"); // ad check for playlist id
+    dbGetPlaylist("Spotify"); // ad check for playlist id 
 	console.log("2");
     dbGetUserTokens(1);
 	console.log("3");
@@ -54,7 +54,7 @@ function dbHasSong(title, artist, album, explicit){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + title + '/' + artist + '/' + album + '/' + explicit == "clean" ? false : true, true);
+    xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + title + '/' + artist + '/' + album + '/' + explicit, true);
     xhttp.send(); // Gets the response
 }
 
@@ -137,7 +137,7 @@ function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + album + '/' + explicit == "clean" ? false : true, true + '/' + spotifyID + '/' + appleID, true);
+    xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + album + '/' + explicit + '/' + spotifyID + '/' + appleID, true);
     xhttp.send(); // Gets the response
 }
 

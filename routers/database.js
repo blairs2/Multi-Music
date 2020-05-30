@@ -114,7 +114,7 @@ router.post('/db/user/apple/:id/:token', function(req, response){
 
 //add song to db
 router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleID', function(req, response){
-    console.log("router");
+    console.log("router add Song");
     con.query( "INSERT INTO Song(title, artist, album, explicit, spotify_Song_ID, apple_Song_ID) " +
                 "VALUES (\"" + req.params.title + "\", \"" +
                         req.params.artist + "\", \"" +
@@ -150,7 +150,7 @@ router.put('/db/playlist/:title/:userID/:spotifyID/:appleID', function(req, resp
 router.put('/db/playlist/song/:playlistID/:songID', function(req, response){
     console.log("router");
     con.query( "INSERT INTO Song_Playlist(song_ID, playlist_ID) " +
-                "VALUES " + req.params.songID + ", " +
+                "VALUES (" + req.params.songID + ", " +
                         req.params.playlistID + ");", function (err, result, fields) {
         if (err) {
             console.log("ERROR adding song to playlist in db", err);
