@@ -4,9 +4,9 @@ const request = require('request'); // "Request" library
 const Spotify = require('spotify-web-api-node');
 //const cors = require('cors');
 const spotifyApi = new Spotify({
-  clientId: '832b12a20fb943ed9ef4b49ceca24b65', // Spotify client id
-  clientSecret: '191f46cbc6e04274bff4214a782e13b2', // Spotify secret
-  redirectUri: 'http://localhost:8080/spotify/callback' // Spotify redirect uri
+  clientId: '', // Spotify client id
+  clientSecret: '', // Spotify secret
+  redirectUri: '' // Spotify redirect uri
 });
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
