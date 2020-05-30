@@ -25,9 +25,8 @@ document.getElementById("test2").addEventListener('click', () => {
 });
 
 document.getElementById("test3").addEventListener('click', () => {
-    console.log("string".hashCode());
-    console.log("click");
-    
+    console.log(hashCode("string"));
+    console.log("click"); 
     dbGetUser("testuser", 12345);
 	console.log("1");
     dbGetPlaylist("Spotify"); // ad check for playlist id
@@ -38,6 +37,15 @@ document.getElementById("test3").addEventListener('click', () => {
 	console.log("4");
 });
 
+function hashCode(str){
+	var hash = 0;
+	for (var i = 0; i < str.length; i++) {
+		var character = str.charCodeAt(i);
+		hash = ((hash<<5)-hash)+character;
+		hash = hash & hash; // Convert to 32bit integer
+	}
+	return hash;
+}
 /**
  * check if song exists in database
  * @param {string} title the title of the song
@@ -83,7 +91,7 @@ function dbGetUser(name, code){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + code.hashCode(), true);
+    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
 }
 
@@ -186,7 +194,7 @@ function dbAddUser(name, code){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', "http://" + URL + '/db/user/' + name + '/' + code, true);
+    xhttp.open('PUT', "http://" + URL + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
 }
 

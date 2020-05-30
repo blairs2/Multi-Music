@@ -72,7 +72,7 @@ router.get('/db/user/:name/:code', function(req, response){
     console.log("router");
     con.query( "SELECT username, user_ID " + 
                 "FROM User " + 
-                "WHERE username = \"" + name + "\" AND password = " + code + ";", function (err, result, fields) {
+                "WHERE username = \"" + req.params.name + "\" AND password = " + req.params.code + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db user", err);
         }  else {
