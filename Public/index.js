@@ -120,8 +120,10 @@ document.getElementById('search-input').addEventListener("keyup", async function
                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
                document.getElementById("playlist-convert").addEventListener("click", () => {
                  var playlist_id = document.getElementById("playlist-convert").getAttribute("data-value");
-                 mm_playlist_id = establishPlaylist(playlist_id); //checks if playlist is already in the db, makes it if not
-                 convertPlaylist(playlist_id, document.getElementById("playlist-convert").getAttribute("data-service"));
+                 var user = "SampleUser"; //change this to read username from cookie
+                 var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
+                 mm_playlist_id = establishPlaylist(playlist_id, values[0].playlists[0].title, user, current_service); //checks if playlist is already in the db, makes it if not
+                 convertPlaylist(playlist_id, current_service);
 
                },false);
 
@@ -658,9 +660,24 @@ function removeFeatureFromSong(song_title){
 * @playlist_id is applemusic or spotify playlist id
 *
 */
-async function establishPlaylist(playlist_id){
+async function establishPlaylist(playlist_id, title, user, current_service){
+      var db_playlist_id;
       dbGetPlaylist(playlist_id).then(response => {
-        console.log(response);
+        if(response == false){
+          if(current_service == "Apple Music"){
+            dbAddPlaylist(title, user, spotifyID=null, appleID=playlist_id).then(()=>{
+                console.log(title, user, current_service, playlist_id);
+            });
+          } else if (current_service == "Spotify"){
+            dbAddPlaylist(title, user, spotifyID=playlist_id, appleID=null).then(()=>{
+              console.log(title, user, current_service, playlist_id);
+            });
+          } else {
+            console.log("Invalid Service");
+          }
+        } else {
+          console.log(response);
+        }
 
       });
 

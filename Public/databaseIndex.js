@@ -123,15 +123,21 @@ function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
  * @param {string} spotifyID the spotifyID of the playlist
  * @param {string} appleID the appleID of the playlist
  */
-function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-    xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID, true);
-    xhttp.send(); // Gets the response
+async function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
+	 var xhttp = new XMLHttpRequest();
+	 return new Promise(function(resolve, reject) {
+		 xhttp.onreadystatechange = function ReceivedCallback() {
+		 if (this.readyState == 4) { //Upon getting a response
+			 if(this.status == 200){
+				 resolve(this.responseText);
+			 } else {
+				 reject("Error");
+		 }
+		}
+	 };
+	 xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID, true);
+	 xhttp.send(); // Gets the response
+	});
 }
 
 /**
