@@ -14,14 +14,8 @@ document.getElementById("test-button").addEventListener('click', () => {
 	console.log("6");
 });
 document.getElementById("test2").addEventListener('click', () => {
-    console.log("clicking");
     dbUpdateAppleToken(1,"apple2");
-	console.log("1");
     dbUpdateSpotifyToken(1, "spotfy2");
-	console.log("2");
-        console.log("1");
-    dbUpdateSpotifyToken(1, "spotfy2");
-        console.log("2");
 });
 
 document.getElementById("test3").addEventListener('click', () => {
@@ -75,7 +69,7 @@ function dbGetPlaylist(playlistID){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/playlist/' + playlist, true);
+    xhttp.open('GET', 'http://' + URL + '/db/playlist/' + playlistID, true);
     xhttp.send(); // Gets the response
 }
 
@@ -161,7 +155,7 @@ function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleId, true);
+    xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID, true);
     xhttp.send(); // Gets the response
 }
 
@@ -188,7 +182,6 @@ function dbAddSongToPlaylist(playlistID, songID){
  */
 function dbAddUser(name, code){
     var xhttp = new XMLHttpRequest();
-    console.log("1");
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));

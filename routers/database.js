@@ -70,7 +70,6 @@ router.get('/db/playlist/:playlistID', function(req, response){
 
 //get user id from username and password
 router.get('/db/user/:name/:code', function(req, response){
-    console.log("router");
     con.query( "SELECT username, user_ID " + 
                 "FROM User " + 
                 "WHERE username = \"" + req.params.name + "\" AND password = " + req.params.code + ";", function (err, result, fields) {
@@ -88,7 +87,6 @@ router.get('/db/user/:name/:code', function(req, response){
 
 //update users spotify token
 router.post('/db/user/spotify/:id/:token', function(req, response){
-    console.log("router");
     con.query( "UPDATE User " +
                 "SET spotify_Token = \"" + req.params.token + 
                 "\" WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
@@ -164,7 +162,6 @@ router.put('/db/playlist/song/:playlistID/:songID', function(req, response){
 
 //add user to db
 router.put('/db/user/:name/:code', function(req, response){
-    console.log("router");
     con.query( "INSERT INTO User(username, password) " +
                 "VALUES (\"" + req.params.name + "\", " +
                         req.params.code + ");", function (err, result, fields) {
@@ -174,7 +171,6 @@ router.put('/db/user/:name/:code', function(req, response){
             response.send(result);      
         }
     });
-    console.log("1");
 });
 
 //get tokens from user id
