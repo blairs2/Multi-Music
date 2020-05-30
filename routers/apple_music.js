@@ -34,6 +34,9 @@ Function converts Apple Music search reqponse json to the standard Multi Music s
 function AM_to_MM_search(am_response){
   //am_response - apple music search response json
   const multi_music_obj = {};
+  if(am_response.hasOwnProperty("errors")){
+    return JSON.stringify(am_response);
+  }
   //This is an array of all the types that were returned in the search
   // ex songs, playlists, albums, etc
   var result_types = am_response.meta.results.order;
@@ -122,6 +125,10 @@ router.get('/apple-music/catalog/search/:search_term', function(request, respons
           res.on('data', (chunk) => {
             data += chunk;
           });
+          res.on('error', ()=>{
+            console.log(e);
+
+          });
           // The whole response has been received. send the result.
           res.on('end', () => {
             response.send(AM_to_MM_search(JSON.parse(data))); //Convert apple music json to multi music json
@@ -185,7 +192,11 @@ router.get('/apple-music/catalog/playlists/:playlist_id/relationships', function
         });
         // The whole response has been received. send the result.
         res.on('end', () => {
-          response.send(AM_to_MM_playlist_tracks(JSON.parse(data)));
+          if(res.statusCode==200){
+            response.send(AM_to_MM_playlist_tracks(JSON.parse(data)));
+          }else{
+            response.send("error");
+          }
         });
   });
 });
