@@ -20,20 +20,37 @@ document.addEventListener('musickitloaded', () => {
     //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
     music.authorize().then(musicUserToken => {
       addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
-      retreiveUserPlaylists(); //Populates the left hand side of screen with all the playlsits in the users library
+      //Populates the left hand side of screen with all the playlsits in the users library
+      retreiveUserPlaylists().then(playlists =>{
+        //This block of code generates the list of playlists on the left hand side of the screen
+        var cloudPlaylists = JSON.parse(playlists).playlists;
+        var retval = '';
+        for(var i =0; i < cloudPlaylists.length; i++){
+          var playlistName = cloudPlaylists[i].title;
+          var playlist_id = cloudPlaylists[i].id;
+
+          retval += `<button class="list-group-item playlist-button" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
+        }
+        document.getElementById('user-playlists').innerHTML = retval;
+        var user_playlists = document.getElementsByClassName("playlist-button");
+        //Add event listener to each playlist.
+        //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
+        for (var i = 0; i < user_playlists.length; i++) {
+           user_playlists[i].addEventListener('click', function() {
+               //Generates the div to be populated in playlist view
+               document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+               //Gets the attributes of a user's playlist
+               //Function being called will produce  upon recieving a json response
+               getPlaylistAttributes(this.getAttribute("data-value"));
+               getPlaylistTracks(this.getAttribute("data-value"));
+              },false);
+       }
+      });
     });
   });
 });
 
-// document.getElementById('login-btn').addEventListener('click', () => {
-//   //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-//   music.authorize().then(musicUserToken => {
-//     addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
-//   });
-//
-//
-//   retreiveUserPlaylists(); //Populates the left hand side of screen with all the playlsits in the users library
-// });
+
 
 document.getElementById('search-input').addEventListener("keyup", async function(event){
   //When user clicks enter in our search bar
@@ -97,42 +114,20 @@ document.getElementById('search-input').addEventListener("keyup", async function
 
 
              Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
-               // convertPlaylist(this.getAttribute("data-value"), this.getAttribute("data-service")); //causing error for spotify to apple music
                //The response should be a list with only one element
-               document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0]);
+               document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0], this.getAttribute("data-service"));
                //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
-               var el = document.querySelector('.more');
-               var btn = el.querySelector('.more-btn');
-               var menu = el.querySelector('.more-menu');
-               var visible = false;
+               document.getElementById("playlist-convert").addEventListener("click", () => {
+                 var playlist_id = document.getElementById("playlist-convert").getAttribute("data-value");
+                 mm_playlist_id = establishPlaylist(playlist_id); //checks if playlist is already in the db, makes it if not
+                 convertPlaylist(playlist_id, document.getElementById("playlist-convert").getAttribute("data-service"));
 
-               function showMenu(e) {
-                  e.preventDefault();
-                  if (!visible) {
-                      visible = true;
-                      el.classList.add('show-more-menu');
-                      menu.setAttribute('aria-hidden', false);
-                      document.addEventListener('mousedown', hideMenu, false);
-                  }
-               }
-
-               function hideMenu(e) {
-                  if (btn.contains(e.target)) {
-                      return;
-                  }
-                  if (visible) {
-                      visible = false;
-                      el.classList.remove('show-more-menu');
-                      menu.setAttribute('aria-hidden', true);
-                      document.removeEventListener('mousedown', hideMenu);
-                  }
-               }
-
-               btn.addEventListener('click', showMenu, false);
+               },false);
 
                if(this.getAttribute("data-service")=="Apple Music"){
                //Add event listener for each song button. Upon click it will queue up the song to be played
+
                var song_elements = document.getElementsByClassName("song-button");
                for (var i = 0; i < song_elements.length; i++) {
                   song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
@@ -157,7 +152,6 @@ document.getElementById('next-btn').addEventListener("click", () =>{
 document.getElementById('last-btn').addEventListener("click", () =>{
   music.skipToPreviousItem();
 });
-
 
 document.getElementById('play-btn').addEventListener('click', () => {
   /***
@@ -235,38 +229,22 @@ function autocomplete(input, arr) {
 //GET functions
 /////////////////////////////
 
-function retreiveUserPlaylists(){
+async function retreiveUserPlaylists(){
   var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function ReceivedCallback() {
-    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      //This block of code generates the list of playlists on the left hand side of the screen
-      var cloudPlaylists = JSON.parse(this.responseText).playlists;
-      var retval = '';
-      for(var i =0; i < cloudPlaylists.length; i++){
-        var playlistName = cloudPlaylists[i].title;
-        var playlist_id = cloudPlaylists[i].id;
-
-        retval += `<button class="list-group-item playlist-button" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
-      }
-      document.getElementById('user-playlists').innerHTML = retval;
-      var user_playlists = document.getElementsByClassName("playlist-button");
-      //Add event listener to each playlist.
-      //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
-      for (var i = 0; i < user_playlists.length; i++) {
-         user_playlists[i].addEventListener('click', function() {
-             //Generates the div to be populated in playlist view
-             document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
-             //Gets the attributes of a user's playlist
-             //Function being called will produce  upon recieving a json response
-             getPlaylistAttributes(this.getAttribute("data-value"));
-             getPlaylistTracks(this.getAttribute("data-value"));
-            },false);
-     }
+  return new Promise(function(resolve, reject) {
+    xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4) { //Upon getting a response
+      if(this.status == 200){
+        // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+        resolve(this.responseText);
+      } else {
+      reject("Error");
     }
+   }
   };
   xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists", true);
-  // xhttp.setRequestHeader('music-user-token:', music_user_token);
   xhttp.send(); // Gets the response
+ });
 }
 
 //Gets the users library of songs (default 25)
@@ -357,7 +335,7 @@ async function searchByTerm(searchTerm){
          // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
          resolve(this.responseText);
        } else {
-       reject("Error");
+         reject("Error");
      }
     }
    };
@@ -423,37 +401,34 @@ function getPlaylistTracks(playlist_id){
   xhttp.send(); // Gets the response
 }
 
+//   var xhttp = new XMLHttpRequest();
+//   return new Promise(function(resolve, reject) {
+//     xhttp.onreadystatechange = function ReceivedCallback() {
+//     if (this.readyState == 4) { //Upon getting a response
+//       if(this.status == 200){
+//         // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+//         resolve(this.responseText);
+//       } else {
+//       reject("Error");
+//     }
+//    }
+//   };
+//   xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
+//   xhttp.send(); // Gets the response
+//  });
+// }
+
 function getPlaylistAttributes(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-      var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0]);
+      var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0], "Apple Music");
       document.getElementById("playlist-attributes").innerHTML = retval;
-      var el = document.querySelector('.more');
-      var btn = el.querySelector('.more-btn');
-      var menu = el.querySelector('.more-menu');
-      var visible = false;
-      function showMenu(e) {
-          e.preventDefault();
-          if (!visible) {
-              visible = true;
-              el.classList.add('show-more-menu');
-              menu.setAttribute('aria-hidden', false);
-              document.addEventListener('mousedown', hideMenu, false);
-          }
-      }
-      function hideMenu(e) {
-          if (btn.contains(e.target)) {
-              return;
-          }
-          if (visible) {
-              visible = false;
-              el.classList.remove('show-more-menu');
-              menu.setAttribute('aria-hidden', true);
-              document.removeEventListener('mousedown', hideMenu);
-          }
-      }
-      btn.addEventListener('click', showMenu, false);
+      document.getElementById("playlist-convert").addEventListener("click", () => {
+        console.log("clicked playlist");
+        convertPlaylist(document.getElementById("playlist-convert").getAttribute("data-value"), document.getElementById("playlist-convert").getAttribute("data-service"));
+
+      },false);
     }
   };
   xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id , true);
@@ -553,7 +528,7 @@ return searchResults;
 /* This function will generate the playlist attributes display
  @param playlist_attributes is a multi music json containing a single playlist's attributes
 */
-function displayPlaylistAttributes(playlist_attributes){
+function displayPlaylistAttributes(playlist_attributes, service){
   var retval = "";
   var playlistTitle = playlist_attributes.title;
   retval += `<h4>${playlistTitle}</h4>`;
@@ -569,14 +544,7 @@ function displayPlaylistAttributes(playlist_attributes){
     retval += `<h7>"${playlistDescription}"</h7>`;
   }
   retval += '</div>';
-  retval += '<div class="option-container">';
-  retval += '<div class="more">';
-  retval += '<button id="more-btn" class="more-btn"><span class="more-dot"></span><span class="more-dot"></span><span class="more-dot"></span></button>';
-  retval += '<div class="more-menu"><div class="more-menu-caret"><div class="more-menu-caret-outer"></div><div class="more-menu-caret-inner"></div></div>';
-  retval += '<ul class="more-menu-items" tabindex="-1" role="menu" aria-labelledby="more-btn" aria-hidden="true">';
-  retval += '<li class="more-menu-item" role="presentation"><button type="button" class="more-menu-btn" role="menuitem">Convert to AppleMusic</button></li>';
-  retval += '<li class="more-menu-item" role="presentation"><button type="button" class="more-menu-btn" role="menuitem">Convert to Spotify</button></li>';
-  retval += '</ul></div></div></div>';
+  retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button>`;
   return retval;
 }
 
@@ -614,6 +582,9 @@ function applePlay(id, contentType){
 
 /*
 will convert playlist from current_service to new_service
+* @playlist_id is the id of the playlist
+* @current_service is the current service of the playlist Apple Music or Spotify
+* @catalog is a boolean 1 it will search the catalog 0 will search the library
 */
 async function convertPlaylist(playlist_id, current_service){
   var new_sercie;
@@ -638,28 +609,56 @@ async function convertPlaylist(playlist_id, current_service){
    var search, track, matches;
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
-     search = (track.title + "+" + track.artist).replace(/ /g, '+');
-     //check db first
+     search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+');
      if(new_service == "Spotify"){
        spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
-         var song_matches = JSON.parse(value).songs.data;
-         if(song_matches.length > 0){
-           console.log(new_service + " Match", song_matches[0].title);
-         } else {
-           console.log("NOT FOUND");
+         var response = JSON.parse(value);
+         if(response.hasOwnProperty("songs")){
+           var song_matches = response.songs.data;
+           if(song_matches.length > 0){
+             console.log(new_service + " Match", song_matches[0].title);
+           } else {
+             console.log("NOT FOUND");
+           }
          }
        });
      } else if(new_service == "Apple Music") {
        searchByTerm('term=' + search + '&limit=1&types=songs').then((value) => {
-         var song_matches = JSON.parse(value).songs.data;
-         if(song_matches.length > 0){
-           console.log(new_service + " Match", song_matches[0].title);
-         } else {
-           console.log("NOT FOUND");
+         var response = JSON.parse(value);
+         if(response.hasOwnProperty("songs")){
+           var song_matches = response.songs.data;
+           if(song_matches.length > 0){
+             console.log(new_service + " Match", song_matches[0].title);
+           } else {
+             console.log("NOT FOUND");
+           }
          }
        });
      }
 
    }
  });
+}
+
+/*
+* Takes a song title and removes the (feat...)
+* makes cross searching services easier
+*
+*/
+function removeFeatureFromSong(song_title){
+  var idx = song_title.indexOf("(feat");
+  if(idx > 0){//The string contains a feat tag
+    return song_title.slice(0, idx);
+  }
+  return song_title;
+}
+
+/*
+* Queries database checking the playlist table apple playlists or spotify playlists that match @playlist_id
+* @playlist_id is applemusic or spotify playlist id
+*
+*/
+async function establishPlaylist(playlist_id){
+
+
 }

@@ -178,7 +178,7 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
           retval = { tracks: []};
 
           for(i = 0; i < body.tracks.limit; i++){
-            if(body.tracks.items[i] != null){
+            if(body.tracks.items[i] != null && body.tracks.items[i].track != null){
               retval.tracks.push({
                 title: body.tracks.items[i].track.name,
                 artist: body.tracks.items[i].track.artists[0].name,
@@ -349,45 +349,47 @@ router.get('/spotify/search/:keyword', function(req, response){
         //console.log(body);
         retval = {} //json to but returned to multimusic
 
-        if(body.hasOwnProperty("tracks")){
-          retval.songs = {data:[]};
-          for (i = 0; i < body.tracks.limit; i++){
-            if(body.tracks.items[i] != null){
-              retval.songs.data.push({ //append songs to retval.songs
-                title: body.tracks.items[i].name,
-                artist: body.tracks.items[i].artists[0].name,
-                artwork: body.tracks.items[i].album.images[1].url,
-                id: body.tracks.items[i].id,
-                href: body.tracks.items[i].href});
+          if(body != null){
+            if(body.hasOwnProperty("tracks")){
+            retval.songs = {data:[]};
+            for (i = 0; i < body.tracks.limit; i++){
+              if(body.tracks.items[i] != null){
+                retval.songs.data.push({ //append songs to retval.songs
+                  title: body.tracks.items[i].name,
+                  artist: body.tracks.items[i].artists[0].name,
+                  artwork: body.tracks.items[i].album.images[1].url,
+                  id: body.tracks.items[i].id,
+                  href: body.tracks.items[i].href});
+                }
               }
-            }
-        }
-        if(body.hasOwnProperty("albums")){
-          retval.albums = {data:[]};
-          for (i = 0; i < body.albums.limit; i++){
-            if(body.albums.items[i] != null){
-              retval.albums.data.push({ //append albums to retval.albums
-                title: body.albums.items[i].name,
-                artist: body.albums.items[i].artists[0].name,
-                artwork: body.albums.items[i].images[1].url,
-                id: body.albums.items[i].id,
-                href: body.albums.items[i].href});
-              }
-            }
           }
-        if(body.hasOwnProperty("playlists")){
-          retval.playlists = {data:[]};
-          for (i = 0; i < body.playlists.limit; i++){
-            if(body.playlists.items[i] != null){
-                retval.playlists.data.push({ //append playlists to retval.playlists
-                  title: body.playlists.items[i].name,
-                  artwork: body.playlists.items[i].images.length != 0 ?
-                           body.playlists.items[i].length == 1 ?
-                           body.playlists.items[i].images[1].url :
-                           body.playlists.items[i].images[0].url : null,
-                  id: body.playlists.items[i].id,
-                  href: body.playlists.items[i].href
-                });
+          if(body.hasOwnProperty("albums")){
+            retval.albums = {data:[]};
+            for (i = 0; i < body.albums.limit; i++){
+              if(body.albums.items[i] != null){
+                retval.albums.data.push({ //append albums to retval.albums
+                  title: body.albums.items[i].name,
+                  artist: body.albums.items[i].artists[0].name,
+                  artwork: body.albums.items[i].images[1].url,
+                  id: body.albums.items[i].id,
+                  href: body.albums.items[i].href});
+                }
+              }
+            }
+          if(body.hasOwnProperty("playlists")){
+            retval.playlists = {data:[]};
+            for (i = 0; i < body.playlists.limit; i++){
+              if(body.playlists.items[i] != null){
+                  retval.playlists.data.push({ //append playlists to retval.playlists
+                    title: body.playlists.items[i].name,
+                    artwork: body.playlists.items[i].images.length != 0 ?
+                             body.playlists.items[i].length == 1 ?
+                             body.playlists.items[i].images[1].url :
+                             body.playlists.items[i].images[0].url : null,
+                    id: body.playlists.items[i].id,
+                    href: body.playlists.items[i].href
+                  });
+                }
               }
             }
           }

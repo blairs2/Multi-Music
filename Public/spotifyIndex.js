@@ -31,16 +31,22 @@ function spotifyGetUser(){
 /**
  * Get a list of the the user playlists and all the tracks in each playlist
  */
-function spotifyGetUserPlaylists(){
+async function spotifyGetUserPlaylists(){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+          reject("Error");
+      }
+     }
     };
     xhttp.open('GET', 'http://' + URL + '/spotify/playlists', true);
     xhttp.send(); // Gets the response
-}
+    });
+  }
 
 /**
  * Get the tracks from the Spotify playlist specifed by the playlistid
@@ -52,7 +58,6 @@ async function spotifyGetPlaylistTracks(playlistid){
      xhttp.onreadystatechange = function ReceivedCallback() {
      if (this.readyState == 4) { //Upon getting a response
        if(this.status == 200){
-         // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
          resolve(this.responseText);
        } else {
          reject("Error");
