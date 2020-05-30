@@ -53,9 +53,9 @@ router.get('/db/playlist/:playlistID', function(req, response){
                 "FROM Playlist p " +
                 "JOIN Song_Playlist sXp on p.playlist_ID = sXp.playlist_ID " +
                 "JOIN Song s ON s.song_ID = sXp.song_ID " +
-                "WHERE spotify_Playlist_ID = \"" + req.params.playlistID + 
-                "\" OR apple_Playlist_ID = \"" + req.params.playlistID +
-                "\" OR playlist_ID = \"" + req.params.playlistID + "\";", function (err, result, fields) {
+                "WHERE p.spotify_Playlist_ID = \"" + req.params.playlistID + 
+                "\" OR p.apple_Playlist_ID = \"" + req.params.playlistID +
+                "\" OR p.playlist_ID = \"" + req.params.playlistID + "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db Playlist", err);
         }  else {
