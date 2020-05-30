@@ -664,7 +664,7 @@ function removeFeatureFromSong(song_title){
 async function establishPlaylist(playlist_id, title, user, current_service){
       var db_playlist_id;
       dbGetPlaylist(playlist_id).then(response => {
-        if(response == false){
+        if(response == 'false'){
           if(current_service == "Apple Music"){
             dbAddPlaylist(title, user, spotifyID=null, appleID=playlist_id).then(()=>{
                 console.log(title, user, current_service, playlist_id);
