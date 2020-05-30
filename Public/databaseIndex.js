@@ -154,7 +154,7 @@ function dbAddUser(name, code){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', URL + '/db/user/' + name + '/' + code, true);
+    xhttp.open('PUT', "http://" + URL + '/db/user/' + name + '/' + code, true);
     xhttp.send(); // Gets the response
 }
 

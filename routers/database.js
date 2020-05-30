@@ -5,10 +5,10 @@ var mysql = require('mysql');
 var con;
 
 con = mysql.createConnection({
-        host: "",
-        user: "",
-        password: "",
-        database: ""
+        host: "mm-database.cy6luhf4l9xi.us-east-2.rds.amazonaws.com",
+        user: "multimusicAdmin",
+        password: "MmdbAdmin20",
+        database: "MultiMusicDB"
     });
 
 con.connect(function ConnectionHandler(err){
@@ -154,9 +154,10 @@ router.put('/db/playlist/song/:playlistID/:songID', function(req, response){
 
 //add user to db
 router.put('/db/user/:name/:code', function(req, response){
+	console.log("route");
     con.query( "INSERT INTO User(username, password) " +
-                "VALUES (" + req.params.name + ", " +
-                        req.params.code, function (err, result, fields) {
+                "VALUES (\"" + req.params.name + "\", " +
+                        req.params.code + ");", function (err, result, fields) {
         if (err) {
             console.log("ERROR adding song to playlist in db", err);
         }  else {
