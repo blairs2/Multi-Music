@@ -173,3 +173,17 @@ function dbGetUserTokens(id){
     xhttp.send(); // Gets the response
 }
 
+/**
+ * delete all tracks from the playlist in db
+ * @param {string} id the playlist db id of playlist to delete tracks from 
+ */
+function dbDeleteTracks(id){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+            console.log(JSON.parse(this.responseText));
+        }
+    };
+    xhttp.open('DELETE', 'http://' + URL + '/db/delete/tracks/' + id, true);
+    xhttp.send(); // Gets the response
+}

@@ -44,7 +44,6 @@ router.get('/db/hasSong/:ID', function(req, response){
 
 //get playlist from db using spotify/apple or playlist id
 router.get('/db/playlist/:playlistID', function(req, response){
-    console.log("router");
     con.query( "SELECT p.playlist_Name, p.spotify_Playlist_ID, p.apple_Playlist_ID, p.playlist_ID, " + 
                 "s.title, s.spotify_Song_ID, s.apple_Song_ID, s.artist, s.explicit, s.album " + 
                 "FROM Playlist p " +
@@ -97,7 +96,6 @@ router.post('/db/user/spotify/:id/:token', function(req, response){
 
 //update users apple token
 router.post('/db/user/apple/:id/:token', function(req, response){
-    console.log("router");
     con.query( "UPDATE User " +
                 "SET apple_Token = \"" + req.params.token + 
                 "\" WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
@@ -111,7 +109,6 @@ router.post('/db/user/apple/:id/:token', function(req, response){
 
 //add song to db
 router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleID', function(req, response){
-    console.log("router add Song");
     con.query( "INSERT INTO Song(title, artist, album, explicit, spotify_Song_ID, apple_Song_ID) " +
                 "VALUES (\"" + req.params.title + "\", \"" +
                         req.params.artist + "\", \"" +
@@ -172,10 +169,25 @@ router.put('/db/user/:name/:code', function(req, response){
 
 //get tokens from user id
 router.get('/db/userToken/:id', function(req, response){
-    console.log("router");
     con.query( "SELECT spotify_Token, apple_Token " + 
                 "FROM User " + 
                 "WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
+        if (err) {
+            console.log("ERROR in db userToken", err);
+        }  else {
+            if (result.length != 0){ // if record found
+                response.send(result);
+            } else {
+                response.send(false);
+            }           
+        }
+    });
+});
+
+//delete all songs from playlist
+router.delete('/db/delete/tracks/:id', function(req, response){
+    con.query( "DELETE FROM Song_Playlist" + 
+                " WHERE playlist_ID = \"" + req.params.id + "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db userToken", err);
         }  else {
