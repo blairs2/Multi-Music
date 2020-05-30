@@ -65,7 +65,7 @@ function dbGetUser(name, code){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + code, true);
+    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + code.hashCode(), true);
     xhttp.send(); // Gets the response
 }
 
