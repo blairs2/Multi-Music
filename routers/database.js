@@ -30,7 +30,7 @@ router.get('/db/hasSong/:title/:artist/:album/:explicit', function(req, response
                 "WHERE title = " + req.params.title + 
                 " AND artist = " + req.params.artist + 
                 " AND album = " + req.params.album +
-                " AND explicit = " + req.params.explicit, function (err, result, fields) {
+                " AND explicit = " + req.params.explicit + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db hasSong", err);
         }  else {
@@ -43,7 +43,7 @@ router.get('/db/hasSong/:title/:artist/:album/:explicit', function(req, response
       });
 });
 
-//get playlist from db using spotify/apple playlist id
+//get playlist from db using spotify/apple or playlist id
 router.get('/db/playlist/:playlistID', function(req, response){
     con.query( "SELECT p.playlist_Name, p.spotify_Playlist_ID, p.apple_Playlist_ID, p.playlist_ID, " + 
                 "s.title, s.spotify_Song_ID, s.apple_Song_ID, s.artist, s.explicit, s.album " + 
@@ -51,7 +51,8 @@ router.get('/db/playlist/:playlistID', function(req, response){
                 "JOIN Song_Playlist sXp on p.playlist_ID = sXp.playlist_ID " +
                 "JOIN Song s ON s.song_ID = sXp.song_ID " +
                 "WHERE spotify_Playlist_ID = " + req.params.playlistID + 
-                " OR apple_Playlist_ID = " + req.params.playlistID, function (err, result, fields) {
+                " OR apple_Playlist_ID = " + req.params.playlistID +
+                " OR playlist_ID = " + req.params.playlistID + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db Playlist", err);
         }  else {
@@ -68,7 +69,7 @@ router.get('/db/playlist/:playlistID', function(req, response){
 router.get('/db/user/:name/:code', function(req, response){
     con.query( "SELECT username, user_ID " + 
                 "FROM User " + 
-                "WHERE username = " + name + " AND password = " + code, function (err, result, fields) {
+                "WHERE username = " + name + " AND password = " + code + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db user", err);
         }  else {
@@ -85,7 +86,7 @@ router.get('/db/user/:name/:code', function(req, response){
 router.post('/db/user/spotify/:id/:token', function(req, response){
     con.query( "UPDATE User " +
                 "SET spotify_Token = " + req.params.token + 
-                "WHERE user_ID = " + req.params.id, function (err, result, fields) {
+                "WHERE user_ID = " + req.params.id + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db spotify token", err);
         }  else {
@@ -98,7 +99,7 @@ router.post('/db/user/spotify/:id/:token', function(req, response){
 router.post('/db/user/apple/:id/:token', function(req, response){
     con.query( "UPDATE User " +
                 "SET apple_Token = " + req.params.token + 
-                "WHERE user_ID = " + req.params.id, function (err, result, fields) {
+                "WHERE user_ID = " + req.params.id + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db apple token", err);
         }  else {
@@ -115,7 +116,7 @@ router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleId', funct
                         req.params.album + ", " +
                         req.params.explicit + ", " +
                         req.params.spotifyID + ", " +
-                        req.params.appleID, function (err, result, fields) {
+                        req.params.appleID + ");", function (err, result, fields) {
         if (err) {
             console.log("ERROR adding song to db", err);
         }  else {
@@ -130,7 +131,7 @@ router.put('/db/playlist/:title/:user/:spotifyID/:appleId', function(req, respon
                 "VALUES (" + req.params.title + ", " +
                         req.params.user + ", " +
                         req.params.spotifyID + ", " +
-                        req.params.appleID, function (err, result, fields) {
+                        req.params.appleID + ");", function (err, result, fields) {
         if (err) {
             console.log("ERROR adding playlist to db", err);
         }  else {
@@ -143,7 +144,7 @@ router.put('/db/playlist/:title/:user/:spotifyID/:appleId', function(req, respon
 router.put('/db/playlist/song/:playlistID/:songID', function(req, response){
     con.query( "INSERT INTO Song_Playlist(song_ID, playlist_ID) " +
                 "VALUES (" + req.params.songID + ", " +
-                        req.params.playlistID, function (err, result, fields) {
+                        req.params.playlistID + ");", function (err, result, fields) {
         if (err) {
             console.log("ERROR adding song to playlist in db", err);
         }  else {
@@ -156,7 +157,7 @@ router.put('/db/playlist/song/:playlistID/:songID', function(req, response){
 router.put('/db/user/:name/:code', function(req, response){
     con.query( "INSERT INTO User(username, password) " +
                 "VALUES (" + req.params.name + ", " +
-                        req.params.code, function (err, result, fields) {
+                        req.params.code + ");", function (err, result, fields) {
         if (err) {
             console.log("ERROR adding song to playlist in db", err);
         }  else {
@@ -170,7 +171,7 @@ router.put('/db/user/:name/:code', function(req, response){
 router.get('/db/userToken/:id', function(req, response){
     con.query( "SELECT spotify_Token, apple_Token " + 
                 "FROM User " + 
-                "WHERE user_ID = " + req.params.id, function (err, result, fields) {
+                "WHERE user_ID = " + req.params.id + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db userToken", err);
         }  else {
