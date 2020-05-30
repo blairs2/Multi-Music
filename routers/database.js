@@ -5,10 +5,10 @@ var mysql = require('mysql');
 var con;
 
 con = mysql.createConnection({
-        host: "",
-        user: "",
-        password: "",
-        database: ""
+        host: "mm-database.cy6luhf4l9xi.us-east-2.rds.amazonaws.com",
+        user: "multimusicAdmin",
+        password: "MmdbAdmin20",
+        database: "MultiMusicDB"
     });
 
 con.connect(function ConnectionHandler(err){
