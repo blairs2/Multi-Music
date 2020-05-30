@@ -1,4 +1,4 @@
-const URL = "localhost:8080";
+const URL = window.location.host;
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined

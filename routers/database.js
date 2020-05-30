@@ -5,10 +5,10 @@ var mysql = require('mysql');
 var con;
 
 con = mysql.createConnection({
-        host: "",
-        user: "",
-        password: "",
-        database: ""
+        host: "mm-database.cy6luhf4l9xi.us-east-2.rds.amazonaws.com",
+        user: "multimusicAdmin",
+        password: "MmdbAdmin20",
+        database: "MultiMusicDB"
     });
 
 
@@ -73,7 +73,7 @@ router.get('/db/user/:name/:code', function(req, response){
     console.log("router");
     con.query( "SELECT username, user_ID " + 
                 "FROM User " + 
-                "WHERE username = \"" + name + "\" AND password = " + code + ";", function (err, result, fields) {
+                "WHERE username = \"" + req.params.name + "\" AND password = " + req.params.code + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db user", err);
         }  else {

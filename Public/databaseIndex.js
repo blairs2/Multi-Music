@@ -1,39 +1,51 @@
 document.getElementById("test-button").addEventListener('click', () => {
     console.log("CLICK");
     dbAddUser("testuser", 12345);
-        console.log("1");
+	console.log("1");
     dbAddPlaylist("testPlaylist", 1, "Spotify", "Apple"); // send user id
-        console.log("2");
+	console.log("2");
     dbAddSong("testsong", "me", "album", "clean", "Spotify1", "Apple");
-        console.log("3");
+	console.log("3");
     dbAddSong("testsong2", "me", "album", "g", "Spotify", "Apple");
-        console.log("4");
+	console.log("4");
     dbAddSongToPlaylist(1, 1);
-        console.log("5");
+	console.log("5");
     dbAddSongToPlaylist(1, 2);
-        console.log("6");
+	console.log("6");
 });
 document.getElementById("test2").addEventListener('click', () => {
     console.log("clicking");
     dbUpdateAppleToken(1,"apple2");
+	console.log("1");
+    dbUpdateSpotifyToken(1, "spotfy2");
+	console.log("2");
         console.log("1");
     dbUpdateSpotifyToken(1, "spotfy2");
         console.log("2");
 });
-document.getElementById("test3").addEventListener('click', () => {
-    console.log("string".hashCode());
-    console.log("click");
-    
-    dbGetUser("testuser", 12345);
-        console.log("1");
-    dbGetPlaylist("Spotify"); // ad check for playlist id
-        console.log("2");
-    dbGetUserTokens(1);
-        console.log("3");
-    dbHasSong("testsong", "me", "album", "clean");
-        console.log("4");
-})
 
+document.getElementById("test3").addEventListener('click', () => {
+    console.log(hashCode("string"));
+    console.log("click"); 
+    dbGetUser("testuser", 12345);
+	console.log("1");
+    dbGetPlaylist("Spotify"); // ad check for playlist id
+	console.log("2");
+    dbGetUserTokens(1);
+	console.log("3");
+    dbHasSong("testsong", "me", "album", "clean");
+	console.log("4");
+});
+
+function hashCode(str){
+	var hash = 0;
+	for (var i = 0; i < str.length; i++) {
+		var character = str.charCodeAt(i);
+		hash = ((hash<<5)-hash)+character;
+		hash = hash & hash; // Convert to 32bit integer
+	}
+	return hash;
+}
 /**
  * check if song exists in database
  * @param {string} title the title of the song
@@ -79,7 +91,7 @@ function dbGetUser(name, code){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + code.hashCode(), true);
+    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
 }
 
@@ -182,7 +194,7 @@ function dbAddUser(name, code){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', 'http://' + URL + '/db/user/' + name + '/' + code, true);
+    xhttp.open('PUT', "http://" + URL + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
 }
 
