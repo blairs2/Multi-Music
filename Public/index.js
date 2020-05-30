@@ -121,9 +121,9 @@ document.getElementById('search-input').addEventListener("keyup", async function
                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
                document.getElementById("playlist-convert").addEventListener("click", () => {
                  var playlist_id = document.getElementById("playlist-convert").getAttribute("data-value");
-                 var user = "SampleUser"; //change this to read username from cookie
+                 var user_id = 12; //change this to read username from cookie
                  var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
-                 mm_playlist_id = establishPlaylist(playlist_id, playlistAttr.title, user, current_service); //checks if playlist is already in the db, makes it if not
+                 mm_playlist_id = establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service); //checks if playlist is already in the db, makes it if not
                  convertPlaylist(playlist_id, current_service);
 
                },false);
@@ -661,7 +661,7 @@ function removeFeatureFromSong(song_title){
 * @playlist_id is applemusic or spotify playlist id
 *
 */
-async function establishPlaylist(playlist_id, title, user, current_service){
+async function establishPlaylist(playlist_id, title, user_id, current_service){
       var db_playlist_id;
       dbGetPlaylist(playlist_id).then(response => {
         if(response == 'false'){

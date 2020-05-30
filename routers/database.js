@@ -128,9 +128,9 @@ router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleID', funct
 //add playlist to db
 router.put('/db/playlist/:title/:userID/:spotifyID/:appleID', function(req, response){
     console.log("router");
-    con.query( "INSERT INTO Playlist(playlist_Name, user_ID, spotify_Playlist_ID, apple_Playlist_ID) " +
-                "VALUES (\"" + req.params.title + "\", " +
-                        req.params.userID + ", \"" +
+    con.query("INSERT INTO Playlist(playlist_Name, user_ID, spotify_Playlist_ID, apple_Playlist_ID) " +
+                "VALUES (\"" + req.params.title + "\", \"" + 
+                        req.params.userID + "\", \"" +
                         req.params.spotifyID + "\", \"" +
                         req.params.appleID + "\");", function (err, result, fields) {
         if (err) {
