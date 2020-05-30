@@ -1,35 +1,3 @@
-document.getElementById("test-button").addEventListener('click', () => {
-    console.log("CLICK");
-    dbAddUser("testuser", 12345);
-	console.log("1");
-    dbAddPlaylist("testPlaylist", 1, "Spotify", "Apple"); // send user id
-	console.log("2");
-    dbAddSong("testsong", "me", "album", "clean", "Spotify1", "Apple");
-	console.log("3");
-    dbAddSong("testsong2", "me", "album", "g", "Spotify", "Apple");
-	console.log("4");
-    dbAddSongToPlaylist(1, 1);
-	console.log("5");
-    dbAddSongToPlaylist(1, 2);
-	console.log("6");
-});
-document.getElementById("test2").addEventListener('click', () => {
-    dbUpdateAppleToken(1,"apple2");
-    dbUpdateSpotifyToken(1, "spotfy2");
-});
-
-document.getElementById("test3").addEventListener('click', () => {
-    console.log(hashCode("string"));
-    console.log("click"); 
-    dbGetUser("testuser", 12345);
-	console.log("1");
-    dbGetPlaylist("Spotify"); // ad check for playlist id 
-	console.log("2");
-    dbGetUserTokens(1);
-	console.log("3");
-    dbHasSong("testsong", "me", "album", "clean");
-	console.log("4");
-});
 
 function hashCode(str){
 	var hash = 0;
@@ -47,14 +15,15 @@ function hashCode(str){
  * @param {string} album the title of the album the song is on
  * @param {string} explicit if the song is explicit or clean
  */
-function dbHasSong(title, artist, album, explicit){
+function dbHasSong(ID){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + title + '/' + artist + '/' + album + '/' + explicit, true);
+
+    xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + ID, true);
     xhttp.send(); // Gets the response
 }
 
@@ -206,3 +175,17 @@ function dbGetUserTokens(id){
     xhttp.send(); // Gets the response
 }
 
+/**
+ * delete all tracks from the playlist in db
+ * @param {string} id the playlist db id of playlist to delete tracks from 
+ */
+function dbDeleteTracks(id){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+            console.log(JSON.parse(this.responseText));
+        }
+    };
+    xhttp.open('DELETE', 'http://' + URL + '/db/delete/tracks/' + id, true);
+    xhttp.send(); // Gets the response
+}
