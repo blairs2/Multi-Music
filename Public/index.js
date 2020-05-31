@@ -670,7 +670,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
          }
        } else {
          var repsonse_json = JSON.parse(resp);
-         var song_id = repsonse_json[0].song_ID;ß
+         var song_id = repsonse_json[0].song_ID;
          await dbAddSongToPlaylist(mm_playlist_id, song_id);
        }
      });
