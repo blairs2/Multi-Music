@@ -173,7 +173,7 @@ router.get('/spotify/playlists/:id', function(req, responce){
 //Get the tracks of a playlist specified by the playlistid
 
 router.get('/spotify/playlist/tracks/:id/:playlistid', function(req, response){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+  // dbGetUserTokens(req.params.id); //MAKE ASYNC
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
         headers: { 'Authorization': 'Bearer ' + accessToken },

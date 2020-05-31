@@ -1,4 +1,4 @@
- var URL = "localhost:8080";
+ // var URL = "localhost:8080";
 
 /**
  * Redirects to the spotify login for user to authorize our program

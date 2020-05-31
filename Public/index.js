@@ -1,4 +1,4 @@
-//const URL = window.location.host;
+const URL = window.location.host;
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
@@ -121,7 +121,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
                document.getElementById("playlist-convert").addEventListener("click", () => {
                  var playlist_id = document.getElementById("playlist-convert").getAttribute("data-value");
-                 var user_id = 12; //change this to read username from cookie
+                 var user_id = getCookie(); //change this to read username from cookie
                  var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
                  //checks if playlist is already in the db, makes it if not
                  document.getElementById("playlist-convert").disabled= true;

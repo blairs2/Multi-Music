@@ -68,13 +68,11 @@ function getCookie(){
  * @param {int} code the password of the user
  */
 function dbGetUser(name, code){
-
     var xhttp = new XMLHttpRequest();
-
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
-            
+
         }
     };
     xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + hashCode(code), true);
