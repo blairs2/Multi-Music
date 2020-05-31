@@ -124,7 +124,8 @@ document.getElementById('search-input').addEventListener("keyup", async function
                  var user_id = 12; //change this to read username from cookie
                  var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
                  mm_playlist_id = establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service); //checks if playlist is already in the db, makes it if not
-                 convertPlaylist(playlist_id, current_service);
+                 console.log("playlist: ", mm_playlist_id);
+                 // convertPlaylist(playlist_id, current_service);
 
                },false);
 
@@ -677,18 +678,15 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
             console.log("Invalid Service");
           }
           dbPlaylistExists(playlist_id).then(res => {
-            console.log(res);
-            db_playlist_id = res[0].playlist_ID;
-
-          });
-
+            db_playlist_id = res[0].playlist_ID; //The id of the newly created playlist
+            console.log(db_playlist_id);
 
           });
         } else {
-          console.log("Exists", response);
           db_playlist_id = response[0].playlist_ID;
+          console.log(db_playlist_id);
         }
-
       });
+      return db_playlist_id;
 
 }
