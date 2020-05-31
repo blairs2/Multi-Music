@@ -620,7 +620,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
      handle = await dbHasSong(track.id).then(async function(resp){
        if(resp == 'false'){
          //replace spaces with plus and get rid of special characters
-         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace("&", "").replace("/", "");
+         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace("&", "").replace("/", "").replace("%", "");
          if(new_service == "Spotify"){
            await spotifySearch('q=' + search + '&limit=1&type=track').then(async function(value){
              var response = JSON.parse(value);
@@ -713,7 +713,7 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
           }
           dbPlaylistExists(playlist_id).then(value => {
             var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
-            // console.log("New playlist: ", mm_playlist_id);
+            console.log("New playlist: ", mm_playlist_id);
             convertPlaylist(playlist_id, current_service, mm_playlist_id);
           });
         } else {
