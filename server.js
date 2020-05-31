@@ -40,9 +40,9 @@ app.use(apple_music_router);
 var spotify_router = require('./routers/spotify.js');
 app.use(spotify_router);
 
-var db = require('./routers/database.js');
-
-app.use(db);
+// var db = require('./routers/database.js');
+//
+// app.use(db);
 
 console.log('Listening at', publicDir, hostname, port);
 app.listen(port, hostname);

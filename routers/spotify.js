@@ -213,10 +213,9 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
       if (error){ // if request fails
         console.log("ERROR getting user playlist")
       } else {
-        // console.log(body);
         retval = { playlists: []}
         retval.playlists.push({
-          name: body.name,
+          title: body.name,
           description: body.description,
           href: body.href,
           id: body.id,
