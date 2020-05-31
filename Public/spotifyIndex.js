@@ -213,9 +213,6 @@ async function spotifySearch(searchTerm){
   });
 }
 
-document.getElementById("login-spotify").addEventListener('click', () => {
-    spotifyLogin();
-});
 
 
 // get token

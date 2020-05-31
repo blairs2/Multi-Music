@@ -84,7 +84,7 @@ function dbGetUser(name, code){
  * @param {string} id the id of the user to be updated
  * @param {string} token the spotify token to be added to the user
  */
-module.exports = function dbUpdateSpotifyToken(id, token){
+function dbUpdateSpotifyToken(id, token){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -100,7 +100,7 @@ module.exports = function dbUpdateSpotifyToken(id, token){
  * @param {string} id the id of the user to be updated
  * @param {string} token the apple token to be added to the user record
  */
-module.exports = function dbUpdateAppleToken(id, token){
+function dbUpdateAppleToken(id, token){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
