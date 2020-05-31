@@ -1,5 +1,5 @@
 //import cookieParser from "cookie-parser";
-
+let url = window.location.host;
 function hashCode(str){
 	var hash = 0;
 	for (var i = 0; i < str.length; i++) {
@@ -26,7 +26,7 @@ async function dbHasSong(ID){
 			}
 		 }
 		};
-		xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + ID, true);
+		xhttp.open('GET', 'http://' + url + '/db/hasSong/' + ID, true);
 		xhttp.send(); // Gets the response
 	});
 }
@@ -47,7 +47,7 @@ async function dbHasSong(ID){
       }
      }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/playlist/' + playlistID, true);
+    xhttp.open('GET', 'http://' + url + '/db/playlist/' + playlistID, true);
     xhttp.send(); // Gets the response
    });
  }
@@ -62,7 +62,7 @@ async function dbHasSong(ID){
         //if (name != "Nathan"){
             alert("Invalid Username or Password please try agian.");
         } else {
-            setTimeout(function() {window.location = 'http://' + URL + '/index.html' });
+            setTimeout(function() {window.location = 'http://' + url + '/index.html' });
 						console.log(x);
             setCookie(x[0].user_ID);
             //setCookie("COOKIE");
@@ -98,8 +98,8 @@ async function dbGetUser(name, code){
       }
      }
     };
-		console.log('http://' + URL + '/db/user/' + name + '/' + code);
-    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + code, true);
+		console.log('http://' + url + '/db/user/' + name + '/' + code);
+    xhttp.open('GET', 'http://' + url + '/db/user/' + name + '/' + code, true);
     xhttp.send(); // Gets the response
    });
   }
@@ -116,7 +116,7 @@ function dbUpdateSpotifyToken(id, token){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('POST', 'http://' + URL + '/db/user/spotify/' + id + '/' + token , true);
+    xhttp.open('POST', 'http://' + url + '/db/user/spotify/' + id + '/' + token , true);
     xhttp.send(); // Gets the response
 }
 
@@ -132,7 +132,7 @@ function dbUpdateAppleToken(id, token){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('POST', 'http://' + URL + '/db/user/apple/' + id + '/' + token, true);
+    xhttp.open('POST', 'http://' + url + '/db/user/apple/' + id + '/' + token, true);
     xhttp.send(); // Gets the response
 }
 
@@ -157,7 +157,7 @@ async function dbAddSong(title, artist, spotifyID, appleID){
 			}
 		 }
 		};
-		xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + spotifyID + '/' + appleID, true);
+		xhttp.open('PUT', 'http://' + url + '/db/song/' + title + '/' + artist + '/' + spotifyID + '/' + appleID, true);
 		xhttp.send(); // Gets the response
 	});
 }
@@ -181,7 +181,7 @@ async function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
 		 }
 		}
 	 };
-	 xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID, true);
+	 xhttp.open('PUT', 'http://' + url + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID, true);
 	 xhttp.send(); // Gets the response
 	});
 }
@@ -198,7 +198,7 @@ function dbAddSongToPlaylist(playlistID, songID){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', 'http://' + URL + '/db/playlist/song/' + playlistID + '/' + songID, true);
+    xhttp.open('PUT', 'http://' + url + '/db/playlist/song/' + playlistID + '/' + songID, true);
     xhttp.send(); // Gets the response
 }
 
@@ -214,7 +214,7 @@ function dbAddUser(name, code){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', "http://" + URL + '/db/user/' + name + '/' + hashCode(code), true);
+    xhttp.open('PUT', "http://" + url + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
 }
 
@@ -229,7 +229,7 @@ function dbGetUserTokens(id){
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/userToken/' + id, true);
+    xhttp.open('GET', 'http://' + url + '/db/userToken/' + id, true);
     xhttp.send(); // Gets the response
 }
 
@@ -249,7 +249,7 @@ async function dbDeleteTracks(id){
 		}
 	 }
 	};
-	xhttp.open('DELETE', 'http://' + URL + '/db/delete/tracks/' + id, true);
+	xhttp.open('DELETE', 'http://' + url + '/db/delete/tracks/' + id, true);
 	xhttp.send(); // Gets the response
 	});
 }
@@ -266,7 +266,7 @@ async function dbPlaylistExists(playlistID){
 			}
 		 }
 		};
-		xhttp.open('GET', 'http://' + URL + '/db/playlist/exists/' + playlistID, true);
+		xhttp.open('GET', 'http://' + url + '/db/playlist/exists/' + playlistID, true);
 		xhttp.send(); // Gets the response
 	});
 }

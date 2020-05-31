@@ -1,18 +1,17 @@
- // var URL = "localhost:8080";
-
+let url = window.location.host;
 /**
  * Redirects to the spotify login for user to authorize our program
  */
 function spotifyLogin(){
     console.log("CLICK");
-    location.href = "http://"+ URL +"/spotify/login";
+    location.href = "http://"+ url +"/spotify/login";
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         // Typical action to be performed when the document is ready:    }
         console.log(xhttp.responseText);
     }
-    xhttp.open("GET", "http://"+ URL +"/spotify/login", true);
+    xhttp.open("GET", "http://"+ url +"/spotify/login", true);
     xhttp.send();
     }
 }
@@ -28,7 +27,7 @@ function spotifyGetUser(){
         }
     };
     id = getCookie(); //get from cookie
-    xhttp.open('GET', 'http://' + URL + '/spotify/user/' + id, true);
+    xhttp.open('GET', 'http://' + url + '/spotify/user/' + id, true);
     xhttp.send(); // Gets the response
 }
 
@@ -48,7 +47,7 @@ async function spotifyGetUserPlaylists(){
      }
     };
     id = getCookie(); //get from cookie
-    xhttp.open('GET', 'http://' + URL + '/spotify/playlists/' + id, true);
+    xhttp.open('GET', 'http://' + url + '/spotify/playlists/' + id, true);
     xhttp.send(); // Gets the response
     });
   }
@@ -70,7 +69,7 @@ async function spotifyGetPlaylistTracks(playlistid){
     }
    };
    id = getCookie(); //get from cookie
-   xhttp.open('GET', 'http://' + URL + '/spotify/playlist/tracks/' + id + "/" + playlistid, true);
+   xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + id + "/" + playlistid, true);
    xhttp.send(); // Gets the response
   });
 }
@@ -93,7 +92,7 @@ async function spotifyGetPlaylistAttributes(playlistid){
    }
   };
   id = getCookie(); //get from cookie
-    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/' + id + "/" + playlistid, true);
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/' + id + "/" + playlistid, true);
     xhttp.send(); // Gets the response
   });
 }
@@ -112,7 +111,7 @@ function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
     };
     id = getCookie(); //get from cookie
     console.log(id);
-    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/delete/' + id + "/" + playlistid + '/' + trackURI, true);
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/delete/' + id + "/" + playlistid + '/' + trackURI, true);
     xhttp.send(); // Gets the response
 }
 
@@ -129,7 +128,7 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
         }
     };
     id = getCookie(); //get from cookie
-    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/add/' + id + "/" + playlistid + '/' + trackURI, true);
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/add/' + id + "/" + playlistid + '/' + trackURI, true);
     xhttp.send(); // Gets the response
 }
 
@@ -146,7 +145,7 @@ function spotifyRenamePlaylist(playlistid, name){
         }
     };
     id = getCookie(); //get from cookie
-    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/details/' + id + "/" + playlistid + '/' + name, true);
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/details/' + id + "/" + playlistid + '/' + name, true);
     xhttp.send(); // Gets the response
 }
 
@@ -166,7 +165,7 @@ function spotifyCreateNewPlaylist(userID, name, public = false, description = ''
         }
     };
     id = getCookie(); //get from cookie
-    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/create/' + id + "/" + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative, true);
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + id + "/" + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative, true);
     xhttp.send(); // Gets the response
 }
 
@@ -185,7 +184,7 @@ function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
         }
     };
     id = getCookie(); //get from cookie
-    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/reorder/' + id + "/" + playlistid + '/' + start + '/' + index + '/' + length , true);
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/reorder/' + id + "/" + playlistid + '/' + start + '/' + index + '/' + length , true);
     xhttp.send(); // Gets the response
 }
 
@@ -208,7 +207,7 @@ async function spotifySearch(searchTerm){
      };
     id = getCookie();
     console.log(id);
-   xhttp.open('GET', 'http://' + URL + '/spotify/search/' + id + "/" + searchTerm, true);
+   xhttp.open('GET', 'http://' + url + '/spotify/search/' + id + "/" + searchTerm, true);
    xhttp.send(); // Gets the response
   });
 }

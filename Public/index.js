@@ -1,4 +1,4 @@
-const URL = window.location.host;
+let url = window.location.host;
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
@@ -249,7 +249,7 @@ async function retreiveUserPlaylists(){
     }
    }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists", true);
+  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists", true);
   xhttp.send(); // Gets the response
  });
 }
@@ -263,7 +263,7 @@ function retrieveUserSongs(){
       //Code to change the generated-content inner html
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/songs", true);
+  xhttp.open("GET", "http://" + url + "/apple-music/library/songs", true);
   xhttp.send(); // Gets the response
  }
 
@@ -276,7 +276,7 @@ function retrieveUserArtists(){
      //Code to change the generated-content inner html
    }
  };
- xhttp.open("GET", "http://" + URL + "/apple-music/library/artists", true);
+ xhttp.open("GET", "http://" + url + "/apple-music/library/artists", true);
  xhttp.send(); // Gets the response
 }
 
@@ -289,7 +289,7 @@ function retrieveUserAlbums(){
       //Code to change the generated-content inner html
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/albums", true);
+  xhttp.open("GET", "http://" + url + "/apple-music/library/albums", true);
   xhttp.send(); // Gets the response
  }
 
@@ -302,7 +302,7 @@ function retrieveSearchHints(searchTerm){
 
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/search/hints/" + searchTerm, true);
+  xhttp.open("GET", "http://" + url + "/apple-music/catalog/search/hints/" + searchTerm, true);
   xhttp.send(); // Gets the response
  }
 
@@ -314,7 +314,7 @@ function retirevePlaylist(playlist_id){
 
       }
     };
-    xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id, true);
+    xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id, true);
     xhttp.send(); // Gets the response
    }
 
@@ -327,7 +327,7 @@ function retrievePlaylistTracks(playlist_id){
 
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/"+ playlist_id +"/relationships", true);
+  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships", true);
   xhttp.send(); // Gets the response
 }
 
@@ -346,7 +346,7 @@ async function searchByTerm(searchTerm){
      }
     }
    };
-   xhttp.open("GET", "http://" + URL + "/apple-music/catalog/search/" + searchTerm, true);
+   xhttp.open("GET", "http://" + url + "/apple-music/catalog/search/" + searchTerm, true);
    xhttp.send(); // Gets the response
   });
 }
@@ -365,7 +365,7 @@ function addPlaylist(playlist_name, description){
           // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
      }
    };
-   xhttp.open("POST", "http://" + URL + "/apple-music/library/playlist", true);
+   xhttp.open("POST", "http://" + url + "/apple-music/library/playlist", true);
    xhttp.send(); // Gets the response
   }
 
@@ -378,7 +378,7 @@ function addTrackToPlaylist(playlist_id){
             // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
        }
      };
-     xhttp.open("POST", "http://" + URL + "/apple-music/library/" + playlist_id + "/playlist", true);
+     xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist", true);
      xhttp.send(); // Gets the response
 }
 
@@ -404,7 +404,7 @@ function getPlaylistTracks(playlist_id){
      }
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
+  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
   xhttp.send(); // Gets the response
 }
 
@@ -420,7 +420,7 @@ function getPlaylistTracks(playlist_id){
 //     }
 //    }
 //   };
-//   xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
+//   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
 //   xhttp.send(); // Gets the response
 //  });
 // }
@@ -438,7 +438,7 @@ function getPlaylistAttributes(playlist_id){
       },false);
     }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id , true);
+  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id , true);
   xhttp.send(); // Gets the response
 }
 
@@ -456,7 +456,7 @@ async function getCatalogPlaylistTracks(playlist_id){
     }
    }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/playlists/" + playlist_id + "/relationships" , true);
+  xhttp.open("GET", "http://" + url + "/apple-music/catalog/playlists/" + playlist_id + "/relationships" , true);
   xhttp.send(); // Gets the response
  });
 }
@@ -475,7 +475,7 @@ async function getCatalogPlaylistAttributes(playlist_id){
     }
    }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/playlists/" + playlist_id , true);
+  xhttp.open("GET", "http://" + url + "/apple-music/catalog/playlists/" + playlist_id , true);
   xhttp.send(); // Gets the response
  });
 }
@@ -676,7 +676,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
        }
      });
    }
-   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${URL}/convert.html?id=${mm_playlist_id}">Converted Playlist</a>`;
+   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${url}/convert.html?id=${mm_playlist_id}">Converted Playlist</a>`;
  });
 }
 
