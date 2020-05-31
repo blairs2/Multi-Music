@@ -57,6 +57,7 @@ async function dbHasSong(ID){
     var pass = document.forms["login-form"]["password"].value;
     dbGetUser(name, pass).then((value) => {
         var x = JSON.parse(value);
+				console.log(x);
         if (x == false){
         //if (name != "Nathan"){
             alert("Invalid Username or Password please try agian.");
@@ -97,7 +98,8 @@ async function dbGetUser(name, code){
       }
      }
     };
-    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + hashCode(code), true);
+		console.log('http://' + URL + '/db/user/' + name + '/' + code);
+    xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + code, true);
     xhttp.send(); // Gets the response
    });
   }
