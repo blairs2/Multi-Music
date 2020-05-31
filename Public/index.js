@@ -620,20 +620,21 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
          //replace spaces with plus and get rid of special characters
          search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace("&", "").replace("/", "");
          if(new_service == "Spotify"){
-           spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
+           await spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
              var response = JSON.parse(value);
              if(response.hasOwnProperty("songs")){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
                  //add the new song to db
-                 dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id).then(()=>{
+                 await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id).then(()=>{
                    console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id)
-                   dbHasSong(track.id).then(resp1 => {
+                   await dbHasSong(track.id).then(resp1 => {
                      var response_json = JSON.parse(resp1);
-                     console.log(response_json);
-                     var song_id = response_json[0].song_ID;
-                     console.log("Find song:", song_id);
-                     dbAddSongToPlaylist(mm_playlist_id, song_id);
+                     if(response_json != false){
+                       var song_id = response_json[0].song_ID;
+                       console.log("Add song:", song_id);
+                       await dbAddSongToPlaylist(mm_playlist_id, song_id);
+                     }
                    });
                  });
                } else {
@@ -642,19 +643,21 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
              }
            });
          } else if(new_service == "Apple Music") {
-           searchByTerm('term=' + search + '&limit=1&types=songs').then((value) => {
+           await searchByTerm('term=' + search + '&limit=1&types=songs').then((value) => {
              var response = JSON.parse(value);
              if(response.hasOwnProperty("songs")){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
-                 dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(()=>{
+                 await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(()=>{
                    console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
-                   dbHasSong(track.id).then(resp1 => {
+                   await dbHasSong(track.id).then(resp1 => {
                      var response_json = JSON.parse(resp1);
-                     console.log(response_json);
-                     var song_id = response_json[0].song_ID;
-                     console.log("Find song:", song_id);
-                     dbAddSongToPlaylist(mm_playlist_id, song_id);
+                     if(response_json != false){
+                       var song_id = response_json[0].song_ID;
+                       console.log("Add song:", song_id);
+                       await dbAddSongToPlaylist(mm_playlist_id, song_id);
+                     }
+
                    });
                  });
 
@@ -667,7 +670,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
        } else {
          var repsonse_json = JSON.parse(resp);
          var song_id = repsonse_json.song_ID;
-         dbAddSongToPlaylist(mm_playlist_id, song_id);
+         await dbAddSongToPlaylist(mm_playlist_id, song_id);
        }
      });
    }
