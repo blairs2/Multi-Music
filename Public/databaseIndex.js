@@ -66,7 +66,8 @@ async function dbHasSong(ID){
             setCookie(x[0].userID);
             //setCookie("COOKIE");
         }
-    }
+    });
+	}
 
 function setCookie(userID){
     document.cookie = "userID=" + userID + "; sameSite=Lax";
