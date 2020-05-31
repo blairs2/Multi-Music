@@ -1,0 +1,45 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'start' ]
+2 info using npm@3.5.2
+3 info using node@v8.10.0
+4 verbose run-script [ 'prestart', 'start', 'poststart' ]
+5 info lifecycle MultiMusic@1.0.3~prestart: MultiMusic@1.0.3
+6 silly lifecycle MultiMusic@1.0.3~prestart: no script for prestart, continuing
+7 info lifecycle MultiMusic@1.0.3~start: MultiMusic@1.0.3
+8 verbose lifecycle MultiMusic@1.0.3~start: unsafe-perm in lifecycle true
+9 verbose lifecycle MultiMusic@1.0.3~start: PATH: /usr/share/npm/bin/node-gyp-bin:/mnt/c/development/multiMusic/Multi-Music/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Users/natha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/natha/AppData/Local/GitHubDesktop/bin:/mnt/c/Program Files (x86)/CodeBlocks/MinGW/bin:/mnt/c/Users/natha/AppData/Local/atom/bin:/mnt/c/Program Files (x86)/Microsoft Visual Studio/Shared/Python36_64/Scripts:/mnt/c/intelFPGA_lite/17.0/modelsim_ase/win32aloem:/mnt/c/intelFPGA/17.0/modelsim_ase/win32aloem:/mnt/c/Program Files/MySQL/MySQL Workbench 8.0 CE:/mnt/c/Users/natha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/natha/AppData/Local/Packages/PythonSoftwarefoundation.Python.3.7_qbz5n2kfra8p0/LocalCache/local-packages/Python37/Scripts:/mnt/c/Users/natha/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin
+10 verbose lifecycle MultiMusic@1.0.3~start: CWD: /mnt/c/development/multiMusic/Multi-Music
+11 silly lifecycle MultiMusic@1.0.3~start: Args: [ '-c', 'node server.js' ]
+12 silly lifecycle MultiMusic@1.0.3~start: Returned: code: 1  signal: null
+13 info lifecycle MultiMusic@1.0.3~start: Failed to exec start script
+14 verbose stack Error: MultiMusic@1.0.3 start: `node server.js`
+14 verbose stack Exit status 1
+14 verbose stack     at EventEmitter.<anonymous> (/usr/share/npm/lib/utils/lifecycle.js:232:16)
+14 verbose stack     at emitTwo (events.js:126:13)
+14 verbose stack     at EventEmitter.emit (events.js:214:7)
+14 verbose stack     at ChildProcess.<anonymous> (/usr/share/npm/lib/utils/spawn.js:24:14)
+14 verbose stack     at emitTwo (events.js:126:13)
+14 verbose stack     at ChildProcess.emit (events.js:214:7)
+14 verbose stack     at maybeClose (internal/child_process.js:925:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)
+15 verbose pkgid MultiMusic@1.0.3
+16 verbose cwd /mnt/c/development/multiMusic/Multi-Music
+17 error Linux 4.4.0-18362-Microsoft
+18 error argv "/usr/bin/node" "/usr/bin/npm" "start"
+19 error node v8.10.0
+20 error npm  v3.5.2
+21 error code ELIFECYCLE
+22 error MultiMusic@1.0.3 start: `node server.js`
+22 error Exit status 1
+23 error Failed at the MultiMusic@1.0.3 start script 'node server.js'.
+23 error Make sure you have the latest version of node.js and npm installed.
+23 error If you do, this is most likely a problem with the MultiMusic package,
+23 error not with npm itself.
+23 error Tell the author that this fails on your system:
+23 error     node server.js
+23 error You can get information on how to open an issue for this project with:
+23 error     npm bugs MultiMusic
+23 error Or if that isn't available, you can get their info via:
+23 error     npm owner ls MultiMusic
+23 error There is likely additional logging output above.
+24 verbose exit [ 1, true ]

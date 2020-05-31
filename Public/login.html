@@ -96,12 +96,12 @@
     <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
     <script type="text/javascript" src="/spotifyIndex.js"></script>
     <script type="text/javascript">
-      //document.getElementById('apple-login').addEventListener('click', async function(){
-      //  //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-      //  music.authorize();
-      //});
+      document.getElementById('apple-login').addEventListener('click', async function(){
+       //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
+       music.authorize();
+      });
       document.getElementById("spotify-login").addEventListener('click', () => {
-        console.log("CLICK");
+        //console.log("CLICK");
         spotifyLogin();
       });
 

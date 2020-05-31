@@ -15,6 +15,7 @@ var accessToken = '';
 var refreshToken = '';
 var serverToken = '';
 var stateKey = 'spotify_auth_state';
+const database = require("../Public/databaseIndex.js");
 
  // your application requests authorization
  var scopes = [
@@ -65,6 +66,8 @@ function generateRandomString(length) {
 router.get('/spotify/login', function(req, responce) {
     const state = generateRandomString(16);
     responce.cookie(stateKey, state);
+    console.log("stateB");
+    console.log(state);
     responce.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
   });
 
@@ -72,6 +75,10 @@ router.get('/spotify/callback', function(req, responce) {
       // request refresh and access tokens
       // after checking the state parameter
       const { code, state } = req.query;
+      // console.log("code");
+      // console.log(code);
+      // console.log("state");
+      // console.log(state);
       const storedState = req.cookies ? req.cookies[stateKey] : null;
       if (state === null || state !== storedState) { // if the state is vailid
         responce.redirect('/#' +
@@ -83,6 +90,8 @@ router.get('/spotify/callback', function(req, responce) {
           const { expires_in, access_token, refresh_token } = data.body;
           accessToken = access_token;
           refreshToken = refresh_token;
+          //id = getCookie(); //get userid from cookie
+          //dbUpdateSpotifyToken(id, access_token);
           // console.log(accessToken);
           refreshToken = refresh_token;
           responce.redirect(`/#/user/${access_token}/${refresh_token}`);
@@ -110,7 +119,8 @@ router.get('/spotify/refresh', function(req, responce) {
 })
 
 //Get user data for the current user
-router.get('/spotify/user', function(req, response){
+router.get('/spotify/user/:id', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
   options = { //set request options
     uri: 'https://api.spotify.com/v1/me',
     headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -127,7 +137,8 @@ router.get('/spotify/user', function(req, response){
 })
 
 //Get a list of all the user playlists
-router.get('/spotify/playlists', function(req, responce){
+router.get('/spotify/playlists/:id', function(req, responce){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
     options = { //set request options
         uri: 'https://api.spotify.com/v1/me/playlists',
         headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -161,7 +172,8 @@ router.get('/spotify/playlists', function(req, responce){
 
 //Get the tracks of a playlist specified by the playlistid
 
-router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
+router.get('/spotify/playlist/tracks/:id/:playlistid', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
         headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -193,6 +205,7 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
               });
             }
           }
+          //response.send(body);
           response.send(retval);
         }
       });
@@ -200,7 +213,8 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
 
 
 //Get a playlist specified by the playlistid
-router.get('/spotify/playlist/:playlistid', function(req, response){
+router.get('/spotify/playlist/:id/:playlistid', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
   options = { // set request options
       uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
       headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -232,7 +246,8 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
 });
 
 //Delete the specified track from the specified playlist
-router.delete('/spotify/playlist/delete/:playlistid/:trackURI', function(req, response){
+router.delete('/spotify/playlist/delete/:id/:playlistid/:trackURI', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks',
         headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -250,7 +265,8 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI', function(req, re
 });
 
 //Add the specified track to the specifed playlist
-router.post('/spotify/playlist/add/:playlistid/:trackURI', function(req, response){
+router.post('/spotify/playlist/add/:id/:playlistid/:trackURI', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
     options = { // set request optinos
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks?uris=' + req.params.trackURI,
         headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -267,7 +283,8 @@ router.post('/spotify/playlist/add/:playlistid/:trackURI', function(req, respons
 });
 
 //Changes the name of the playlist to the specifed name
-router.put('/spotify/playlist/details/:playlistid/:name', function(req, response){
+router.put('/spotify/playlist/details/:id/:playlistid/:name', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
         headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -285,7 +302,8 @@ router.put('/spotify/playlist/details/:playlistid/:name', function(req, response
 });
 
 //Create a new empty spotify playlist
-router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collaborative', function(req, response){
+router.post('/spotify/playlist/create/:id/:userID/:name/:public/:description/:collaborative', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
     options = {
         uri: 'https://api.spotify.com/v1/users/' + req.params.userID + '/playlists',
         headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -308,7 +326,8 @@ router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collab
 
 // reorder the songs in the specifed playlist
 // move first length songs at start to index
-router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', function(req, response){
+router.put('/spotify/playlist/reorder/:id/:playlistid/:start/:index/:length', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
   options = { // set request options
     uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks',
     headers: { 'Authorization': 'Bearer ' + accessToken },
@@ -318,9 +337,6 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
       insert_before: req.params.index},
     json: true
   };
-
-
-
   request.put(options, function(error, res, body){
     if (error) { // if request fails
       console.log("ERROR reordering playlist " + error);
@@ -332,7 +348,8 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length', functi
 });
 
 // search spotify for tracks containing the keyword
-router.get('/spotify/search/:keyword', function(req, response){
+router.get('/spotify/search/:id/:keyword', function(req, response){
+  //dbGetUserTokens(req.params.id); //MAKE ASYNC
   var search_term  = req.params.keyword.split(' ').join('+'); // replace spaces in search term
   options = { // set request options
     uri: 'https://api.spotify.com/v1/search?' + search_term,
