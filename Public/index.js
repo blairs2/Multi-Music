@@ -126,7 +126,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
                  //checks if playlist is already in the db, makes it if not
                  document.getElementById("playlist-convert").disabled= true;
                  document.getElementById("convert-link").innerHTML = "<span>Loading playlist link</span>";
-                 
+
                  establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service);
                  // convertPlaylist(playlist_id, current_service);
 
@@ -629,18 +629,18 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
                if(song_matches.length > 0){
                  //add the new song to db
                  await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(async function(){
-                   console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id)
+                   // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id);
                    await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
                      if(response_json != false){
                        var song_id = response_json[0].song_ID;
-                       console.log("Add song:", song_id);
+                       // console.log("Add song:", song_id);
                        await dbAddSongToPlaylist(mm_playlist_id, song_id);
                      }
                    });
                  });
                } else {
-                 console.log("NOT FOUND");
+                 console.log(track.title, "NOT FOUND");
                }
              }
            });
@@ -651,12 +651,11 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
                  await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id,).then(async function(){
-                   console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
+                   // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
                    await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
                      if(response_json != false){
                        var song_id = response_json[0].song_ID;
-                       console.log("Add song:", song_id);
                        await dbAddSongToPlaylist(mm_playlist_id, song_id);
                      }
 
@@ -664,14 +663,14 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
                  });
 
                } else {
-                 console.log("NOT FOUND");
+                 console.log(track.title, "NOT FOUND");
                }
              }
            });
          }
        } else {
          var repsonse_json = JSON.parse(resp);
-         var song_id = repsonse_json.song_ID;
+         var song_id = repsonse_json[0].song_ID;ß
          await dbAddSongToPlaylist(mm_playlist_id, song_id);
        }
      });
@@ -703,23 +702,23 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
         if(response == 'false'){
           if(current_service == "Apple Music"){
             dbAddPlaylist(title, user_id, spotifyID=null, appleID=playlist_id).then(()=>{
-                console.log(title, user_id, current_service, playlist_id);
+                // console.log(title, user_id, current_service, playlist_id);
             });
           } else if (current_service == "Spotify"){
             dbAddPlaylist(title, user_id, spotifyID=playlist_id, appleID=null).then(()=>{
-              console.log(title, user_id, current_service, playlist_id);
+              // console.log(title, user_id, current_service, playlist_id);
             });
           } else {
             console.log("Invalid Service");
           }
           dbPlaylistExists(playlist_id).then(value => {
             var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
-            console.log("New playlist: ", mm_playlist_id);
+            // console.log("New playlist: ", mm_playlist_id);
             convertPlaylist(playlist_id, current_service, mm_playlist_id);
           });
         } else {
           var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
-          console.log(mm_playlist_id);//
+          console.log("playlist id:",mm_playlist_id);
           dbDeleteTracks(mm_playlist_id).then(()=>{
             convertPlaylist(playlist_id, current_service, mm_playlist_id);
           }); // delete the tracks currently associated with the playlist
