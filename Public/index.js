@@ -124,9 +124,10 @@ document.getElementById('search-input').addEventListener("keyup", async function
                  var user_id = 12; //change this to read username from cookie
                  var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
                  //checks if playlist is already in the db, makes it if not
-                 establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service).then( mm_playlist_id => {
-                   console.log("playlist: ", mm_playlist_id);
-                 });
+                 document.getElementById("playlist-convert").disabled= true;
+                 document.getElementById("convert-link").innerHTML = "<span>Loading playlist link</span>";
+                 
+                 establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service);
                  // convertPlaylist(playlist_id, current_service);
 
                },false);
@@ -675,7 +676,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
        }
      });
    }
-   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${URL}/convert.html/?id=${mm_playlist_id}">Converted Playlist</a>`;
+   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${URL}/convert.html?id=${mm_playlist_id}">Converted Playlist</a>`;
  });
 }
 

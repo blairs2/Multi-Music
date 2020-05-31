@@ -99,7 +99,7 @@
         <div id="generated-content">
           <div class="row">
               <button id="convert-spotify" type="button" class="btn"><img style="width:100px;height:30px;" src="vendor/Spotify.png" alt=""></button>&emsp;
-              <button id="convert-apple" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
+              <button id="convert-apple-btn" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
               <br><br><br>
         </div>
         <!-- /.row -->
@@ -125,9 +125,9 @@
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
-  <script type="text/javascript" src="/index.js"></script>
+  <!-- <script type="text/javascript" src="/index.js"></script>
   <script type="text/javascript" src="/spotifyIndex.js"></script>
-  <script type="text/javascript" src="/databaseIndex.js"></script>
+  <script type="text/javascript" src="/databaseIndex.js"></script> -->
   <script type="text/javascript">
   async function dbRetrieveConvert(){
      var xhttp = new XMLHttpRequest();
@@ -147,7 +147,7 @@
     });
   }
 
-  document.getElementById("convert-apple").addEventListener("click", ()=>{
+  document.getElementById("convert-apple-btn").addEventListener("click", ()=>{
     console.log('convert-clicked');
       dbRetrieveConvert().then(resp => {
         console.log(JSON.parse(resp));
