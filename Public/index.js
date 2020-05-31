@@ -704,7 +704,7 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
           }
           dbPlaylistExists(playlist_id).then(value => {
             var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
-            console.log("New playlist: ", mm_playlist_id;
+            console.log("New playlist: ", mm_playlist_id);
             convertPlaylist(playlist_id, current_service, mm_playlist_id);
           });
         } else {

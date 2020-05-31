@@ -110,15 +110,21 @@ function dbUpdateAppleToken(id, token){
  * @param {string} spotifyID the spotifyID of the song
  * @param {string} appleID the appleIF of the song
  */
-function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-    xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + album + '/' + explicit + '/' + spotifyID + '/' + appleID, true);
-    xhttp.send(); // Gets the response
+async function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
+		var xhttp = new XMLHttpRequest();
+		return new Promise(function(resolve, reject) {
+			xhttp.onreadystatechange = function ReceivedCallback() {
+			if (this.readyState == 4) { //Upon getting a response
+				if(this.status == 200){
+					resolve(this.responseText);
+				} else {
+					reject("Error");
+			}
+		 }
+		};
+		xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + album + '/' + explicit + '/' + spotifyID + '/' + appleID, true);
+		xhttp.send(); // Gets the response
+	});
 }
 
 /**
@@ -197,6 +203,7 @@ function dbGetUserTokens(id){
  * @param {string} id the playlist db id of playlist to delete tracks from
  */
 async function dbDeleteTracks(id){
+	var xhttp = new XMLHttpRequest();
 	return new Promise(function(resolve, reject) {
 		xhttp.onreadystatechange = function ReceivedCallback() {
 		if (this.readyState == 4) { //Upon getting a response
