@@ -142,12 +142,13 @@
        }
       }
      };
-     xhttp.open("GET", "http://" + URL + "/playlist/playlist/" + url.searchParams.get("c");, true);
+     xhttp.open("GET", "http://" + URL + "/playlist/playlist/" + url.searchParams.get("id");, true);
      xhttp.send(); // Gets the response
     });
   }
 
   document.getElementById("convert-apple").addEventListener("click", ()=>{
+    console.log('convert-clicked');
       dbRetrieveConvert().then(resp => {
         console.log(JSON.parse(resp));
       });
