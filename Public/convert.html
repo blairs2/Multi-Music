@@ -129,38 +129,30 @@
   <script type="text/javascript" src="/spotifyIndex.js"></script>
   <script type="text/javascript" src="/databaseIndex.js"></script>
   <script type="text/javascript">
+  async function dbRetrieveConvert(){
+     var xhttp = new XMLHttpRequest();
+     return new Promise(function(resolve, reject) {
+       xhttp.onreadystatechange = function ReceivedCallback() {
+       if (this.readyState == 4) { //Upon getting a response
+         if(this.status == 200){
+           // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+           resolve(this.responseText);
+         } else {
+           reject("Error");
+       }
+      }
+     };
+     xhttp.open("GET", "http://" + URL + "/playlist/playlist/" + url.searchParams.get("c");, true);
+     xhttp.send(); // Gets the response
+    });
+  }
+
   document.getElementById("convert-apple").addEventListener("click", ()=>{
-    async function dbRetrieveConvert(){
-       var xhttp = new XMLHttpRequest();
-       return new Promise(function(resolve, reject) {
-         xhttp.onreadystatechange = function ReceivedCallback() {
-         if (this.readyState == 4) { //Upon getting a response
-           if(this.status == 200){
-             // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
-             resolve(this.responseText);
-           } else {
-             reject("Error");
-         }
-        }
-       };
-       xhttp.open("GET", location.href, true);
-       xhttp.send(); // Gets the response
+      dbRetrieveConvert().then(resp => {
+        console.log(JSON.parse(resp));
       });
-    }
 
   });
-
-    //login?
-    function InsertCategory(){
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function ReceivedCallback() {
-          if (this.readyState == 4 && this.status == 200) {
-          }
-        };
-        xhttp.open("POST", "http://leia.cs.spu.edu:3003/api/categories" , true);
-        xhttp.send();
-      }
-
   </script>
 
 </body>

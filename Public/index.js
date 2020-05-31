@@ -675,7 +675,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
        }
      });
    }
-   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${URL}/convert.html/playlist/convert/${mm_playlist_id}">Converted Playlist</a>`;
+   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${URL}/convert.html/?id=${mm_playlist_id}">Converted Playlist</a>`;
  });
 }
 
