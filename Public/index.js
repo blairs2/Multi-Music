@@ -609,7 +609,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
       console.log(e);
     }
   }
- Promise.all([playlistTracks]).then((values) => {
+ Promise.all([playlistTracks]).then(async function(values){
    var tracks = JSON.parse(values[0]).tracks;
    var search, track, matches, handle;
    for(var i = 0; i < tracks.length; i++){
