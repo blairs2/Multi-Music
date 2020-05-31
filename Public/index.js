@@ -614,6 +614,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
    var search, track, matches, handle;
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
+     
      handle = await dbHasSong(track.id).then(resp => {
        if(resp == 'false'){
          search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+');
