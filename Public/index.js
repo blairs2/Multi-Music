@@ -676,8 +676,17 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
           } else {
             console.log("Invalid Service");
           }
+          dbPlaylistExists(playlist_id).then(res => {
+            console.log(res);
+            db_playlist_id = res[0].playlist_ID;
+
+          });
+
+
+          });
         } else {
-          console.log(response);
+          console.log("Exists", response);
+          db_playlist_id = response[0].playlist_ID;
         }
 
       });
