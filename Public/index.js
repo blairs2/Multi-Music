@@ -663,15 +663,15 @@ function removeFeatureFromSong(song_title){
 */
 async function establishPlaylist(playlist_id, title, user_id, current_service){
       var db_playlist_id;
-      dbGetPlaylist(playlist_id).then(response => {
+      dbPlaylistExists(playlist_id).then(response => {
         if(response == 'false'){
           if(current_service == "Apple Music"){
             dbAddPlaylist(title, user_id, spotifyID=null, appleID=playlist_id).then(()=>{
                 console.log(title, user_id, current_service, playlist_id);
             });
           } else if (current_service == "Spotify"){
-            dbAddPlaylist(title, user_id, spotifyID=playlist_id, appleID=null).then(()=>{
-              console.log(title, user_id, current_service, playlist_id);
+            dbAddPlaylist(title, user, spotifyID=playlist_id, appleID=null).then(()=>{
+              console.log(title, user, current_service, playlist_id);
             });
           } else {
             console.log("Invalid Service");

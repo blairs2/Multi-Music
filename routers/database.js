@@ -129,7 +129,7 @@ router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleID', funct
 router.put('/db/playlist/:title/:userID/:spotifyID/:appleID', function(req, response){
     console.log("router");
     con.query("INSERT INTO Playlist(playlist_Name, user_ID, spotify_Playlist_ID, apple_Playlist_ID) " +
-                "VALUES (\"" + req.params.title + "\", \"" + 
+                "VALUES (\"" + req.params.title + "\", \"" +
                         req.params.userID + "\", \"" +
                         req.params.spotifyID + "\", \"" +
                         req.params.appleID + "\");", function (err, result, fields) {
@@ -200,5 +200,21 @@ router.delete('/db/delete/tracks/:id', function(req, response){
         }
     });
 });
+
+router.delete('/db/playlist/exists/:playlist_id', function(req, response){
+    con.query( "SELECT * FROM Playlist WHERE apple_Playlist_ID =\"" + req.params.playlist_id + "\";", function (err, result, fields) {
+        if (err) {
+            console.log("ERROR in db userToken", err);
+        }  else {
+            if (result.length != 0){ // if record found
+                response.send(result);
+            } else {
+                response.send(false);
+            }
+        }
+    });
+});
+
+db/playlist/exists/
 
 module.exports = router;

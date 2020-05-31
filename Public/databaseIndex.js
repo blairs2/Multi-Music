@@ -201,3 +201,20 @@ function dbDeleteTracks(id){
     xhttp.open('DELETE', 'http://' + URL + '/db/delete/tracks/' + id, true);
     xhttp.send(); // Gets the response
 }
+
+async function dbPlaylistExists(playlistID){
+		var xhttp = new XMLHttpRequest();
+		return new Promise(function(resolve, reject) {
+			xhttp.onreadystatechange = function ReceivedCallback() {
+			if (this.readyState == 4) { //Upon getting a response
+				if(this.status == 200){
+					resolve(this.responseText);
+				} else {
+					reject("Error");
+			}
+		 }
+		};
+		xhttp.open('PUT', 'http://' + URL + '/db/playlist/exists/' + playlistID, true);
+		xhttp.send(); // Gets the response
+	});
+}
