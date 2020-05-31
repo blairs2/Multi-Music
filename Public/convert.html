@@ -98,6 +98,7 @@
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
         <div id="generated-content">
           <div class="row">
+            <h5>Choose service to add playlist to:</h5>
               <button id="convert-spotify" type="button" class="btn"><img style="width:100px;height:30px;" src="vendor/Spotify.png" alt=""></button>&emsp;
               <button id="convert-apple-btn" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
               <br><br><br>
@@ -142,7 +143,8 @@
        }
       }
      };
-     xhttp.open("GET", "http://" + URL + "/playlist/playlist/" + url.searchParams.get("id");, true);
+     var url = (new URL(document.location));
+     xhttp.open("GET", "http://" + window.location.host + "/playlist/convert/" + url.searchParams.get("id"), true);
      xhttp.send(); // Gets the response
     });
   }

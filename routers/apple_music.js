@@ -71,17 +71,19 @@ function AM_to_MM_playlist_tracks(am_response){
 
   for(var i = 0; i < tracks.length; i++){
     track = tracks[i];
-    track_attributes = {id:track.id, href:track.href, title:track.attributes.name, album:track.attributes.albumName, artist: track.attributes.artistName};
-    if(track.attributes.hasOwnProperty("artwork")){
-      track_attributes.artwork = (track.attributes.artwork.url).replace('{w}', 300).replace('{h}',300); // Adds a artwork attribute with the artwork url (300x300)
+    if(track[i].hasOwnProperty("attributes")){ //Some songs don't have attributes? dont add them to response
+      track_attributes = {id:track.id, href:track.href, title:track.attributes.name, album:track.attributes.albumName, artist: track.attributes.artistName};
+      if(track.attributes.hasOwnProperty("artwork")){
+        track_attributes.artwork = (track.attributes.artwork.url).replace('{w}', 300).replace('{h}',300); // Adds a artwork attribute with the artwork url (300x300)
+      }
+      if(track.attributes.hasOwnProperty("contentRating")){
+        track_attributes.contentRating = "explicit";
+      } else {
+        track_attributes.contentRating = "clean";
+      }
+      data.push(track_attributes);
     }
-    if(track.attributes.hasOwnProperty("contentRating")){
-      track_attributes.contentRating = "explicit";
-    } else {
-      track_attributes.contentRating = "clean";
-    }
-    data.push(track_attributes);
-    }
+  }
     multi_music_obj.tracks = data;
   return JSON.stringify(multi_music_obj);
 }
