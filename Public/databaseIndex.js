@@ -120,7 +120,7 @@ async function dbAddSong(title, artist, spotifyID, appleID){
 			}
 		 }
 		};
-		 http.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + spotifyID + '/' + appleID, true);
+		xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + spotifyID + '/' + appleID, true);
 		xhttp.send(); // Gets the response
 	});
 }

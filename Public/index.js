@@ -624,10 +624,11 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
                  //add the new song to db
-                 dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].album, song_matches[0].song_matches, track.id, song_matches[0].id).then(()=>{
-                   console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].album, song_matches[0].song_matches, track.id, song_matches[0].id)
+                 dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id).then(()=>{
+                   console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, , track.id, song_matches[0].id)
                    dbHasSong(track.id).then(resp1 => {
                      var repsonse_json = JSON.parse(resp1);
+                     console.log(response_json);
                      var song_id = repsonse_json[0].song_ID;
                      console.log("Find song:", song_id);
                      dbAddSongToPlaylist(mm_playlist_id, song_id);
@@ -644,10 +645,11 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
              if(response.hasOwnProperty("songs")){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
-                 dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].album, song_matches[0].song_matches, song_matches[0].id, track.id).then(()=>{
-                   console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].album, song_matches[0].song_matches, song_matches[0].id, track.id)
+                 dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(()=>{
+                   console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
                    dbHasSong(track.id).then(resp1 => {
                      var repsonse_json = JSON.parse(resp1);
+                     console.log(response_json);
                      var song_id = repsonse_json[0].song_ID;
                      console.log("Find song:", song_id);
                      dbAddSongToPlaylist(mm_playlist_id, song_id);
