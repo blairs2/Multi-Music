@@ -592,7 +592,7 @@ will convert playlist from current_service to new_service
 * @current_service is the current service of the playlist Apple Music or Spotify
 * @catalog is a boolean 1 it will search the catalog 0 will search the library
 */
-async function convertPlaylist(playlist_id, current_service){
+async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
   var new_sercie;
   if(current_service == "Apple Music"){
     new_service = "Spotify";
@@ -608,40 +608,64 @@ async function convertPlaylist(playlist_id, current_service){
     } catch(e) {
       console.log(e);
     }
-
   }
  Promise.all([playlistTracks]).then((values) => {
    var tracks = JSON.parse(playlistTracks).tracks;
    var search, track, matches;
    for(var i = 0; i < tracks.length; i++){
-     track = tracks[i];
-     search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+');
-     if(new_service == "Spotify"){
-       spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
-         var response = JSON.parse(value);
-         if(response.hasOwnProperty("songs")){
-           var song_matches = response.songs.data;
-           if(song_matches.length > 0){
-             console.log(new_service + " Match", song_matches[0].title);
-           } else {
-             console.log("NOT FOUND");
-           }
-         }
-       });
-     } else if(new_service == "Apple Music") {
-       searchByTerm('term=' + search + '&limit=1&types=songs').then((value) => {
-         var response = JSON.parse(value);
-         if(response.hasOwnProperty("songs")){
-           var song_matches = response.songs.data;
-           if(song_matches.length > 0){
-             console.log(new_service + " Match", song_matches[0].title);
-           } else {
-             console.log("NOT FOUND");
-           }
-         }
-       });
-     }
+    track = tracks[i];
+     dbHasSong(track.id).then(resp => {
+       if(resp == 'false'){
+         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+');
+         if(new_service == "Spotify"){
+           spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
+             var response = JSON.parse(value);
+             if(response.hasOwnProperty("songs")){
+               var song_matches = response.songs.data;
+               if(song_matches.length > 0){
+                 //add the new song to db
+                 dbAddSong(song_matches.title, song_matches.artist, song_matches.album, song_matches.song_matches, track.id, song_matches.id).then(()=>{
+                   console.log("added: ",new_service, song_matches.title, song_matches.artist, song_matches.album, song_matches.song_matches, track.id, song_matches.id)
+                   dbHasSong(track.id).then(resp1 => {
+                     var repsonse_json = JSON.parse(resp1);
+                     var song_id = repsonse_json.song_ID;
+                     console.log("Find song:", song_id)
+                     dbAddSongToPlaylist(mm_playlist_id, song_id);
+                   });
+                 });
+               } else {
+                 console.log("NOT FOUND");
+               }
+             }
+           });
+         } else if(new_service == "Apple Music") {
+           searchByTerm('term=' + search + '&limit=1&types=songs').then((value) => {
+             var response = JSON.parse(value);
+             if(response.hasOwnProperty("songs")){
+               var song_matches = response.songs.data;
+               if(song_matches.length > 0){
+                 dbAddSong(song_matches.title, song_matches.artist, song_matches.album, song_matches.song_matches, song_matches.id, track.id).then(()=>{
+                   console.log("added: ",new_service, song_matches.title, song_matches.artist, song_matches.album, song_matches.song_matches, song_matches.id, track.id)
+                   dbHasSong(track.id).then(resp1 => {
+                     var repsonse_json = JSON.parse(resp1);
+                     var song_id = repsonse_json.song_ID;
+                     console.log("Find song:", song_id)
+                     dbAddSongToPlaylist(mm_playlist_id, song_id);
+                   });
+                 });
 
+               } else {
+                 console.log("NOT FOUND");
+               }
+             }
+           });
+         }
+       } else {
+         var repsonse_json = JSON.parse(resp);
+         var song_id = repsonse_json.song_ID;
+         dbAddSongToPlaylist(mm_playlist_id, song_id);
+       }
+     });
    }
  });
 }
@@ -679,10 +703,16 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
             console.log("Invalid Service");
           }
           dbPlaylistExists(playlist_id).then(value => {
-            console.log("New playlist: ", JSON.parse(value)[0].playlist_ID);
+            var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
+            console.log("New playlist: ", mm_playlist_id;
+            convertPlaylist(playlist_id, current_service, mm_playlist_id);
           });
         } else {
-          console.log(JSON.parse(response)[0].playlist_ID);
+          var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
+          console.log(mm_playlist_id);//
+          dbDeleteTracks(mm_playlist_id).then(()=>{
+            convertPlaylist(playlist_id, current_service, mm_playlist_id);
+          }); // delete the tracks currently associated with the playlist
         }
       });
 }

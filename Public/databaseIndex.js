@@ -15,16 +15,21 @@ function hashCode(str){
  * @param {string} album the title of the album the song is on
  * @param {string} explicit if the song is explicit or clean
  */
-function dbHasSong(ID){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-
-    xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + ID, true);
-    xhttp.send(); // Gets the response
+async function dbHasSong(ID){
+		var xhttp = new XMLHttpRequest();
+		return new Promise(function(resolve, reject) {
+			xhttp.onreadystatechange = function ReceivedCallback() {
+			if (this.readyState == 4) { //Upon getting a response
+				if(this.status == 200){
+					resolve(this.responseText);
+				} else {
+					reject("Error");
+			}
+		 }
+		};
+		xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + ID, true);
+		xhttp.send(); // Gets the response
+	});
 }
 
 /**
@@ -191,15 +196,20 @@ function dbGetUserTokens(id){
  * delete all tracks from the playlist in db
  * @param {string} id the playlist db id of playlist to delete tracks from
  */
-function dbDeleteTracks(id){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-    xhttp.open('DELETE', 'http://' + URL + '/db/delete/tracks/' + id, true);
-    xhttp.send(); // Gets the response
+async function dbDeleteTracks(id){
+	return new Promise(function(resolve, reject) {
+		xhttp.onreadystatechange = function ReceivedCallback() {
+		if (this.readyState == 4) { //Upon getting a response
+			if(this.status == 200){
+				resolve(this.responseText);
+			} else {
+				reject("Error");
+		}
+	 }
+	};
+	xhttp.open('DELETE', 'http://' + URL + '/db/delete/tracks/' + id, true);
+	xhttp.send(); // Gets the response
+	});
 }
 
 async function dbPlaylistExists(playlistID){
