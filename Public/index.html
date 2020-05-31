@@ -54,6 +54,12 @@
           <li class="nav-item">
             <button id="login-spotify">Login to Spotify</button>
           </li>
+          <li class="nav-item">
+            <button id="setCookie">set cookie</button>
+          </li>
+          <li class="nav-item">
+            <button id="getCookie">get cookie</button>
+          </li>
         </ul>
 
         <form class="form-inline">
@@ -132,6 +138,15 @@
   <script type="text/javascript" src="/index.js"></script>
   <script type="text/javascript" src="/spotifyIndex.js"></script>
   <script type="text/javascript" src="/databaseIndex.js"></script>
+  <script type="text/javascript">
+    document.getElementById("setCookie").addEventListener("click", () => {
+      setCookie("thisisacookie");
+    });
+  
+    document.getElementById("getCookie").addEventListener("click", () => {
+      console.log(getCookie());
+    });
+  </script>
 
 </body>
 
