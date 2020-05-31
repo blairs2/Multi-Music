@@ -626,7 +626,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
                  //add the new song to db
-                 await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id).then(async function(){
+                 await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(async function(){
                    console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id)
                    await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
@@ -648,7 +648,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
              if(response.hasOwnProperty("songs")){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
-                 await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(async function(){
+                 await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id,).then(async function(){
                    console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
                    await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);

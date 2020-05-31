@@ -46,7 +46,10 @@ function AM_to_MM_search(am_response){
     type_data = am_response.results[result_types[type]].data;//This is a list of objects corresponding to the type
     for(var data_index = 0; data_index < type_data.length; data_index++){
       data_obj = type_data[data_index];
-      var url = data_obj.attributes.artwork.url.replace('{w}', 300).replace('{h}',300);
+      var url = "/assets/Missing_content.png"; //default image when not found
+      if(data_obj.attributes.hasOwnProperty("artwork")){
+        var url = data_obj.attributes.artwork.url.replace('{w}', 300).replace('{h}',300);
+      }
       //creates a lists of all the data objects
       data.push({id:data_obj.id, href:data_obj.href, artwork:url, title:data_obj.attributes.name, artist:data_obj.attributes.artistName});
     }
