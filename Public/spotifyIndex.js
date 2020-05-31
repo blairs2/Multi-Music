@@ -27,7 +27,7 @@ function spotifyGetUser(){
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = ""; //get from cookie
+    id = getCookie(); //get from cookie
     xhttp.open('GET', 'http://' + URL + '/spotify/user/' + id, true);
     xhttp.send(); // Gets the response
 }
@@ -47,7 +47,7 @@ async function spotifyGetUserPlaylists(){
       }
      }
     };
-    id = ""; //get from cookie
+    id = getCookie(); //get from cookie
     xhttp.open('GET', 'http://' + URL + '/spotify/playlists/' + id, true);
     xhttp.send(); // Gets the response
     });
@@ -69,7 +69,7 @@ async function spotifyGetPlaylistTracks(playlistid){
      }
     }
    };
-   id = ""; //get from cookie
+   id = getCookie(); //get from cookie
    xhttp.open('GET', 'http://' + URL + '/spotify/playlist/tracks/' + id + "/" + playlistid, true);
    xhttp.send(); // Gets the response
   });
@@ -92,7 +92,7 @@ async function spotifyGetPlaylistAttributes(playlistid){
     }
    }
   };
-  id = ""; //get from cookie
+  id = getCookie(); //get from cookie
     xhttp.open('GET', 'http://' + URL + '/spotify/playlist/' + id + "/" + playlistid, true);
     xhttp.send(); // Gets the response
   });
@@ -128,7 +128,7 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = ""; //get from cookie
+    id = getCookie(); //get from cookie
     xhttp.open('GET', 'http://' + URL + '/spotify/playlist/add/' + id + "/" + playlistid + '/' + trackURI, true);
     xhttp.send(); // Gets the response
 }
@@ -145,7 +145,7 @@ function spotifyRenamePlaylist(playlistid, name){
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = ""; //get from cookie
+    id = getCookie(); //get from cookie
     xhttp.open('GET', 'http://' + URL + '/spotify/playlist/details/' + id + "/" + playlistid + '/' + name, true);
     xhttp.send(); // Gets the response
 }
@@ -165,7 +165,7 @@ function spotifyCreateNewPlaylist(userID, name, public = false, description = ''
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = ""; //get from cookie
+    id = getCookie(); //get from cookie
     xhttp.open('GET', 'http://' + URL + '/spotify/playlist/create/' + id + "/" + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative, true);
     xhttp.send(); // Gets the response
 }
