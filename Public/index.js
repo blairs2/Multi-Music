@@ -615,20 +615,20 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
 
-     handle = await dbHasSong(track.id).then(resp => {
+     handle = await dbHasSong(track.id).then(async function(resp){
        if(resp == 'false'){
          //replace spaces with plus and get rid of special characters
          search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace("&", "").replace("/", "");
          if(new_service == "Spotify"){
-           await spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
+           await spotifySearch('q=' + search + '&limit=1&type=track').then(async function(value){
              var response = JSON.parse(value);
              if(response.hasOwnProperty("songs")){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
                  //add the new song to db
-                 await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id).then(()=>{
+                 await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id).then(async function(){
                    console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id)
-                   await dbHasSong(track.id).then(resp1 => {
+                   await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
                      if(response_json != false){
                        var song_id = response_json[0].song_ID;
@@ -643,14 +643,14 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
              }
            });
          } else if(new_service == "Apple Music") {
-           await searchByTerm('term=' + search + '&limit=1&types=songs').then((value) => {
+           await searchByTerm('term=' + search + '&limit=1&types=songs').then(async function(value){
              var response = JSON.parse(value);
              if(response.hasOwnProperty("songs")){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
-                 await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(()=>{
+                 await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(async function(){
                    console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
-                   await dbHasSong(track.id).then(resp1 => {
+                   await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
                      if(response_json != false){
                        var song_id = response_json[0].song_ID;
