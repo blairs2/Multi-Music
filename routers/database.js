@@ -213,4 +213,21 @@ router.get('/db/playlist/exists/:playlist_id', function(req, response){
     });
 });
 
+//This will return the necessary data to make a playlist on either service
+router.get('/playlist/convert/:playlist_id', function(req, response){
+    con.query( "SELECT s.spotify_Song_ID, s.apple_Song_ID, s.title, p.playlist_Name FROM Playlist p " +
+     "JOIN Song_Playlist sxp ON sxp.playlist_ID = p.playlist_ID JOIN Song s ON " +
+     "sxp.song_ID = s.song_ID WHERE p.playlist_ID = \"" + req.params.playlist_id +"\";", function (err, result, fields) {
+        if (err) {
+            console.log("ERROR in db userToken", err);
+        }  else {
+            if (result.length != 0){ // if record found
+                response.send(result);
+            } else {
+                response.send(false);
+            }
+        }
+    });
+});
+
 module.exports = router;

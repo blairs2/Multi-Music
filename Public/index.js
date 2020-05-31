@@ -551,6 +551,7 @@ function displayPlaylistAttributes(playlist_attributes, service){
   }
   retval += '</div>';
   retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button>`;
+  retval += '<div id="convert-link"> </div>';
   return retval;
 }
 
@@ -674,6 +675,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
        }
      });
    }
+   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${URL}/convert.html/playlist/convert/${mm_playlist_id}">Converted Playlist</a>`;
  });
 }
 

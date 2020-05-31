@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Multi Music</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/shop-homepage.css" rel="stylesheet">
+    <script src="publicIndex.js"></script>
+    <link rel="shortcut icon" href="">
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Multi Music</a>
+      <button id="last-btn" type="button" name="button">last</button>
+      <button id="play-btn" type="button" name="button">play</button>
+      <button id="pause-btn" type="button" name="button">pause</button>
+      <button id="next-btn" type="button" name="button">next</button>
+
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <li class="nav-item active">
+             <a class="nav-link" href="#">Home
+               <span class="sr-only">(current)</span>
+             </a>
+           </li>
+           <li class="nav-item">
+             <a class="nav-link" onclick="aboutLoad()" href="#">About</a>
+           </li>
+           <li class="nav-item">
+             <a class="nav-link" onclick="contactLoad()" href="#">Contact</a>
+           </li>
+        </ul>
+
+        <form class="form-inline">
+          <i class="fas fa-search" aria-hidden="true"></i>
+          <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
+            aria-label="Search">
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div>
+    <br>
+    <div class="row">
+
+      <div class="col-lg-2">
+        <div class="row">
+          &emsp;
+          <a href="#"><img class="card-img-top" src="http://placehold.it/80x80" alt=""></a>
+          &emsp;
+          <h7 class="my-4">Multi Music User</h7>
+        </div>
+        <br>
+        <div>
+        <div class="list-group">
+          <div class="autocomplete">
+          <input id="search-input" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
+            aria-label="Search">
+          </div>
+
+
+          <br>
+          <a href="#" class="list-group-item">Home</a>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div id="user-playlists" class="list-group" class="scroll">
+
+      </div>
+
+    </div>
+      <!-- /.col-lg-3 -->
+
+      <div class="col-lg-10">
+
+        <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
+        <div id="generated-content">
+          <div class="row">
+              <button id="convert-spotify" type="button" class="btn"><img style="width:100px;height:30px;" src="vendor/Spotify.png" alt=""></button>&emsp;
+              <button id="convert-apple" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
+              <br><br><br>
+        </div>
+        <!-- /.row -->
+
+      </div>
+      <!-- /.col-lg-9 -->
+
+    </div>
+    <!-- /.row -->
+
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Multi Music 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
+  <script type="text/javascript" src="/index.js"></script>
+  <script type="text/javascript" src="/spotifyIndex.js"></script>
+  <script type="text/javascript" src="/databaseIndex.js"></script>
+  <script type="text/javascript">
+  document.getElementById("convert-apple").addEventListener("click", ()=>{
+    async function dbRetrieveConvert(){
+       var xhttp = new XMLHttpRequest();
+       return new Promise(function(resolve, reject) {
+         xhttp.onreadystatechange = function ReceivedCallback() {
+         if (this.readyState == 4) { //Upon getting a response
+           if(this.status == 200){
+             // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+             resolve(this.responseText);
+           } else {
+             reject("Error");
+         }
+        }
+       };
+       xhttp.open("GET", location.href, true);
+       xhttp.send(); // Gets the response
+      });
+    }
+
+  });
+
+    //login?
+    function InsertCategory(){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function ReceivedCallback() {
+          if (this.readyState == 4 && this.status == 200) {
+          }
+        };
+        xhttp.open("POST", "http://leia.cs.spu.edu:3003/api/categories" , true);
+        xhttp.send();
+      }
+
+  </script>
+
+</body>
+
+</html>
