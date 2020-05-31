@@ -62,8 +62,8 @@ async function dbHasSong(ID){
             alert("Invalid Username or Password please try agian.");
         } else {
             setTimeout(function() {window.location = 'http://' + URL + '/index.html' });
-            //window.location = 'http://' + URL + '/index.html';
-            setCookie(x[0].userID);
+						console.log(x);
+            setCookie(x[0].user_ID);
             //setCookie("COOKIE");
         }
     });
@@ -220,7 +220,7 @@ function dbAddUser(name, code){
  * get the tokens stored on the db for the user
  * @param {string} id the id of the user to get tokens from db for
  */
-module.exports = function dbGetUserTokens(id){
+function dbGetUserTokens(id){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
