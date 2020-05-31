@@ -55,18 +55,16 @@ async function dbHasSong(ID){
  function login(){
     var name = document.forms["login-form"]["email"].value;
     var pass = document.forms["login-form"]["password"].value;
-    await dbGetUser(name, pass).then((value) => {
-        x = JSON.parse(value);
+    dbGetUser(name, pass).then((value) => {
+        var x = JSON.parse(value);
         if (x == false){
         //if (name != "Nathan"){
             alert("Invalid Username or Password please try agian.");
-            return false;
         } else {
             setTimeout(function() {window.location = 'http://' + URL + '/index.html' });
             //window.location = 'http://' + URL + '/index.html';
             setCookie(x[0].userID);
             //setCookie("COOKIE");
-            return true;
         }
     }
 
