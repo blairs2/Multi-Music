@@ -4,9 +4,9 @@ const request = require('request'); // "Request" library
 const Spotify = require('spotify-web-api-node');
 //const cors = require('cors');
 const spotifyApi = new Spotify({
-  clientId: '', // Spotify client id
-  clientSecret: '', // Spotify secret
-  redirectUri: '' // Spotify redirect uri
+  clientId: '832b12a20fb943ed9ef4b49ceca24b65', // Spotify client id
+  clientSecret: '191f46cbc6e04274bff4214a782e13b2', // Spotify secret
+  redirectUri: 'http://localhost:8080/spotify/callback' // Spotify redirect uri
 });
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
@@ -83,7 +83,7 @@ router.get('/spotify/callback', function(req, responce) {
           const { expires_in, access_token, refresh_token } = data.body;
           accessToken = access_token;
           refreshToken = refresh_token;
-          console.log(accessToken);
+          // console.log(accessToken);
           refreshToken = refresh_token;
           responce.redirect(`/#/user/${access_token}/${refresh_token}`);
         }).catch(err => {
@@ -153,7 +153,7 @@ router.get('/spotify/playlists', function(req, responce){
             }
             responce.send(retval);
         }
-        console.log(responce);
+        // console.log(responce);
 
     });
 });
@@ -169,7 +169,7 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
       };
       if (accessToken == ""){ // use sever token if user is not logged in
         options.headers = { 'Authorization': 'Bearer ' + serverToken }
-      } 
+      }
       request.get(options, function(error, res, body) {
         if (error){ // if request fails
           console.log("ERROR getting user playlist")
@@ -178,15 +178,15 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
           retval = { tracks: []};
 
           for(i = 0; i < body.tracks.limit; i++){
-            if(body.tracks.items[i] != null){
+            if(body.tracks.items[i] != null && body.tracks.items[i].track != null){
               retval.tracks.push({
                 title: body.tracks.items[i].track.name,
                 artist: body.tracks.items[i].track.artists[0].name,
                 id: body.tracks.items[i].track.uri,
                 artwork: body.tracks.items[i].track.album.images.length != 0 ?
-                           body.tracks.items[i].track.album.images.length == 1 ? 
-                           body.tracks.items[i].track.album.images[1].url : 
-                           body.tracks.items[i].track.album.images[0].url : null, 
+                           body.tracks.items[i].track.album.images.length == 1 ?
+                           body.tracks.items[i].track.album.images[1].url :
+                           body.tracks.items[i].track.album.images[0].url : null,
                 href: body.tracks.items[i].track.href,
                 contentRating: body.tracks.items[i].track.explicit ? "explicit" : "clean",
                 album: body.tracks.items[i].track.album.name
@@ -213,7 +213,7 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
       if (error){ // if request fails
         console.log("ERROR getting user playlist")
       } else {
-        console.log(body);
+        // console.log(body);
         retval = { playlists: []}
         retval.playlists.push({
           name: body.name,
@@ -221,9 +221,9 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
           href: body.href,
           id: body.id,
           artwork: body.images.length != 0 ?
-            body.images.length == 1 ? 
-            body.images[0].url : 
-            body.images[1].url : null 
+            body.images.length == 1 ?
+            body.images[0].url :
+            body.images[1].url : null
           });
       }
         response.send(retval);
@@ -348,46 +348,48 @@ router.get('/spotify/search/:keyword', function(req, response){
       } else {
         //console.log(body);
         retval = {} //json to but returned to multimusic
-        
-        if(body.hasOwnProperty("tracks")){
-          retval.songs = {data:[]};
-          for (i = 0; i < body.tracks.limit; i++){
-            if(body.tracks.items[i] != null){
-              retval.songs.data.push({ //append songs to retval.songs
-                title: body.tracks.items[i].name,
-                artist: body.tracks.items[i].artists[0].name,
-                artwork: body.tracks.items[i].album.images[1].url,
-                id: body.tracks.items[i].id,
-                href: body.tracks.items[i].href});
+
+          if(body != null){
+            if(body.hasOwnProperty("tracks")){
+            retval.songs = {data:[]};
+            for (i = 0; i < body.tracks.limit; i++){
+              if(body.tracks.items[i] != null){
+                retval.songs.data.push({ //append songs to retval.songs
+                  title: body.tracks.items[i].name,
+                  artist: body.tracks.items[i].artists[0].name,
+                  artwork: body.tracks.items[i].album.images[1].url,
+                  id: body.tracks.items[i].id,
+                  href: body.tracks.items[i].href});
+                }
               }
-            }
-        }
-        if(body.hasOwnProperty("albums")){
-          retval.albums = {data:[]};
-          for (i = 0; i < body.albums.limit; i++){
-            if(body.albums.items[i] != null){
-              retval.albums.data.push({ //append albums to retval.albums
-                title: body.albums.items[i].name,
-                artist: body.albums.items[i].artists[0].name,
-                artwork: body.albums.items[i].images[1].url,
-                id: body.albums.items[i].id,
-                href: body.albums.items[i].href});
-              }
-            }
           }
-        if(body.hasOwnProperty("playlists")){
-          retval.playlists = {data:[]};
-          for (i = 0; i < body.playlists.limit; i++){
-            if(body.playlists.items[i] != null){
-                retval.playlists.data.push({ //append playlists to retval.playlists
-                  title: body.playlists.items[i].name,
-                  artwork: body.playlists.items[i].images.length != 0 ?
-                           body.playlists.items[i].length == 1 ?
-                           body.playlists.items[i].images[1].url :
-                           body.playlists.items[i].images[0].url : null,
-                  id: body.playlists.items[i].id,
-                  href: body.playlists.items[i].href
-                });
+          if(body.hasOwnProperty("albums")){
+            retval.albums = {data:[]};
+            for (i = 0; i < body.albums.limit; i++){
+              if(body.albums.items[i] != null){
+                retval.albums.data.push({ //append albums to retval.albums
+                  title: body.albums.items[i].name,
+                  artist: body.albums.items[i].artists[0].name,
+                  artwork: body.albums.items[i].images[1].url,
+                  id: body.albums.items[i].id,
+                  href: body.albums.items[i].href});
+                }
+              }
+            }
+          if(body.hasOwnProperty("playlists")){
+            retval.playlists = {data:[]};
+            for (i = 0; i < body.playlists.limit; i++){
+              if(body.playlists.items[i] != null){
+                  retval.playlists.data.push({ //append playlists to retval.playlists
+                    title: body.playlists.items[i].name,
+                    artwork: body.playlists.items[i].images.length != 0 ?
+                             body.playlists.items[i].length == 1 ?
+                             body.playlists.items[i].images[1].url :
+                             body.playlists.items[i].images[0].url : null,
+                    id: body.playlists.items[i].id,
+                    href: body.playlists.items[i].href
+                  });
+                }
               }
             }
           }

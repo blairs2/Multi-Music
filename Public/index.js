@@ -1,4 +1,4 @@
-const URL = window.location.host;
+//const URL = window.location.host;
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   console.log("loaded");
