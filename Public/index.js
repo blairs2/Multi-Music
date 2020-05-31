@@ -614,10 +614,11 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
    var search, track, matches, handle;
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
-     
+
      handle = await dbHasSong(track.id).then(resp => {
        if(resp == 'false'){
-         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+');
+         //replace spaces with plus and get rid of special characters
+         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace("&", "").replace("/", "");
          if(new_service == "Spotify"){
            spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
              var response = JSON.parse(value);

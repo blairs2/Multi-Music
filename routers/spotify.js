@@ -179,8 +179,6 @@ router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
 
           for(i = 0; i < body.tracks.limit; i++){
             if(body.tracks.items[i] != null && body.tracks.items[i].track != null){
-              console.log(body.tracks.items[i]);
-              console.log(body.tracks.items[i].track.uri)
               retval.tracks.push({
                 title: body.tracks.items[i].track.name,
                 artist: body.tracks.items[i].track.artists[0].name,
