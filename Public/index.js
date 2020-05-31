@@ -610,11 +610,11 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
     }
   }
  Promise.all([playlistTracks]).then((values) => {
-   var tracks = JSON.parse(playlistTracks).tracks;
-   var search, track, matches;
+   var tracks = JSON.parse(values[0]).tracks;
+   var search, track, matches, handle;
    for(var i = 0; i < tracks.length; i++){
-    track = tracks[i];
-     dbHasSong(track.id).then(resp => {
+     track = tracks[i];
+     handle = await dbHasSong(track.id).then(resp => {
        if(resp == 'false'){
          search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+');
          if(new_service == "Spotify"){
@@ -628,8 +628,8 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
                    console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].album, song_matches[0].song_matches, track.id, song_matches[0].id)
                    dbHasSong(track.id).then(resp1 => {
                      var repsonse_json = JSON.parse(resp1);
-                     var song_id = repsonse_json.song_ID;
-                     console.log("Find song:", song_id)
+                     var song_id = repsonse_json[0].song_ID;
+                     console.log("Find song:", song_id);
                      dbAddSongToPlaylist(mm_playlist_id, song_id);
                    });
                  });
@@ -648,8 +648,8 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
                    console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].album, song_matches[0].song_matches, song_matches[0].id, track.id)
                    dbHasSong(track.id).then(resp1 => {
                      var repsonse_json = JSON.parse(resp1);
-                     var song_id = repsonse_json.song_ID;
-                     console.log("Find song:", song_id)
+                     var song_id = repsonse_json[0].song_ID;
+                     console.log("Find song:", song_id);
                      dbAddSongToPlaylist(mm_playlist_id, song_id);
                    });
                  });

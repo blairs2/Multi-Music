@@ -12,8 +12,6 @@ function hashCode(str){
  * check if song exists in database
  * @param {string} title the title of the song
  * @param {string} artist the songs artist
- * @param {string} album the title of the album the song is on
- * @param {string} explicit if the song is explicit or clean
  */
 async function dbHasSong(ID){
 		var xhttp = new XMLHttpRequest();
@@ -110,7 +108,7 @@ function dbUpdateAppleToken(id, token){
  * @param {string} spotifyID the spotifyID of the song
  * @param {string} appleID the appleIF of the song
  */
-async function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
+async function dbAddSong(title, artist, spotifyID, appleID){
 		var xhttp = new XMLHttpRequest();
 		return new Promise(function(resolve, reject) {
 			xhttp.onreadystatechange = function ReceivedCallback() {
@@ -122,7 +120,7 @@ async function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
 			}
 		 }
 		};
-		xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + album + '/' + explicit + '/' + spotifyID + '/' + appleID, true);
+		 http.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + spotifyID + '/' + appleID, true);
 		xhttp.send(); // Gets the response
 	});
 }
