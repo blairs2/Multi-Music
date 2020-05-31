@@ -194,7 +194,7 @@ router.get('/spotify/playlist/tracks/:id/:playlistid', function(req, response){
               retval.tracks.push({
                 title: body.tracks.items[i].track.name,
                 artist: body.tracks.items[i].track.artists[0].name,
-                id: body.tracks.items[i].track.uri,
+                id: body.tracks.items[i].track.id,
                 artwork: body.tracks.items[i].track.album.images.length != 0 ?
                            body.tracks.items[i].track.album.images.length == 1 ?
                            body.tracks.items[i].track.album.images[1].url :
@@ -227,10 +227,9 @@ router.get('/spotify/playlist/:id/:playlistid', function(req, response){
       if (error){ // if request fails
         console.log("ERROR getting user playlist")
       } else {
-        // console.log(body);
         retval = { playlists: []}
         retval.playlists.push({
-          name: body.name,
+          title: body.name,
           description: body.description,
           href: body.href,
           id: body.id,

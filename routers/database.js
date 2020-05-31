@@ -1,14 +1,14 @@
 var express = require('express');       // imports the express library
 var router = express.Router();          // Router object for routes
-var mysql = require('mysql'); 
+var mysql = require('mysql');
 
 var con;
 
 con = mysql.createConnection({
-        host: "",
-        user: "",
-        password: "",
-        database: ""
+    host: "mm-database.cy6luhf4l9xi.us-east-2.rds.amazonaws.com",
+    user: "multimusicAdmin",
+    password: "MmdbAdmin20",
+    database: "MultiMusicDB"
     });
 
 
@@ -18,7 +18,7 @@ con.connect(function ConnectionHandler(err){
     } else {
         console.log("Connection to MySQL successfull");
     }
-});   
+});
 
 exports.get = function GetHandler(){
     return con;
@@ -28,7 +28,7 @@ exports.get = function GetHandler(){
 router.get('/db/hasSong/:ID', function(req, response){
     con.query( "SELECT spotify_Song_ID, apple_Song_ID, song_ID " +
                 "FROM Song " +
-                "WHERE spotify_Song_ID = \"" + req.params.ID + 
+                "WHERE spotify_Song_ID = \"" + req.params.ID +
                 "\" OR apple_Song_ID = \"" + req.params.ID +  "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db hasSong", err);
@@ -37,19 +37,19 @@ router.get('/db/hasSong/:ID', function(req, response){
                 response.send(result);
             } else {
                 response.send(false);
-            } 
+            }
         }
       });
 });
 
 //get playlist from db using spotify/apple or playlist id
 router.get('/db/playlist/:playlistID', function(req, response){
-    con.query( "SELECT p.playlist_Name, p.spotify_Playlist_ID, p.apple_Playlist_ID, p.playlist_ID, " + 
-                "s.title, s.spotify_Song_ID, s.apple_Song_ID, s.artist, " + 
+    con.query( "SELECT p.playlist_Name, p.spotify_Playlist_ID, p.apple_Playlist_ID, p.playlist_ID, " +
+                "s.title, s.spotify_Song_ID, s.apple_Song_ID, s.artist, " +
                 "FROM Playlist p " +
                 "JOIN Song_Playlist sXp on p.playlist_ID = sXp.playlist_ID " +
                 "JOIN Song s ON s.song_ID = sXp.song_ID " +
-                "WHERE p.spotify_Playlist_ID = \"" + req.params.playlistID + 
+                "WHERE p.spotify_Playlist_ID = \"" + req.params.playlistID +
                 "\" OR p.apple_Playlist_ID = \"" + req.params.playlistID +
                 "\" OR p.playlist_ID = \"" + req.params.playlistID + "\";", function (err, result, fields) {
         if (err) {
@@ -59,15 +59,15 @@ router.get('/db/playlist/:playlistID', function(req, response){
                 response.send(result);
             } else {
                 response.send(false);
-            } 
+            }
         }
       });
 });
 
 //get user id from username and password
 router.get('/db/user/:name/:code', function(req, response){
-    con.query( "SELECT username, user_ID " + 
-                "FROM User " + 
+    con.query( "SELECT username, user_ID " +
+                "FROM User " +
                 "WHERE username = \"" + req.params.name + "\" AND password = " + req.params.code + ";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db user", err);
@@ -76,7 +76,7 @@ router.get('/db/user/:name/:code', function(req, response){
                 response.send(result);
             } else {
                 response.send(false);
-            }           
+            }
         }
     });
 });
@@ -84,12 +84,12 @@ router.get('/db/user/:name/:code', function(req, response){
 //update users spotify token
 router.post('/db/user/spotify/:id/:token', function(req, response){
     con.query( "UPDATE User " +
-                "SET spotify_Token = \"" + req.params.token + 
+                "SET spotify_Token = \"" + req.params.token +
                 "\" WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db spotify token", err);
         }  else {
-            response.send(result);      
+            response.send(result);
         }
     });
 });
@@ -97,19 +97,19 @@ router.post('/db/user/spotify/:id/:token', function(req, response){
 //update users apple token
 router.post('/db/user/apple/:id/:token', function(req, response){
     con.query( "UPDATE User " +
-                "SET apple_Token = \"" + req.params.token + 
+                "SET apple_Token = \"" + req.params.token +
                 "\" WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db apple token", err);
         }  else {
-            response.send(result);      
+            response.send(result);
         }
     });
 });
 
 //add song to db
 router.put('/db/song/:title/:artist/:spotifyID/:appleID', function(req, response){
-    con.query( "INSERT INTO Song(title, artist, album, explicit, spotify_Song_ID, apple_Song_ID) " +
+    con.query( "INSERT INTO Song(title, artist, spotify_Song_ID, apple_Song_ID) " +
                 "VALUES (\"" + req.params.title + "\", \"" +
                         req.params.artist + "\", \"" +
                         req.params.spotifyID + "\", \"" +
@@ -117,7 +117,7 @@ router.put('/db/song/:title/:artist/:spotifyID/:appleID', function(req, response
         if (err) {
             console.log("ERROR adding song to db", err);
         }  else {
-            response.send(result);      
+            response.send(result);
         }
     });
 });
@@ -133,7 +133,7 @@ router.put('/db/playlist/:title/:userID/:spotifyID/:appleID', function(req, resp
         if (err) {
             console.log("ERROR adding playlist to db", err);
         }  else {
-            response.send(result);     
+            response.send(result);
         }
     });
 });
@@ -147,7 +147,7 @@ router.put('/db/playlist/song/:playlistID/:songID', function(req, response){
         if (err) {
             console.log("ERROR adding song to playlist in db", err);
         }  else {
-            response.send(result);      
+            response.send(result);
         }
     });
 });
@@ -160,15 +160,15 @@ router.put('/db/user/:name/:code', function(req, response){
         if (err) {
             console.log("ERROR adding song to playlist in db", err);
         }  else {
-            response.send(result);      
+            response.send(result);
         }
     });
 });
 
 //get tokens from user id
 router.get('/db/userToken/:id', function(req, response){
-    con.query( "SELECT spotify_Token, apple_Token " + 
-                "FROM User " + 
+    con.query( "SELECT spotify_Token, apple_Token " +
+                "FROM User " +
                 "WHERE user_ID = \"" + req.params.id + "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db userToken", err);
@@ -177,14 +177,14 @@ router.get('/db/userToken/:id', function(req, response){
                 response.send(result);
             } else {
                 response.send(false);
-            }           
+            }
         }
     });
 });
 
 //delete all songs from playlist
 router.delete('/db/delete/tracks/:id', function(req, response){
-    con.query( "DELETE FROM Song_Playlist" + 
+    con.query( "DELETE FROM Song_Playlist" +
                 " WHERE playlist_ID = \"" + req.params.id + "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db userToken", err);
@@ -193,7 +193,39 @@ router.delete('/db/delete/tracks/:id', function(req, response){
                 response.send(result);
             } else {
                 response.send(false);
-            }           
+            }
+        }
+    });
+});
+
+router.get('/db/playlist/exists/:playlist_id', function(req, response){
+    con.query( "SELECT playlist_ID FROM Playlist WHERE apple_Playlist_ID =\"" + req.params.playlist_id + "\" OR "+
+    "spotify_Playlist_ID =\"" + req.params.playlist_id + "\";", function (err, result, fields) {
+        if (err) {
+            console.log("ERROR in db userToken", err);
+        }  else {
+            if (result.length != 0){ // if record found
+                response.send(result);
+            } else {
+                response.send(false);
+            }
+        }
+    });
+});
+
+//This will return the necessary data to make a playlist on either service
+router.get('/playlist/convert/:playlist_id', function(req, response){
+    con.query( "SELECT s.spotify_Song_ID, s.apple_Song_ID, s.title, p.playlist_Name FROM Playlist p " +
+     "JOIN Song_Playlist sxp ON sxp.playlist_ID = p.playlist_ID JOIN Song s ON " +
+     "sxp.song_ID = s.song_ID WHERE p.playlist_ID = \"" + req.params.playlist_id +"\";", function (err, result, fields) {
+        if (err) {
+            console.log("ERROR in db userToken", err);
+        }  else {
+            if (result.length != 0){ // if record found
+                response.send(result);
+            } else {
+                response.send(false);
+            }
         }
     });
 });

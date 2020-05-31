@@ -13,35 +13,44 @@ function hashCode(str){
  * check if song exists in database
  * @param {string} title the title of the song
  * @param {string} artist the songs artist
- * @param {string} album the title of the album the song is on
- * @param {string} explicit if the song is explicit or clean
  */
-function dbHasSong(ID){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-
-    xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + ID, true);
-    xhttp.send(); // Gets the response
+async function dbHasSong(ID){
+		var xhttp = new XMLHttpRequest();
+		return new Promise(function(resolve, reject) {
+			xhttp.onreadystatechange = function ReceivedCallback() {
+			if (this.readyState == 4) { //Upon getting a response
+				if(this.status == 200){
+					resolve(this.responseText);
+				} else {
+					reject("Error");
+			}
+		 }
+		};
+		xhttp.open('GET', 'http://' + URL + '/db/hasSong/' + ID, true);
+		xhttp.send(); // Gets the response
+	});
 }
 
 /**
  * get playlist from database
  * @param {string} playlistID the spotify or apple id of the playlist to get
  */
-function dbGetPlaylist(playlistID){
+ async function dbGetPlaylist(playlistID){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+          reject("Error");
+      }
+     }
     };
     xhttp.open('GET', 'http://' + URL + '/db/playlist/' + playlistID, true);
     xhttp.send(); // Gets the response
-}
+   });
+ }
 
 function setCookie(userID){
     document.cookie = "userID=" + userID + "; sameSite=Lax";
@@ -113,33 +122,45 @@ module.exports = function dbUpdateAppleToken(id, token){
  * @param {string} spotifyID the spotifyID of the song
  * @param {string} appleID the appleIF of the song
  */
-function dbAddSong(title, artist, spotifyID, appleID){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-    xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + spotifyID + '/' + appleID, true);
-    xhttp.send(); // Gets the response
+async function dbAddSong(title, artist, spotifyID, appleID){
+		var xhttp = new XMLHttpRequest();
+		return new Promise(function(resolve, reject) {
+			xhttp.onreadystatechange = function ReceivedCallback() {
+			if (this.readyState == 4) { //Upon getting a response
+				if(this.status == 200){
+					resolve(this.responseText);
+				} else {
+					reject("Error");
+			}
+		 }
+		};
+		xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + spotifyID + '/' + appleID, true);
+		xhttp.send(); // Gets the response
+	});
 }
 
 /**
  * add playlist to database
  * @param {string} title the title of the playlist
  * @param {string} user the id of the author of the playlist
- * @param {string} spotifyID the spotifyID of the playlist 
- * @param {string} appleID the appleID of the playlist 
+ * @param {string} spotifyID the spotifyID of the playlist
+ * @param {string} appleID the appleID of the playlist
  */
-function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-    xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID, true);
-    xhttp.send(); // Gets the response
+async function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
+	 var xhttp = new XMLHttpRequest();
+	 return new Promise(function(resolve, reject) {
+		 xhttp.onreadystatechange = function ReceivedCallback() {
+		 if (this.readyState == 4) { //Upon getting a response
+			 if(this.status == 200){
+				 resolve(this.responseText);
+			 } else {
+				 reject("Error");
+		 }
+		}
+	 };
+	 xhttp.open('PUT', 'http://' + URL + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID, true);
+	 xhttp.send(); // Gets the response
+	});
 }
 
 /**
@@ -191,15 +212,38 @@ module.exports = function dbGetUserTokens(id){
 
 /**
  * delete all tracks from the playlist in db
- * @param {string} id the playlist db id of playlist to delete tracks from 
+ * @param {string} id the playlist db id of playlist to delete tracks from
  */
-function dbDeleteTracks(id){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-    xhttp.open('DELETE', 'http://' + URL + '/db/delete/tracks/' + id, true);
-    xhttp.send(); // Gets the response
+async function dbDeleteTracks(id){
+	var xhttp = new XMLHttpRequest();
+	return new Promise(function(resolve, reject) {
+		xhttp.onreadystatechange = function ReceivedCallback() {
+		if (this.readyState == 4) { //Upon getting a response
+			if(this.status == 200){
+				resolve(this.responseText);
+			} else {
+				reject("Error");
+		}
+	 }
+	};
+	xhttp.open('DELETE', 'http://' + URL + '/db/delete/tracks/' + id, true);
+	xhttp.send(); // Gets the response
+	});
+}
+
+async function dbPlaylistExists(playlistID){
+		var xhttp = new XMLHttpRequest();
+		return new Promise(function(resolve, reject) {
+			xhttp.onreadystatechange = function ReceivedCallback() {
+			if (this.readyState == 4) { //Upon getting a response
+				if(this.status == 200){
+					resolve(this.responseText);
+				} else {
+					reject("Error");
+			}
+		 }
+		};
+		xhttp.open('GET', 'http://' + URL + '/db/playlist/exists/' + playlistID, true);
+		xhttp.send(); // Gets the response
+	});
 }

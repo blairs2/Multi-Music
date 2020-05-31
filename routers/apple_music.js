@@ -46,7 +46,10 @@ function AM_to_MM_search(am_response){
     type_data = am_response.results[result_types[type]].data;//This is a list of objects corresponding to the type
     for(var data_index = 0; data_index < type_data.length; data_index++){
       data_obj = type_data[data_index];
-      var url = data_obj.attributes.artwork.url.replace('{w}', 300).replace('{h}',300);
+      var url = "/assets/Missing_content.png"; //default image when not found
+      if(data_obj.attributes.hasOwnProperty("artwork")){
+        var url = data_obj.attributes.artwork.url.replace('{w}', 300).replace('{h}',300);
+      }
       //creates a lists of all the data objects
       data.push({id:data_obj.id, href:data_obj.href, artwork:url, title:data_obj.attributes.name, artist:data_obj.attributes.artistName});
     }
@@ -68,17 +71,19 @@ function AM_to_MM_playlist_tracks(am_response){
 
   for(var i = 0; i < tracks.length; i++){
     track = tracks[i];
-    track_attributes = {id:track.id, href:track.href, title:track.attributes.name, album: track.attributes.albumName, artist: track.attributes.artistName};
-    if(track.attributes.hasOwnProperty("artwork")){
-      track_attributes.artwork = (track.attributes.artwork.url).replace('{w}', 300).replace('{h}',300); // Adds a artwork attribute with the artwork url (300x300)
+    if(track.hasOwnProperty("attributes")){ //Some songs don't have attributes? dont add them to response
+      track_attributes = {id:track.id, href:track.href, title:track.attributes.name, album:track.attributes.albumName, artist: track.attributes.artistName};
+      if(track.attributes.hasOwnProperty("artwork")){
+        track_attributes.artwork = (track.attributes.artwork.url).replace('{w}', 300).replace('{h}',300); // Adds a artwork attribute with the artwork url (300x300)
+      }
+      if(track.attributes.hasOwnProperty("contentRating")){
+        track_attributes.contentRating = "explicit";
+      } else {
+        track_attributes.contentRating = "clean";
+      }
+      data.push(track_attributes);
     }
-    if(track.attributes.hasOwnProperty("contentRating")){
-      track_attributes.contentRating = "explicit";
-    } else {
-      track_attributes.contentRating = "clean";
-    }
-    data.push(track_attributes);
-    }
+  }
     multi_music_obj.tracks = data;
   return JSON.stringify(multi_music_obj);
 }
