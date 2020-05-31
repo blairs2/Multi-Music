@@ -52,6 +52,24 @@ async function dbHasSong(ID){
    });
  }
 
+ function login(){
+    var name = document.forms["login-form"]["email"].value;
+    var pass = document.forms["login-form"]["password"].value;
+    await dbGetUser(name, pass).then((value) => {
+        x = JSON.parse(value);
+        if (x == false){
+        //if (name != "Nathan"){
+            alert("Invalid Username or Password please try agian.");
+            return false;
+        } else {
+            setTimeout(function() {window.location = 'http://' + URL + '/index.html' });
+            //window.location = 'http://' + URL + '/index.html';
+            setCookie(x[0].userID);
+            //setCookie("COOKIE");
+            return true;
+        }
+    }
+
 function setCookie(userID){
     document.cookie = "userID=" + userID + "; sameSite=Lax";
 }
@@ -67,17 +85,23 @@ function getCookie(){
  * @param {string} name the username of the user
  * @param {int} code the password of the user
  */
-function dbGetUser(name, code){
+async function dbGetUser(name, code){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
     };
     xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
-}
+   });
+  }
 
 /**
  * add spotify token to user record

@@ -570,13 +570,14 @@ function displayPlaylistTracks(playlist_tracks){
     songId = playlist_tracks[i].id;
     if(playlist_tracks[i].hasOwnProperty("artwork")){
       url = playlist_tracks[i].artwork;
+
     } else {
       url = "/assets/Missing_content.png";
     }
     retval += `<button type="button" class="list-group-item song-button" value="song" data-value="${songId}"><img class="song-button-img" src=${url}><span>${title}</span>&emsp;<span>${artist}</span></button>`;
   }
   retval += "</div>";
-  return retval
+  return retval;
 }
 
 /*
