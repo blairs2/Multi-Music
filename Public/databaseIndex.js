@@ -1,3 +1,4 @@
+//import cookieParser from "cookie-parser";
 
 function hashCode(str){
 	var hash = 0;
@@ -51,16 +52,29 @@ async function dbHasSong(ID){
    });
  }
 
+function setCookie(userID){
+    document.cookie = "userID=" + userID + "; sameSite=Lax";
+}
+
+function getCookie(){
+    str = document.cookie;
+    start = str.search("userID=");
+    return str.substring(start + 7);
+}
+
 /**
  * take username and password and checks db if user exists
  * @param {string} name the username of the user
  * @param {int} code the password of the user
  */
 function dbGetUser(name, code){
+
     var xhttp = new XMLHttpRequest();
+
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
+            
         }
     };
     xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + hashCode(code), true);
@@ -72,7 +86,7 @@ function dbGetUser(name, code){
  * @param {string} id the id of the user to be updated
  * @param {string} token the spotify token to be added to the user
  */
-function dbUpdateSpotifyToken(id, token){
+module.exports = function dbUpdateSpotifyToken(id, token){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -88,7 +102,7 @@ function dbUpdateSpotifyToken(id, token){
  * @param {string} id the id of the user to be updated
  * @param {string} token the apple token to be added to the user record
  */
-function dbUpdateAppleToken(id, token){
+module.exports = function dbUpdateAppleToken(id, token){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -185,7 +199,7 @@ function dbAddUser(name, code){
  * get the tokens stored on the db for the user
  * @param {string} id the id of the user to get tokens from db for
  */
-function dbGetUserTokens(id){
+module.exports = function dbGetUserTokens(id){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
