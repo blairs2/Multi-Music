@@ -679,10 +679,10 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
             console.log("Invalid Service");
           }
           dbPlaylistExists(playlist_id).then(value => {
-            console.log("New playlist: ", value[0].playlist_ID);
+            console.log("New playlist: ", JSON.parse(value)[0].playlist_ID);
           });
         } else {
-          console.log(response[0].playlist_ID);
+          console.log(JSON.parse(response)[0].playlist_ID);
         }
       });
 }
