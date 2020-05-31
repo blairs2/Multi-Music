@@ -201,7 +201,7 @@ router.delete('/db/delete/tracks/:id', function(req, response){
     });
 });
 
-router.delete('/db/playlist/exists/:playlist_id', function(req, response){
+router.get('/db/playlist/exists/:playlist_id', function(req, response){
     con.query( "SELECT * FROM Playlist WHERE apple_Playlist_ID =\"" + req.params.playlist_id + "\";", function (err, result, fields) {
         if (err) {
             console.log("ERROR in db userToken", err);
@@ -214,7 +214,5 @@ router.delete('/db/playlist/exists/:playlist_id', function(req, response){
         }
     });
 });
-
-db/playlist/exists/
 
 module.exports = router;

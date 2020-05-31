@@ -214,7 +214,7 @@ async function dbPlaylistExists(playlistID){
 			}
 		 }
 		};
-		xhttp.open('PUT', 'http://' + URL + '/db/playlist/exists/' + playlistID, true);
+		xhttp.open('GET', 'http://' + URL + '/db/playlist/exists/' + playlistID, true);
 		xhttp.send(); // Gets the response
 	});
 }
