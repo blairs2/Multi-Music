@@ -70,8 +70,8 @@
                       </div><button class="btn btn-default" type="submit" onclick="window.top.location='/index.html'">Login</button>
                 </form><br>
                         <div><h6>Choose your streaming platform</h6></div><br>
-                        <button id="apple-login" type="button" class="btn"><img style="width:100px;height:30px;" src="vendor/Spotify.png" alt=""></button>&emsp;
-                        <button id="spotify-login" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
+                        <button id="spotify-login" type="button" class="btn"><img style="width:100px;height:30px;" src="vendor/Spotify.png" alt=""></button>&emsp;
+                        <button id="apple-login" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
                         <br><br><br>
                         <div><h6>New to Multi Music? Register <a href="register.html">here</a></h6></div><br>
             </div>
@@ -94,10 +94,15 @@
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
+    <script type="text/javascript" src="/spotifyIndex.js"></script>
     <script type="text/javascript">
-      document.getElementById('apple-login').addEventListener('click', async function(){
-        //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-        music.authorize();
+      //document.getElementById('apple-login').addEventListener('click', async function(){
+      //  //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
+      //  music.authorize();
+      //});
+      document.getElementById("spotify-login").addEventListener('click', () => {
+        console.log("CLICK");
+        spotifyLogin();
       });
 
     </script>

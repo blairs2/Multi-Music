@@ -99,14 +99,14 @@ function dbUpdateAppleToken(id, token){
  * @param {string} spotifyID the spotifyID of the song
  * @param {string} appleID the appleIF of the song
  */
-function dbAddSong(title, artist, album, explicit, spotifyID, appleID){
+function dbAddSong(title, artist, spotifyID, appleID){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + album + '/' + explicit + '/' + spotifyID + '/' + appleID, true);
+    xhttp.open('PUT', 'http://' + URL + '/db/song/' + title + '/' + artist + '/' + spotifyID + '/' + appleID, true);
     xhttp.send(); // Gets the response
 }
 

@@ -25,7 +25,6 @@ exports.get = function GetHandler(){
 }
 
 //checks db for song if found returns appleID and spotifyID else returns false
-
 router.get('/db/hasSong/:ID', function(req, response){
     con.query( "SELECT spotify_Song_ID, apple_Song_ID, song_ID " +
                 "FROM Song " +
@@ -46,7 +45,7 @@ router.get('/db/hasSong/:ID', function(req, response){
 //get playlist from db using spotify/apple or playlist id
 router.get('/db/playlist/:playlistID', function(req, response){
     con.query( "SELECT p.playlist_Name, p.spotify_Playlist_ID, p.apple_Playlist_ID, p.playlist_ID, " + 
-                "s.title, s.spotify_Song_ID, s.apple_Song_ID, s.artist, s.explicit, s.album " + 
+                "s.title, s.spotify_Song_ID, s.apple_Song_ID, s.artist, " + 
                 "FROM Playlist p " +
                 "JOIN Song_Playlist sXp on p.playlist_ID = sXp.playlist_ID " +
                 "JOIN Song s ON s.song_ID = sXp.song_ID " +
@@ -109,12 +108,10 @@ router.post('/db/user/apple/:id/:token', function(req, response){
 });
 
 //add song to db
-router.put('/db/song/:title/:artist/:album/:explicit/:spotifyID/:appleID', function(req, response){
+router.put('/db/song/:title/:artist/:spotifyID/:appleID', function(req, response){
     con.query( "INSERT INTO Song(title, artist, album, explicit, spotify_Song_ID, apple_Song_ID) " +
                 "VALUES (\"" + req.params.title + "\", \"" +
                         req.params.artist + "\", \"" +
-                        req.params.album + "\", \"" +
-                        req.params.explicit + "\", \"" +
                         req.params.spotifyID + "\", \"" +
                         req.params.appleID + "\");", function (err, result, fields) {
         if (err) {
