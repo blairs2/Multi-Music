@@ -103,6 +103,9 @@
               <button id="convert-apple-btn" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
               <br><br><br>
         </div>
+        <div id="message">
+
+        </div>
         <!-- /.row -->
 
       </div>
@@ -171,7 +174,24 @@
     });
   }
 
+  //Creates a new empty playlist
+  function addPlaylist(body, appleToken){
+     var xhttp = new XMLHttpRequest();
+     xhttp.onreadystatechange = function ReceivedCallback() {
+       if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+         // console.log(JSON.parse(this.responseText));
+
+            // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
+       }
+     };
+     xhttp.open("POST", "http://" + window.location.host + "/apple-music/library/playlist/" + appleToken.replace(/\//g, '%2F'), true);
+     xhttp.setRequestHeader("Content-Type", "application/json");
+     xhttp.send(body); // Gets the response
+    }
+
   document.getElementById("convert-apple-btn").addEventListener("click", ()=>{
+    var url = (new URL(document.location));
+    var playlist_name = url.searchParams.get("name");
     music.authorize().then((musicUserToken)=>{
       dbRetrieveConvert().then(resp => {
         var resp_obj = JSON.parse(resp);
@@ -180,16 +200,30 @@
           for(var i = 0; i < resp_obj.length; i++){
             data.push({id:resp_obj[i].apple_Song_ID, type:"songs"});
           }
-          console.log(data);
-          var body = { attributes:{
-                name:url.searchParams.get("name"),
+          var body = {
+            attributes:{
+                name:playlist_name,
                },
               relationships:{
-                tracks: data
+                tracks: {
+                  data: data
+                }
               }
-            }
+            };
+
+            console.log(body, musicUserToken);
+            addPlaylist(JSON.stringify(body), musicUserToken).then((response)=>{
+              if(JSON.parse(response).hasOwnProperty("error")){
+                document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your library.</b>";
+              } else {
+                document.getElementById("message").innerHTML += "<b>Your playlist was added to your library!</b>";
+              }
+
+            });
+
+        } else {
+
         }
-        console.log(body);
       });
     });
 

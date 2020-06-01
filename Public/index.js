@@ -21,31 +21,31 @@ document.addEventListener('musickitloaded', () => {
     music.authorize().then(musicUserToken => {
       addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
       //Populates the left hand side of screen with all the playlsits in the users library
-      retreiveUserPlaylists().then(playlists =>{
-        //This block of code generates the list of playlists on the left hand side of the screen
-        var cloudPlaylists = JSON.parse(playlists).playlists;
-        var retval = '';
-        for(var i =0; i < cloudPlaylists.length; i++){
-          var playlistName = cloudPlaylists[i].title;
-          var playlist_id = cloudPlaylists[i].id;
-
-          retval += `<button class="list-group-item playlist-button" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
-        }
-        document.getElementById('user-playlists').innerHTML = retval;
-        var user_playlists = document.getElementsByClassName("playlist-button");
-        //Add event listener to each playlist.
-        //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
-        for (var i = 0; i < user_playlists.length; i++) {
-           user_playlists[i].addEventListener('click', function() {
-               //Generates the div to be populated in playlist view
-               document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
-               //Gets the attributes of a user's playlist
-               //Function being called will produce  upon recieving a json response
-               getPlaylistAttributes(this.getAttribute("data-value"));
-               getPlaylistTracks(this.getAttribute("data-value"));
-              },false);
-       }
-      });
+      // retreiveUserPlaylists().then(playlists =>{
+      //   //This block of code generates the list of playlists on the left hand side of the screen
+      //   var cloudPlaylists = JSON.parse(playlists).playlists;
+      //   var retval = '';
+      //   for(var i =0; i < cloudPlaylists.length; i++){
+      //     var playlistName = cloudPlaylists[i].title;
+      //     var playlist_id = cloudPlaylists[i].id;
+      //
+      //     retval += `<button class="list-group-item playlist-button" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
+      //   }
+      //   document.getElementById('user-playlists').innerHTML = retval;
+      //   var user_playlists = document.getElementsByClassName("playlist-button");
+      //   //Add event listener to each playlist.
+      //   //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
+      //   for (var i = 0; i < user_playlists.length; i++) {
+      //      user_playlists[i].addEventListener('click', function() {
+      //          //Generates the div to be populated in playlist view
+      //          document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+      //          //Gets the attributes of a user's playlist
+      //          //Function being called will produce  upon recieving a json response
+      //          getPlaylistAttributes(this.getAttribute("data-value"));
+      //          getPlaylistTracks(this.getAttribute("data-value"));
+      //         },false);
+      //  }
+      // });
     });
   });
 });
@@ -234,9 +234,9 @@ function autocomplete(input, arr) {
 //GET functions
 /////////////////////////////
 
-async function retreiveUserPlaylists(){
+function retreiveUserPlaylists(){
   var xhttp = new XMLHttpRequest();
-  return new Promise(function(resolve, reject) {
+  return new Promise(async function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4) { //Upon getting a response
       if(this.status == 200){
@@ -250,31 +250,31 @@ async function retreiveUserPlaylists(){
   id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + x[0].appleToken, true);
+        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + x[0].appleToken.replace(/\//g, '%2F'), true);
         xhttp.send(); // Gets the response
     });
   });
 }
 
 //Gets the users library of songs (default 25)
-function retrieveUserSongs(){
+async function retrieveUserSongs(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
       console.log(JSON.parse(this.responseText));
       //Code to change the generated-content inner html
     }
-  };  
+  };
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + x[0].appleToken, true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + x[0].appleToken.replace(/\//g, '%2F'), true);
       xhttp.send(); // Gets the response
   });
  }
 
 //Gets the users library of artists (default 25)
-function retrieveUserArtists(){
+async function retrieveUserArtists(){
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function ReceivedCallback() {
    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -286,13 +286,13 @@ function retrieveUserArtists(){
  id = getCookie(); //get user_ID from cookie
  await dbGetUserTokens(id).then((value) =>{
      var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + x[0].appleToken, true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + x[0].appleToken.replace(/\//g, '%2F'), true);
       xhttp.send(); // Gets the response
   });
 }
 
 //Gets the users library of albums (defualt 25)
-function retrieveUserAlbums(){
+async function retrieveUserAlbums(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -304,7 +304,7 @@ function retrieveUserAlbums(){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + x[0].appleToken, true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + x[0].appleToken.replace(/\//g, '%2F'), true);
       xhttp.send(); // Gets the response
     });
  }
@@ -325,24 +325,22 @@ function retrieveSearchHints(searchTerm){
 
 //Gets an individual playlist by id.
 //Buttons for each playlist's are generated when retrieveUserPlaylsits() is run. Each playlist button has the corresponding id attached
-function retirevePlaylist(playlist_id){
+async function retirevePlaylist(playlist_id){
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-
       }
     };
-
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken, true);
+        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken.replace(/\//g, '%2F'), true);
         xhttp.send(); // Gets the response
     });
    }
 
 //seperate from retrievePlaylist which gets the information about the playlist.
 //This function gets the tracks that are in the playlist
-function retrievePlaylistTracks(playlist_id){
+async function retrievePlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -352,7 +350,7 @@ function retrievePlaylistTracks(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + x[0].appleToken, true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + x[0].appleToken.replace(/\//g, '%2F'), true);
       xhttp.send(); // Gets the response
   });
 }
@@ -381,25 +379,8 @@ async function searchByTerm(searchTerm){
 //POST functions
 /////////////////////////////
 
-//Creates a new empty playlist
-function addPlaylist(playlist_name, description){
-   var xhttp = new XMLHttpRequest();
-   xhttp.onreadystatechange = function ReceivedCallback() {
-     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-       // console.log(JSON.parse(this.responseText));
 
-          // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
-     }
-   };
-   id = getCookie(); //get user_ID from cookie
-   await dbGetUserTokens(id).then((value) =>{
-       var x = JSON.parse(value);
-        xhttp.open("POST", "http://" + url + "/apple-music/library/playlist/" + x[0].appleToken, true);
-        xhttp.send(); // Gets the response
-     });
-  }
-
-function addTrackToPlaylist(playlist_id){
+async function addTrackToPlaylist(playlist_id){
      var xhttp = new XMLHttpRequest();
      xhttp.onreadystatechange = function ReceivedCallback() {
        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -411,12 +392,12 @@ function addTrackToPlaylist(playlist_id){
      id = getCookie(); //get user_ID from cookie
      await dbGetUserTokens(id).then((value) =>{
          var x = JSON.parse(value);
-         xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + x[0].appleToken, true);
+         xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + x[0].appleToken.replace(/\//g, '%2F'), true);
          xhttp.send(); // Gets the response
     });
 }
 
-function addAppleMusicUserToken(musicUserToken){
+async function addAppleMusicUserToken(musicUserToken){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
     var x = JSON.parse(value);
@@ -425,7 +406,7 @@ function addAppleMusicUserToken(musicUserToken){
   console.log(musicUserToken);
 }
 
-function getPlaylistTracks(playlist_id){
+async function getPlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -445,14 +426,14 @@ function getPlaylistTracks(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + x[0].appleToken , true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + x[0].appleToken.replace(/\//g, '%2F') , true);
       xhttp.send(); // Gets the response
   });
 }
 
 
 
-function getPlaylistAttributes(playlist_id){
+async function getPlaylistAttributes(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -468,7 +449,7 @@ function getPlaylistAttributes(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken , true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken.replace(/\//g, '%2F') , true);
       xhttp.send(); // Gets the response
   });
 }
@@ -648,11 +629,11 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
    var search, track, matches, handle;
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
-
+     document.getElementById("convert-link").innerHTML = `<span>Loading playlist link ${i}/${tracks.length}</span>`;
      handle = await dbHasSong(track.id).then(async function(resp){
        if(resp == 'false'){
          //replace spaces with plus and get rid of special characters
-         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace(/&/g, "").replace("/", "").replace(/%/, "").replace(/?/g, "");
+         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace(/&/g, "").replace(/\//g, '%2F').replace(/%/g, " ").replace(/\?/g, " ");
          if(new_service == "Spotify"){
            await spotifySearch('q=' + search + '&limit=1&type=track').then(async function(value){
              var response = JSON.parse(value);
@@ -660,7 +641,8 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
                  //add the new song to db
-                 await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(async function(){
+
+                 await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), song_matches[0].id, track.id).then(async function(){
                    // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id);
                    await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
@@ -677,12 +659,12 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
              }
            });
          } else if(new_service == "Apple Music") {
-           await searchByTerm('term=' + search + '&limit=1&types=songs').then(async function(value){
+           await searchByTerm('term=' + search.replace(/%20/g, "") + '&limit=1&types=songs').then(async function(value){
              var response = JSON.parse(value);
              if(response.hasOwnProperty("songs")){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
-                 await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id,).then(async function(){
+                 await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), track.id, song_matches[0].id,).then(async function(){
                    // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
                    await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
@@ -707,7 +689,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
        }
      });
    }
-   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${url}/convert.html?id=${mm_playlist_id},name=${playlist_name}">Converted Playlist</a>`;
+   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${url}/convert.html?id=${mm_playlist_id}&name=${playlist_name}">Converted Playlist</a>`;
  });
 }
 
@@ -733,11 +715,11 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
       var db_playlist_id = dbPlaylistExists(playlist_id).then(response => {
         if(response == 'false'){
           if(current_service == "Apple Music"){
-            dbAddPlaylist(title, user_id, spotifyID=null, appleID=playlist_id).then(()=>{
+            dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=null, appleID=playlist_id).then(()=>{
                 // console.log(title, user_id, current_service, playlist_id);
             });
           } else if (current_service == "Spotify"){
-            dbAddPlaylist(title, user_id, spotifyID=playlist_id, appleID=null).then(()=>{
+            dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=playlist_id, appleID=null).then(()=>{
               // console.log(title, user_id, current_service, playlist_id);
             });
           } else {
