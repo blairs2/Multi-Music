@@ -261,8 +261,7 @@ async function spotifySearch(searchTerm){
 }
 
 async function isAuthorized(){
-    return new Promise(function(resolve, reject) {
-        var authorized = "";
+    return new Promise(async function(resolve, reject) {
         id = getCookie(); //get user_ID from cookie
         await dbGetUserTokens(id).then((value) =>{
             var x = JSON.parse(value);
@@ -280,10 +279,6 @@ async function isAuthorized(){
             }
         });
     });
-}
-
-async function populatePlaylist(){
-    
 }
 
 // get token
