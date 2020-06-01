@@ -181,7 +181,7 @@
        }
      };
      xhttp.open("POST", "http://" + window.location.host + "/apple-music/library/playlist/" + appleToken.replace(/\//g, '%2F'), true);
-     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+     xhttp.setRequestHeader("Content-Type", "application/json");
      xhttp.send(body); // Gets the response
     }
 
@@ -196,16 +196,17 @@
           for(var i = 0; i < resp_obj.length; i++){
             data.push({id:resp_obj[i].apple_Song_ID, type:"songs"});
           }
-          console.log(data);
-          var body = { attributes:{
+          var body = {
+            attributes:{
                 name:playlist_name,
                },
               relationships:{
                 tracks: {
                   data: data
-                }}
+                }
               }
-            }
+            };
+
             console.log(body, musicUserToken);
             addPlaylist(JSON.stringify(body), musicUserToken);
 
