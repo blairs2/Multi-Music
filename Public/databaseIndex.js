@@ -52,6 +52,46 @@ async function dbHasSong(ID){
    });
  }
 
+// function login(){
+//     var name = document.forms["login-form"]["email"].value;
+//     var pass = document.forms["login-form"]["password"].value;
+//     await dbGetUser(name, pass).then((value) => {
+//         x = JSON.parse(value);
+//         if (x == false){
+//         //if (name != "Nathan"){
+//             alert("Invalid Username or Password please try agian.");
+//         } else {
+//             setTimeout(function() {window.location = 'http://' + URL + '/index.html' });
+//             //window.location = 'http://' + URL + '/index.html';
+//             setCookie(x[0].userID);
+//             //setCookie("COOKIE");
+//         }
+//     }); 
+// }
+function RegisterUser(){
+    var name = document.forms["register"]["userName"].value;
+    var pass = document.forms["register"]["password"].value;
+    var passC = document.forms["register"]["password_confirm"].value;
+    console.log(pass);
+    console.log(passC);
+    if (pass == passC){
+        dbAddUser(name, pass);
+        setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+        await dbGetUser(name, pass).then((value) => {
+            x = JSON.parse(value);
+            if (x == false){
+           // if (name != "Nathan") {
+                console.log("error this shouldn't happen"); 
+            } else {
+                setCookie(x[0].userID);
+                //setCookie("REG");
+            }
+        });
+    } else {
+        alert("Passwords do not match please try again");
+    }
+}
+
 function setCookie(userID){
     document.cookie = "userID=" + userID + "; sameSite=Lax";
 }
@@ -67,42 +107,50 @@ function getCookie(){
  * @param {string} name the username of the user
  * @param {int} code the password of the user
  */
-function dbGetUser(name, code){
-
+async function dbGetUser(name, code){
     var xhttp = new XMLHttpRequest();
-
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-            
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
     };
     xhttp.open('GET', 'http://' + URL + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
-}
-
+   });
+  }
 /**
  * add spotify token to user record
  * @param {string} id the id of the user to be updated
  * @param {string} token the spotify token to be added to the user
  */
-module.exports = function dbUpdateSpotifyToken(id, token){
+async function dbUpdateSpotifyToken(id, token){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
     };
     xhttp.open('POST', 'http://' + URL + '/db/user/spotify/' + id + '/' + token , true);
     xhttp.send(); // Gets the response
-}
+   });
+  }
 
 /**
  * update user record with apple token
  * @param {string} id the id of the user to be updated
  * @param {string} token the apple token to be added to the user record
  */
-module.exports = function dbUpdateAppleToken(id, token){
+function dbUpdateAppleToken(id, token){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -112,6 +160,22 @@ module.exports = function dbUpdateAppleToken(id, token){
     xhttp.open('POST', 'http://' + URL + '/db/user/apple/' + id + '/' + token, true);
     xhttp.send(); // Gets the response
 }
+async function dbUpdateSpotifyToken(id, token){
+    var xhttp = new XMLHttpRequest();
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
+    };
+    xhttp.open('POST', 'http://' + URL + '/db/user/spotify/' + id + '/' + token , true);
+    xhttp.send(); // Gets the response
+   });
+  }
 
 /**
  * add a song to the database
@@ -199,16 +263,22 @@ function dbAddUser(name, code){
  * get the tokens stored on the db for the user
  * @param {string} id the id of the user to get tokens from db for
  */
-module.exports = function dbGetUserTokens(id){
+async function dbGetUserTokens(id){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
     };
     xhttp.open('GET', 'http://' + URL + '/db/userToken/' + id, true);
     xhttp.send(); // Gets the response
-}
+   });
+  }
 
 /**
  * delete all tracks from the playlist in db
