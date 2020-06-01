@@ -175,7 +175,7 @@ router.get('/apple-music/catalog/playlists/:playlist_id', function(request, resp
 /*
 Gets attributes of a playlists on apples catalog. NOT USER'S
 */
-router.get('/apple-music/catalog/playlists/:playlist_id/relationships', function(request, response){
+router.get('/apple-music/catalog/playlists/:playlist_id/relationships/', function(request, response){
   var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
   /* Apple API GET https://api.music.apple.com/v1/catalog/{storefront}/playlists/{id}/{relationship}*/
   const options = {
@@ -244,10 +244,10 @@ router.get('/apple-music/catalog/search/hints/:search_term', function(request, r
 
 //Retrieve a user's playlists by id
 //NOTE this only returns information about the playlist, not any tracks associated to it
-router.get('/apple-music/library/playlists/:playlist_id', function(request, response){
+router.get('/apple-music/library/playlists/:playlist_id/:token', function(request, response){
     var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
-    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+    var music_user_token = request.params.token; //retrieve from user in db
+    //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
     const options = {
       hostname: 'api.music.apple.com',
       path: `/v1/me/library/playlists/${playlist}?include=relationships`,
@@ -274,10 +274,10 @@ router.get('/apple-music/library/playlists/:playlist_id', function(request, resp
 });
 
 //Get the tracks that are inside of a playlist
-router.get('/apple-music/library/playlists/:playlist_id/relationships', function(request, response){
+router.get('/apple-music/library/playlists/:playlist_id/relationships/:token', function(request, response){
     var playlist = request.params.playlist_id //ALl the spaces in the search must be replaced with '+'
-    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+    var music_user_token = request.params.token; //retrieve from user in db
+    //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
     const options = {
       hostname: 'api.music.apple.com',
       path: `/v1/me/library/playlists/${playlist}/tracks`,
@@ -305,10 +305,10 @@ router.get('/apple-music/library/playlists/:playlist_id/relationships', function
 
 
 //gets all the users playlists in alphebetical order
-router.get('/apple-music/library/playlists', function(request, response){
+router.get('/apple-music/library/playlists/:token', function(request, response){
     var search_term = request.params.search_term //ALl the spaces in the search must be replaced with '+'
-    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+    var music_user_token = request.params.token; //retrieve from user in db
+    //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
     const options = {
       hostname: 'api.music.apple.com',
       path: `/v1/me/library/playlists`,
@@ -335,9 +335,9 @@ router.get('/apple-music/library/playlists', function(request, response){
 });
 
 //Fetch the complete library of the users albums
-router.get('/apple-music/library/albums', function(request, response){
-  //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-  var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+router.get('/apple-music/library/albums/:token', function(request, response){
+  var music_user_token = request.params.token; //retrieve from user in db
+  //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
   const options = {
     hostname: 'api.music.apple.com',
     path: '/v1/me/library/albums',
@@ -364,9 +364,9 @@ router.get('/apple-music/library/albums', function(request, response){
 });
 
 //Fetch the library of the users songs (default 25)
-router.get('/apple-music/library/songs', function(request, response){
-  //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-  var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+router.get('/apple-music/library/songs/:token', function(request, response){
+  var music_user_token = request.params.token; //retrieve from user in db
+  //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
   const options = {
     hostname: 'api.music.apple.com',
     path: '/v1/me/library/songs',
@@ -393,9 +393,9 @@ router.get('/apple-music/library/songs', function(request, response){
 });
 
 //Fetch the library of the users artists (default 25)
-router.get('/apple-music/library/artists', function(request, response){
-  //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-  var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+router.get('/apple-music/library/artists/:token', function(request, response){
+  var music_user_token = request.params.token; //retrieve from user in db
+  //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
   const options = {
     hostname: 'api.music.apple.com',
     path: '/v1/me/library/artists',
@@ -422,10 +422,10 @@ router.get('/apple-music/library/artists', function(request, response){
 });
 
 //Add a new playlist to the users library
-router.post('/apple-music/library/playlist', function(request, response){
+router.post('/apple-music/library/playlist/:token', function(request, response){
   var post_obj = JSON.stringify(request.body); //Need to include bodyParser in server.js
-    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+    var music_user_token = request.params.token; //retrieve from user in db
+    //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
     const options = {
       hostname: 'api.music.apple.com',
       path: `/v1/me/library/playlists`,
@@ -460,11 +460,11 @@ req.on('error', error => {
 });
 
 //adds tracks to playlist
-router.post('/apple-music/library/playlists/:playlist_id/tracks', function(request, response){
+router.post('/apple-music/library/playlists/:playlist_id/tracks/:token', function(request, response){
   var post_obj = JSON.stringify(request.body); //Need to include bodyParser in server.js
   var playlist_id = request.params.playlist_id;
-    //var music_user_token = retrieveMusicUserToken(); //retrieve from user in db
-    var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
+    var music_user_token = request.params.token; //retrieve from user in db
+    //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
     const options = {
       hostname: 'api.music.apple.com',
       path: `/v1/me/library/playlists/${playlist_id}/tracks`,

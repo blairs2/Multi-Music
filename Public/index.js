@@ -247,8 +247,12 @@ async function retreiveUserPlaylists(){
     }
    }
   };
-  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists", true);
-  xhttp.send(); // Gets the response
+  id = getCookie(); //get user_ID from cookie
+    await dbGetUserTokens(id).then((value) =>{
+        var x = JSON.parse(value);
+        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + x[0].appleToken, true);
+        xhttp.send(); // Gets the response
+  });
  });
 }
 
@@ -260,9 +264,13 @@ function retrieveUserSongs(){
       console.log(JSON.parse(this.responseText));
       //Code to change the generated-content inner html
     }
-  };
-  xhttp.open("GET", "http://" + url + "/apple-music/library/songs", true);
-  xhttp.send(); // Gets the response
+  };  
+  id = getCookie(); //get user_ID from cookie
+  await dbGetUserTokens(id).then((value) =>{
+      var x = JSON.parse(value);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + x[0].appleToken, true);
+      xhttp.send(); // Gets the response
+  });
  }
 
 //Gets the users library of artists (default 25)
@@ -274,8 +282,13 @@ function retrieveUserArtists(){
      //Code to change the generated-content inner html
    }
  };
- xhttp.open("GET", "http://" + url + "/apple-music/library/artists", true);
- xhttp.send(); // Gets the response
+
+ id = getCookie(); //get user_ID from cookie
+ await dbGetUserTokens(id).then((value) =>{
+     var x = JSON.parse(value);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + x[0].appleToken, true);
+      xhttp.send(); // Gets the response
+  });
 }
 
 //Gets the users library of albums (defualt 25)
@@ -287,8 +300,13 @@ function retrieveUserAlbums(){
       //Code to change the generated-content inner html
     }
   };
-  xhttp.open("GET", "http://" + url + "/apple-music/library/albums", true);
-  xhttp.send(); // Gets the response
+
+  id = getCookie(); //get user_ID from cookie
+  await dbGetUserTokens(id).then((value) =>{
+      var x = JSON.parse(value);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + x[0].appleToken, true);
+      xhttp.send(); // Gets the response
+    });
  }
 
 //As the user is typing into the search bar. this will fetch search hits for the drop down
@@ -302,6 +320,7 @@ function retrieveSearchHints(searchTerm){
   };
   xhttp.open("GET", "http://" + url + "/apple-music/catalog/search/hints/" + searchTerm, true);
   xhttp.send(); // Gets the response
+
  }
 
 //Gets an individual playlist by id.
@@ -312,8 +331,13 @@ function retirevePlaylist(playlist_id){
 
       }
     };
-    xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id, true);
-    xhttp.send(); // Gets the response
+
+    id = getCookie(); //get user_ID from cookie
+    await dbGetUserTokens(id).then((value) =>{
+        var x = JSON.parse(value);
+        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken, true);
+        xhttp.send(); // Gets the response
+    });
    }
 
 //seperate from retrievePlaylist which gets the information about the playlist.
@@ -325,8 +349,12 @@ function retrievePlaylistTracks(playlist_id){
 
     }
   };
-  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships", true);
-  xhttp.send(); // Gets the response
+  id = getCookie(); //get user_ID from cookie
+  await dbGetUserTokens(id).then((value) =>{
+      var x = JSON.parse(value);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + x[0].appleToken, true);
+      xhttp.send(); // Gets the response
+  });
 }
 
 //Searches for term across every catagory
@@ -363,8 +391,12 @@ function addPlaylist(playlist_name, description){
           // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
      }
    };
-   xhttp.open("POST", "http://" + url + "/apple-music/library/playlist", true);
-   xhttp.send(); // Gets the response
+   id = getCookie(); //get user_ID from cookie
+   await dbGetUserTokens(id).then((value) =>{
+       var x = JSON.parse(value);
+        xhttp.open("POST", "http://" + url + "/apple-music/library/playlist/" + x[0].appleToken, true);
+        xhttp.send(); // Gets the response
+     });
   }
 
 function addTrackToPlaylist(playlist_id){
@@ -376,12 +408,20 @@ function addTrackToPlaylist(playlist_id){
             // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
        }
      };
-     xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist", true);
-     xhttp.send(); // Gets the response
+     id = getCookie(); //get user_ID from cookie
+     await dbGetUserTokens(id).then((value) =>{
+         var x = JSON.parse(value);
+         xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + x[0].appleToken, true);
+         xhttp.send(); // Gets the response
+    });
 }
 
 function addAppleMusicUserToken(musicUserToken){
-  //Will add musicUserToken to db
+  id = getCookie(); //get user_ID from cookie
+  await dbGetUserTokens(id).then((value) =>{
+    var x = JSON.parse(value);
+    dbUpdateAppleToken(x[0].appleToken, musicUserToken);
+  });
   console.log(musicUserToken);
 }
 
@@ -402,26 +442,15 @@ function getPlaylistTracks(playlist_id){
      }
     }
   };
-  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
-  xhttp.send(); // Gets the response
+  id = getCookie(); //get user_ID from cookie
+  await dbGetUserTokens(id).then((value) =>{
+      var x = JSON.parse(value);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + x[0].appleToken , true);
+      xhttp.send(); // Gets the response
+  });
 }
 
-//   var xhttp = new XMLHttpRequest();
-//   return new Promise(function(resolve, reject) {
-//     xhttp.onreadystatechange = function ReceivedCallback() {
-//     if (this.readyState == 4) { //Upon getting a response
-//       if(this.status == 200){
-//         // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
-//         resolve(this.responseText);
-//       } else {
-//       reject("Error");
-//     }
-//    }
-//   };
-//   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
-//   xhttp.send(); // Gets the response
-//  });
-// }
+
 
 function getPlaylistAttributes(playlist_id){
   var xhttp = new XMLHttpRequest();
@@ -436,8 +465,12 @@ function getPlaylistAttributes(playlist_id){
       },false);
     }
   };
-  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id , true);
-  xhttp.send(); // Gets the response
+  id = getCookie(); //get user_ID from cookie
+  await dbGetUserTokens(id).then((value) =>{
+      var x = JSON.parse(value);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken , true);
+      xhttp.send(); // Gets the response
+  });
 }
 
 /*Gets tracks of a playlist on apple musics catalog, not a users library*/

@@ -119,11 +119,11 @@ router.get('/spotify/refresh', function(req, responce) {
 })
 
 //Get user data for the current user
-router.get('/spotify/user/:id', function(req, response){
+router.get('/spotify/user/:token', function(req, response){
   //dbGetUserTokens(req.params.id); //MAKE ASYNC
   options = { //set request options
     uri: 'https://api.spotify.com/v1/me',
-    headers: { 'Authorization': 'Bearer ' + accessToken },
+    headers: { 'Authorization': 'Bearer ' + req.params.token },
     json: true
   };
   request.get(options, function(error, res, body) {
@@ -137,11 +137,13 @@ router.get('/spotify/user/:id', function(req, response){
 })
 
 //Get a list of all the user playlists
-router.get('/spotify/playlists/:id', function(req, responce){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.get('/spotify/playlists/:token', function(req, responce){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
     options = { //set request options
         uri: 'https://api.spotify.com/v1/me/playlists',
-        headers: { 'Authorization': 'Bearer ' + accessToken },
+        headers: { 'Authorization': 'Bearer ' + req.params.token },
         json: true
       };
     request.get(options, function(error, res, body) {
@@ -167,16 +169,19 @@ router.get('/spotify/playlists/:id', function(req, responce){
         // console.log(responce);
 
     });
+  }
 });
 
 
 //Get the tracks of a playlist specified by the playlistid
 
-router.get('/spotify/playlist/tracks/:id/:playlistid', function(req, response){
-  // dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.get('/spotify/playlist/tracks/:playlistid/:token', function(req, response){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
-        headers: { 'Authorization': 'Bearer ' + accessToken },
+        headers: { 'Authorization': 'Bearer ' + req.params.token },
         json: true
       };
       if (accessToken == ""){ // use sever token if user is not logged in
@@ -209,15 +214,18 @@ router.get('/spotify/playlist/tracks/:id/:playlistid', function(req, response){
           response.send(retval);
         }
       });
+    }
 });
 
 
 //Get a playlist specified by the playlistid
-router.get('/spotify/playlist/:id/:playlistid', function(req, response){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.get('/spotify/playlist/:playlistid/:token', function(req, response){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
   options = { // set request options
       uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
-      headers: { 'Authorization': 'Bearer ' + accessToken },
+      headers: { 'Authorization': 'Bearer ' + req.params.token },
       json: true
     };
     if (accessToken == ""){ // use sever token if user is not logged in
@@ -242,14 +250,17 @@ router.get('/spotify/playlist/:id/:playlistid', function(req, response){
         response.send(retval);
         //response.send(body);
     });
+  }
 });
 
 //Delete the specified track from the specified playlist
-router.delete('/spotify/playlist/delete/:id/:playlistid/:trackURI', function(req, response){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(req, response){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks',
-        headers: { 'Authorization': 'Bearer ' + accessToken },
+        headers: { 'Authorization': 'Bearer ' + req.params.token },
         body: { tracks: [{uri: req.params.trackURI}]},
         json: true
       };
@@ -261,14 +272,17 @@ router.delete('/spotify/playlist/delete/:id/:playlistid/:trackURI', function(req
           response.send(body);
         }
       });
+    }
 });
 
 //Add the specified track to the specifed playlist
-router.post('/spotify/playlist/add/:id/:playlistid/:trackURI', function(req, response){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.post('/spotify/playlist/add/:playlistid/:trackURI/:token', function(req, response){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
     options = { // set request optinos
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks?uris=' + req.params.trackURI,
-        headers: { 'Authorization': 'Bearer ' + accessToken },
+        headers: { 'Authorization': 'Bearer ' + req.params.token },
         json: true
       };
       request.post(options, function(error, res, body){
@@ -279,14 +293,17 @@ router.post('/spotify/playlist/add/:id/:playlistid/:trackURI', function(req, res
           response.send(body);
         }
       });
+    }
 });
 
 //Changes the name of the playlist to the specifed name
-router.put('/spotify/playlist/details/:id/:playlistid/:name', function(req, response){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, response){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
-        headers: { 'Authorization': 'Bearer ' + accessToken },
+        headers: { 'Authorization': 'Bearer ' + req.params.token },
         body: {name: req.params.name},
         json: true
     };
@@ -298,14 +315,17 @@ router.put('/spotify/playlist/details/:id/:playlistid/:name', function(req, resp
           response.send(body);
         }
       });
+    }
 });
 
 //Create a new empty spotify playlist
-router.post('/spotify/playlist/create/:id/:userID/:name/:public/:description/:collaborative', function(req, response){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collaborative/:token', function(req, response){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
     options = {
         uri: 'https://api.spotify.com/v1/users/' + req.params.userID + '/playlists',
-        headers: { 'Authorization': 'Bearer ' + accessToken },
+        headers: { 'Authorization': 'Bearer ' + req.params.token },
         body: {
             name: req.params.name,
             public: req.params.public,
@@ -321,15 +341,18 @@ router.post('/spotify/playlist/create/:id/:userID/:name/:public/:description/:co
         response.send(body);
       }
     })
-  });
+  }
+});
 
 // reorder the songs in the specifed playlist
 // move first length songs at start to index
-router.put('/spotify/playlist/reorder/:id/:playlistid/:start/:index/:length', function(req, response){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length/:token', function(req, response){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
   options = { // set request options
     uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks',
-    headers: { 'Authorization': 'Bearer ' + accessToken },
+    headers: { 'Authorization': 'Bearer ' + req.params.token },
     body: {
       range_start: req.params.start,
       range_length: req.params.length,
@@ -344,15 +367,18 @@ router.put('/spotify/playlist/reorder/:id/:playlistid/:start/:index/:length', fu
       response.send(body);
     }
   });
+}
 });
 
 // search spotify for tracks containing the keyword
-router.get('/spotify/search/:id/:keyword', function(req, response){
-  //dbGetUserTokens(req.params.id); //MAKE ASYNC
+router.get('/spotify/search/:keyword/:token', function(req, response){
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
   var search_term  = req.params.keyword.split(' ').join('+'); // replace spaces in search term
   options = { // set request options
     uri: 'https://api.spotify.com/v1/search?' + search_term,
-    headers: { 'Authorization': 'Bearer ' + accessToken },
+    headers: { 'Authorization': 'Bearer ' + req.params.token },
     json: true
   };
   if (accessToken == ""){ // use sever token if user is not logged in
@@ -414,6 +440,7 @@ router.get('/spotify/search/:id/:keyword', function(req, response){
         response.send(retval);
     }
   });
+}
 });
 
 module.exports = router;

@@ -66,6 +66,31 @@ async function dbHasSong(ID){
     });
 	}
 
+function RegisterUser(){
+    var name = document.forms["register"]["userName"].value;
+    var pass = document.forms["register"]["password"].value;
+    var passC = document.forms["register"]["password_confirm"].value;
+    console.log(pass);
+    console.log(passC);
+    if (pass == passC){
+        dbAddUser(name, pass);
+        setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+        await dbGetUser(name, pass).then((value) => {
+            x = JSON.parse(value);
+            if (x == false){
+           // if (name != "Nathan") {
+                console.log("error this shouldn't happen"); 
+            } else {
+                setCookie(x[0].userID);
+                //setCookie("REG");
+            }
+        });
+    } else {
+        alert("Passwords do not match please try again");
+    }
+}
+
+
 function setCookie(userID){
     document.cookie = "userID=" + userID + "; sameSite=Lax";
 }
@@ -87,7 +112,6 @@ async function dbGetUser(name, code){
       xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
         if(this.status == 200){
-          // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
           resolve(this.responseText);
         } else {
         reject("Error");
@@ -105,16 +129,23 @@ async function dbGetUser(name, code){
  * @param {string} id the id of the user to be updated
  * @param {string} token the spotify token to be added to the user
  */
-function dbUpdateSpotifyToken(id, token){
+
+async function dbUpdateSpotifyToken(id, token){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
     };
     xhttp.open('POST', 'http://' + url + '/db/user/spotify/' + id + '/' + token , true);
     xhttp.send(); // Gets the response
-}
+   });
+  }
 
 /**
  * update user record with apple token
@@ -131,6 +162,22 @@ function dbUpdateAppleToken(id, token){
     xhttp.open('POST', 'http://' + url + '/db/user/apple/' + id + '/' + token, true);
     xhttp.send(); // Gets the response
 }
+async function dbUpdateSpotifyToken(id, token){
+    var xhttp = new XMLHttpRequest();
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
+    };
+    xhttp.open('POST', 'http://' + URL + '/db/user/spotify/' + id + '/' + token , true);
+    xhttp.send(); // Gets the response
+   });
+  }
 
 /**
  * add a song to the database
@@ -218,16 +265,22 @@ function dbAddUser(name, code){
  * get the tokens stored on the db for the user
  * @param {string} id the id of the user to get tokens from db for
  */
-function dbGetUserTokens(id){
+async function dbGetUserTokens(id){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
     };
     xhttp.open('GET', 'http://' + url + '/db/userToken/' + id, true);
     xhttp.send(); // Gets the response
-}
+   });
+  }
 
 /**
  * delete all tracks from the playlist in db
