@@ -90,9 +90,9 @@ router.get('/spotify/callback', function(req, responce) {
           const { expires_in, access_token, refresh_token } = data.body;
           accessToken = access_token;
           refreshToken = refresh_token;
-          //id = getCookie(); //get userid from cookie
-          //dbUpdateSpotifyToken(id, access_token);
-          // console.log(accessToken);
+          id = getCookie(); //get userid from cookie
+          dbUpdateSpotifyToken(id, accessToken);
+          console.log(accessToken);
           refreshToken = refresh_token;
           responce.redirect(`/#/user/${access_token}/${refresh_token}`);
         }).catch(err => {

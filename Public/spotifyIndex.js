@@ -287,7 +287,7 @@ async function isAuthorized(){
                     }else {
                         reject(false);
                     }
-                });  
+                });
             }
         });
     });
