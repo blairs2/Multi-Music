@@ -372,18 +372,18 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length/:token',
 
 // search spotify for tracks containing the keyword
 router.get('/spotify/search/:keyword/:token', function(req, response){
-  if(req.params.token == null){
-    console.log("error invalid token");
-  } else {
+  // if(req.params.token == null){
+  //   console.log("error invalid token");
+  // } else {
   var search_term  = req.params.keyword.split(' ').join('+'); // replace spaces in search term
   options = { // set request options
     uri: 'https://api.spotify.com/v1/search?' + search_term,
-    headers: { 'Authorization': 'Bearer ' + req.params.token },
+    headers: { 'Authorization': 'Bearer ' + serverToken},
     json: true
   };
-  if (accessToken == ""){ // use sever token if user is not logged in
-    options.headers = { 'Authorization': 'Bearer ' + serverToken }
-  }
+  // if (accessToken == ""){ // use sever token if user is not logged in
+  //   options.headers = { 'Authorization': 'Bearer ' + serverToken }
+  // }
     request.get(options, function(error, res, body){
       if (error){
         console.log("ERROR searching Spotify " + error);
@@ -440,7 +440,7 @@ router.get('/spotify/search/:keyword/:token', function(req, response){
         response.send(retval);
     }
   });
-}
+// }
 });
 
 module.exports = router;

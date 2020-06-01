@@ -234,11 +234,11 @@ function spotifySearch(searchTerm){
        }
       }
      };
-   id = getCookie("userID"); //get user_ID from cookie
-   await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/search/' + searchTerm + "/" + x[0].spotifyToken, true);
+   // id = getCookie("userID"); //get user_ID from cookie
+   // await dbGetUserTokens(id).then((value) =>{
+   //      var x = JSON.parse(value);
+        xhttp.open('GET', 'http://' + url + '/spotify/search/' + searchTerm, true);
         xhttp.send(); // Gets the response
-    });
+    // });
   });
 }

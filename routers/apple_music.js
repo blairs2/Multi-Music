@@ -424,9 +424,7 @@ router.get('/apple-music/library/artists/:token', function(request, response){
 //Add a new playlist to the users library
 router.post('/apple-music/library/playlist/:token', function(request, response){
     var post_obj = JSON.stringify(request.body); //Need to include bodyParser in server.js
-    console.log(post_obj);
     var music_user_token = request.params.token; //retrieve from user in db
-    console.log(music_user_token);
     //var music_user_token = fs.readFileSync('music_user_token_test.txt', 'utf8').trim(); //Replace with function to call db query
     const options = {
       hostname: 'api.music.apple.com',
