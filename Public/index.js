@@ -629,7 +629,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
    var search, track, matches, handle;
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
-     document.getElementById("convert-link").innerHTML = `<span>Loading playlist link${i}/${tracks.length}</span>`;
+     document.getElementById("convert-link").innerHTML = `<span>Loading playlist link ${i}/${tracks.length}</span>`;
      handle = await dbHasSong(track.id).then(async function(resp){
        if(resp == 'false'){
          //replace spaces with plus and get rid of special characters
