@@ -201,7 +201,9 @@
                 name:playlist_name,
                },
               relationships:{
-                tracks: data
+                tracks: {
+                  data: data
+                }}
               }
             }
             console.log(body, musicUserToken);
