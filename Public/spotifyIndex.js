@@ -237,7 +237,7 @@ function spotifySearch(searchTerm){
    id = getCookie(); //get user_ID from cookie
    await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/search/' + searchTerm + "/" + x[0].spotifyToken, true);
+        xhttp.open('GET', 'http://' + url + '/spotify/search/' + searchTerm + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
   });
