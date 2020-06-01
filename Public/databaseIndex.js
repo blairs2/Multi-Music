@@ -1,5 +1,5 @@
 //import cookieParser from "cookie-parser";
-const url = window.location.host;
+
 function hashCode(str){
 	var hash = 0;
 	for (var i = 0; i < str.length; i++) {
