@@ -659,7 +659,7 @@ Promise.all([playlistTracks]).then(async function(values){
             }
           });
         } else if(new_service == "Apple Music") {
-          await searchByTerm('term=' + search.replace(/%20/g, "") + '&limit=1&types=songs').then(async function(value){
+          await searchByTerm('term=' + search.replace(/%20/g, "").replace(/ /g, '+') + '&limit=1&types=songs').then(async function(value){
             var response = JSON.parse(value);
             if(response.hasOwnProperty("songs")){
               var song_matches = response.songs.data;
