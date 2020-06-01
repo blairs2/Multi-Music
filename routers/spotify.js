@@ -6,7 +6,7 @@ const Spotify = require('spotify-web-api-node');
 const spotifyApi = new Spotify({
   clientId: '832b12a20fb943ed9ef4b49ceca24b65', // Spotify client id
   clientSecret: '191f46cbc6e04274bff4214a782e13b2', // Spotify secret
-  redirectUri: 'http://18.216.254.104:8080/spotify/callback' // Spotify redirect uri
+  redirectUri: 'http://localhost:8080/spotify/callback' // Spotify redirect uri
 });
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
@@ -90,9 +90,9 @@ router.get('/spotify/callback', function(req, responce) {
           const { expires_in, access_token, refresh_token } = data.body;
           accessToken = access_token;
           refreshToken = refresh_token;
-          id = getCookie(); //get userid from cookie
-          dbUpdateSpotifyToken(id, accessToken);
-          console.log(accessToken);
+          //id = getCookie(); //get userid from cookie
+          //dbUpdateSpotifyToken(id, access_token);
+          // console.log(accessToken);
           refreshToken = refresh_token;
           responce.redirect(`/#/user/${access_token}/${refresh_token}`);
         }).catch(err => {
@@ -276,14 +276,13 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
 });
 
 //Add the specified track to the specifed playlist
-router.post('/spotify/playlist/add/:playlistid/:token', function(req, response){
+router.post('/spotify/playlist/add/:playlistid/:trackURI/:token', function(req, response){
   if(req.params.token == null){
     console.log("error invalid token");
   } else {
-    options = { // set request options
-        uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + "/tracks",
+    options = { // set request optinos
+        uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks?uris=' + req.params.trackURI,
         headers: { 'Authorization': 'Bearer ' + req.params.token },
-        body: JSON.parse(req.body),
         json: true
       };
       request.post(options, function(error, res, body){
@@ -373,10 +372,9 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length/:token',
 
 // search spotify for tracks containing the keyword
 router.get('/spotify/search/:keyword/:token', function(req, response){
-  console.log(req.params.token);
-  // if(req.params.token == null){
-  //   console.log("error invalid token");
-  // } else {
+  if(req.params.token == null){
+    console.log("error invalid token");
+  } else {
   var search_term  = req.params.keyword.split(' ').join('+'); // replace spaces in search term
   options = { // set request options
     uri: 'https://api.spotify.com/v1/search?' + search_term,
@@ -442,7 +440,7 @@ router.get('/spotify/search/:keyword/:token', function(req, response){
         response.send(retval);
     }
   });
-// }
+}
 });
 
 module.exports = router;

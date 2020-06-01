@@ -21,39 +21,16 @@ function spotifyLogin(){
  */
 async function spotifyGetUser(){
     var xhttp = new XMLHttpRequest();
-    return new Promise(async function(resolve, reject) {
-        xhttp.onreadystatechange = function ReceivedCallback() {
-            if (this.readyState == 4) { //Upon getting a response
-              if(this.status == 200){
-                resolve(this.responseText);
-              } else {
-                reject("Error");
-              }
-            }
-          };
-        id = getCookie(); //get user_ID from cookie
-        await dbGetUserTokens(id).then((value) =>{
-            var x = JSON.parse(value);
-            xhttp.open('GET', 'http://' + url + '/spotify/user/' + x[0].spotifyToken , true);
-            xhttp.send(); // Gets the response
-        });
-    });
-}
-
-async function spotifyCheckUser(id){
-    var xhttp = new XMLHttpRequest();
-    return new Promise(function(resolve, reject) {
-        xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4) { //Upon getting a response
-          if(this.status == 200){
-            resolve("success");
-          } else {
-            reject("Error");
-          }
+    xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+            console.log(JSON.parse(this.responseText));
         }
-      };
-    xhttp.open('GET', 'http://' + URL + '/spotify/user/' + id , true);
-    xhttp.send(); // Gets the response
+    };
+    id = getCookie("userID"); //get user_ID from cookie
+    await dbGetUserTokens(id).then((value) =>{
+        var x = JSON.parse(value);
+        xhttp.open('GET', 'http://' + url + '/spotify/user/' + x[0].spotifyToken , true);
+        xhttp.send(); // Gets the response
     });
 }
 
@@ -72,7 +49,7 @@ function spotifyGetUserPlaylists(){
         }
       }
     };
-    id = getCookie(); //get user_ID from cookie
+    id = getCookie("userID"); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
          var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/playlists/' + x[0].spotifyToken , true);
@@ -98,7 +75,7 @@ function spotifyGetPlaylistTracks(playlistid){
      }
     }
    };
-   id = getCookie(); //get user_ID from cookie
+   id = getCookie("userID"); //get user_ID from cookie
    await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + playlistid + "/" + x[0].spotifyToken , true);
@@ -125,7 +102,7 @@ function spotifyGetPlaylistAttributes(playlistid){
     }
    }
   };
-  id = getCookie(); //get user_ID from cookie
+  id = getCookie("userID"); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
        var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/' + playlistid + "/" + x[0].spotifyToken, true);
@@ -146,7 +123,7 @@ async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie(); //get user_ID from cookie
+    id = getCookie("userID"); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/delete/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken, true);
@@ -159,19 +136,18 @@ async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be added
  */
-async function spotifyAddTrackToPlaylist(playlistid, uris){
+async function spotifyAddTrackToPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie(); //get user_ID from cookie
+    id = getCookie("userID"); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + x[0].spotifyToken , true);
-        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhttp.send(JSON.stringify(uris)); // Gets the response
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken , true);
+        xhttp.send(); // Gets the response
     });
 }
 
@@ -187,7 +163,7 @@ async function spotifyRenamePlaylist(playlistid, name){
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie(); //get user_ID from cookie
+    id = getCookie("userID"); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/details/' + playlistid + '/' + name + "/" + x[0].spotifyToken, true);
@@ -205,24 +181,17 @@ async function spotifyRenamePlaylist(playlistid, name){
  */
 async function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
     var xhttp = new XMLHttpRequest();
-    return new Promise(async function(resolve, reject) {
-        xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4) { //Upon getting a response
-          if(this.status == 200){
-            // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
-            resolve(this.responseText);
-          } else {
-          reject("Error");
+    xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+            console.log(JSON.parse(this.responseText));
         }
-       }
-      };
-    id = getCookie(); //get user_ID from cookie
+    };
+    id = getCookie("userID"); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
-});
 }
 
 /**
@@ -239,7 +208,7 @@ async function spotifyReorderTracksInPlaylist(playlistid, start, index, length =
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie(); //get user_ID from cookie
+    id = getCookie("userID"); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/reorder/' + playlistid + '/' + start + '/' + index + '/' + length +  "/" + x[0].spotifyToken, true);
@@ -252,43 +221,24 @@ async function spotifyReorderTracksInPlaylist(playlistid, start, index, length =
  * Search Spotify for tracks containing the search term
  * @param {string} searchTerm what to search the spotify library for
  */
-async function spotifySearch(searchTerm){
+function spotifySearch(searchTerm){
    var xhttp = new XMLHttpRequest();
    return new Promise(async function(resolve, reject) {
      xhttp.onreadystatechange = function ReceivedCallback() {
        if (this.readyState == 4) { //Upon getting a response
          if(this.status == 200){
+           // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
            resolve(this.responseText);
          } else {
          reject("Error");
        }
       }
      };
-   id = getCookie(); //get user_ID from cookie
+   id = getCookie("userID"); //get user_ID from cookie
    await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/search/' + searchTerm + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
   });
-}
-async function isAuthorized(){
-    return new Promise(async function(resolve, reject) {
-        id = getCookie(); //get user_ID from cookie
-        await dbGetUserTokens(id).then(async (value) =>{
-            var x = JSON.parse(value);
-            if (x[0].spotifyToken == null){
-               reject(false);
-            } else {
-                await spotifyCheckUser(x[0].spotifyToken).then((value) =>{
-                    var y = JSON.parse(value);
-                    if (y == "success"){
-                        resolve(true);
-                    }else {
-                        reject(false);
-                    }
-                });
-            }
-        });
-    });
 }

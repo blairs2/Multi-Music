@@ -99,10 +99,10 @@ function setCookie(userID){
     document.cookie = "userID=" + userID + "; sameSite=Lax";
 }
 
-function getCookie(){
-    str = document.cookie;
-    start = str.search("userID=");
-    return str.substring(start + 7);
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
 /**

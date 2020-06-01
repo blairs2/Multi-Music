@@ -229,31 +229,31 @@
 
   });
 
-  document.getElementById("convert-spotify").addEventListener('click', ()=>{
-    isAuthorized().then((value) => {
-      var x = JSON.parse(value);
-      if (x == false){
-        console.log("ERROR not logged in");
-      } else {
-        dbRetrieveConvert().then(resp =>{
-          var resp_obj = JSON.parse(resp);
-          if (resp_obj != false){
-            await spotifyGetUser().then(userData =>{
-              user = JSON.parse(userData);
-              var playlist = await spotifyCreateNewPlaylist(user.id, url.searchParams.get("name"));
-              var newPlaylist = JSON.parse(playlist);
-              var uris = [];
-              for (var i = 0; i < resp_obj.length; i++){
-                uris.push("spotify:track:" + resp_obj[i].spotify_Song_ID);
-              }
-              spotifyAddTrackToPlaylist(newPlaylist.id, uris);
-            });
-            
-          }
-        })
-      }
-    });
-  });
+  // document.getElementById("convert-spotify").addEventListener('click', ()=>{
+  //   isAuthorized().then((value) => {
+  //     var x = JSON.parse(value);
+  //     if (x == false){
+  //       console.log("ERROR not logged in");
+  //     } else {
+  //       dbRetrieveConvert().then(resp =>{
+  //         var resp_obj = JSON.parse(resp);
+  //         if (resp_obj != false){
+  //           await spotifyGetUser().then(userData =>{
+  //             user = JSON.parse(userData);
+  //             var playlist = await spotifyCreateNewPlaylist(user.id, url.searchParams.get("name"));
+  //             var newPlaylist = JSON.parse(playlist);
+  //             var uris = [];
+  //             for (var i = 0; i < resp_obj.length; i++){
+  //               uris.push("spotify:track:" + resp_obj[i].spotify_Song_ID);
+  //             }
+  //             spotifyAddTrackToPlaylist(newPlaylist.id, uris);
+  //           });
+  //
+  //         }
+  //       })
+  //     }
+  //   });
+  // });
   </script>
 
 </body>
