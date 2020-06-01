@@ -19,7 +19,7 @@ function spotifyLogin(){
 /**
  * Get the user data for the currently logged in user
  */
-function spotifyGetUser(){
+async function spotifyGetUser(){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -81,7 +81,7 @@ async function spotifyGetPlaylistTracks(playlistid){
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + playlistid + "/" + x[0].spotifyToken , true);
         xhttp.send(); // Gets the response
       });
-   
+
   });
 }
 
@@ -116,7 +116,7 @@ async function spotifyGetPlaylistAttributes(playlistid){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be deleted
  */
-function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
+async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -136,7 +136,7 @@ function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be added
  */
-function spotifyAddTrackToPlaylist(playlistid, trackURI){
+async function spotifyAddTrackToPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -156,7 +156,7 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {string} name the new name of the playlist
  */
-function spotifyRenamePlaylist(playlistid, name){
+async function spotifyRenamePlaylist(playlistid, name){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -179,7 +179,7 @@ function spotifyRenamePlaylist(playlistid, name){
  * @param {string} description a description of the playlist
  * @param {boolean} collaborative true if playlist can be edited by other users
  */
-function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
+async function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -201,7 +201,7 @@ function spotifyCreateNewPlaylist(userID, name, public = false, description = ''
  * @param {int} index the index where the tracks are to be moved to
  * @param {int} length the number of tracks to be moved
  */
-function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
+async function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -242,4 +242,3 @@ async function spotifySearch(searchTerm){
     });
   });
 }
-

@@ -257,14 +257,14 @@ async function retreiveUserPlaylists(){
 }
 
 //Gets the users library of songs (default 25)
-function retrieveUserSongs(){
+async function retrieveUserSongs(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
       console.log(JSON.parse(this.responseText));
       //Code to change the generated-content inner html
     }
-  };  
+  };
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
@@ -325,7 +325,7 @@ function retrieveSearchHints(searchTerm){
 
 //Gets an individual playlist by id.
 //Buttons for each playlist's are generated when retrieveUserPlaylsits() is run. Each playlist button has the corresponding id attached
-function retirevePlaylist(playlist_id){
+async function retirevePlaylist(playlist_id){
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
 
@@ -342,7 +342,7 @@ function retirevePlaylist(playlist_id){
 
 //seperate from retrievePlaylist which gets the information about the playlist.
 //This function gets the tracks that are in the playlist
-function retrievePlaylistTracks(playlist_id){
+async function retrievePlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -382,7 +382,7 @@ async function searchByTerm(searchTerm){
 /////////////////////////////
 
 //Creates a new empty playlist
-function addPlaylist(playlist_name, description){
+async function addPlaylist(playlist_name, description){
    var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function ReceivedCallback() {
      if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -399,7 +399,7 @@ function addPlaylist(playlist_name, description){
      });
   }
 
-function addTrackToPlaylist(playlist_id){
+async function addTrackToPlaylist(playlist_id){
      var xhttp = new XMLHttpRequest();
      xhttp.onreadystatechange = function ReceivedCallback() {
        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -416,7 +416,7 @@ function addTrackToPlaylist(playlist_id){
     });
 }
 
-function addAppleMusicUserToken(musicUserToken){
+async function addAppleMusicUserToken(musicUserToken){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
     var x = JSON.parse(value);
@@ -425,7 +425,7 @@ function addAppleMusicUserToken(musicUserToken){
   console.log(musicUserToken);
 }
 
-function getPlaylistTracks(playlist_id){
+async function getPlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -452,7 +452,7 @@ function getPlaylistTracks(playlist_id){
 
 
 
-function getPlaylistAttributes(playlist_id){
+async function getPlaylistAttributes(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
