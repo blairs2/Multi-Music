@@ -379,23 +379,6 @@ async function searchByTerm(searchTerm){
 //POST functions
 /////////////////////////////
 
-//Creates a new empty playlist
-async function addPlaylist(playlist_name, description){
-   var xhttp = new XMLHttpRequest();
-   xhttp.onreadystatechange = function ReceivedCallback() {
-     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-       // console.log(JSON.parse(this.responseText));
-
-          // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
-     }
-   };
-   id = getCookie(); //get user_ID from cookie
-   await dbGetUserTokens(id).then((value) =>{
-       var x = JSON.parse(value);
-        xhttp.open("POST", "http://" + url + "/apple-music/library/playlist/" + x[0].appleToken, true);
-        xhttp.send(); // Gets the response
-     });
-  }
 
 async function addTrackToPlaylist(playlist_id){
      var xhttp = new XMLHttpRequest();
@@ -650,7 +633,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
      handle = await dbHasSong(track.id).then(async function(resp){
        if(resp == 'false'){
          //replace spaces with plus and get rid of special characters
-         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace(/&/g, "").replace("/", "").replace(/%/, "").replace(/?/g, "");
+         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace(/&/g, "").replace("/", "").replace(/%/, "").replace("?", "");
          if(new_service == "Spotify"){
            await spotifySearch('q=' + search + '&limit=1&type=track').then(async function(value){
              var response = JSON.parse(value);
@@ -705,7 +688,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
        }
      });
    }
-   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${url}/convert.html?id=${mm_playlist_id},name=${playlist_name}">Converted Playlist</a>`;
+   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${url}/convert.html?id=${mm_playlist_id}&name=${playlist_name}">Converted Playlist</a>`;
  });
 }
 

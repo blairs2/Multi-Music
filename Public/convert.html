@@ -170,7 +170,23 @@
     });
   }
 
+  //Creates a new empty playlist
+  function addPlaylist(body, appleToken){
+     var xhttp = new XMLHttpRequest();
+     xhttp.onreadystatechange = function ReceivedCallback() {
+       if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+         // console.log(JSON.parse(this.responseText));
+
+            // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
+       }
+     };
+        xhttp.open("POST", "http://" + url + "/apple-music/library/playlist/" + appleToken, true);
+        xhttp.send(body); // Gets the response
+    }
+
   document.getElementById("convert-apple-btn").addEventListener("click", ()=>{
+    var url = (new URL(document.location));
+    var playlist_name = url.searchParams.get("name");
     music.authorize().then((musicUserToken)=>{
       dbRetrieveConvert().then(resp => {
         var resp_obj = JSON.parse(resp);
@@ -181,14 +197,18 @@
           }
           console.log(data);
           var body = { attributes:{
-                name:url.searchParams.get("name"),
+                name:playlist_name,
                },
               relationships:{
                 tracks: data
               }
             }
+            console.log(body, musicUserToken);
+            addPlaylist(body, musicUserToken); 
+
+        } else {
+
         }
-        console.log(body);
       });
     });
 
