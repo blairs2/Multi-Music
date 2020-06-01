@@ -130,6 +130,27 @@
   <script type="text/javascript" src="/spotifyIndex.js"></script>
   <script type="text/javascript" src="/databaseIndex.js"></script> -->
   <script type="text/javascript">
+  document.addEventListener('musickitloaded', () => {
+    // MusicKit global is now defined
+    fetch('/token').then(response => response.json()).then(res => {
+      /***
+        Configure our MusicKit instance with the signed token from server, returns a configured MusicKit Instance
+        https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance
+      ***/
+      const music = MusicKit.configure({
+        developerToken: res.token,
+        app: {
+          name: 'MultiMusic',
+          build: '2020.5.7'
+        }
+      });
+
+      // expose our instance globally for testing
+      window.music = music;
+      //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
+  });
+});
+
   async function dbRetrieveConvert(){
      var xhttp = new XMLHttpRequest();
      return new Promise(function(resolve, reject) {
@@ -150,10 +171,26 @@
   }
 
   document.getElementById("convert-apple-btn").addEventListener("click", ()=>{
-    console.log('convert-clicked');
+    music.authorize().then((musicUserToken)=>{
       dbRetrieveConvert().then(resp => {
-        console.log(JSON.parse(resp));
+        var resp_obj = JSON.parse(resp);
+        if(resp_obj != false){
+          var data = [];
+          for(var i = 0; i < resp_obj.length; i++){
+            data.push({id:resp_obj[i].apple_Song_ID, type:"songs"});
+          }
+          console.log(data);
+          var body = { attributes:{
+                name:url.searchParams.get("name"),
+               },
+              relationships:{
+                tracks: data
+              }
+            }
+        }
+        console.log(body);
       });
+    });
 
   });
   </script>

@@ -56,15 +56,12 @@ async function dbHasSong(ID){
     var pass = document.forms["login-form"]["password"].value;
     dbGetUser(name, pass).then((value) => {
         var x = JSON.parse(value);
-				console.log(x);
         if (x == false){
-        if (name != "Nathan"){
             alert("Invalid Username or Password please try agian.");
         } else {
-            // setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+            setTimeout(function() {window.location = 'http://' + url + '/index.html' });
 						console.log(x);
             setCookie(x[0].user_ID);
-            //setCookie("COOKIE");
         }
     });
 	}

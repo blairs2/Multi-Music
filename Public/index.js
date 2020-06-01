@@ -593,7 +593,7 @@ will convert playlist from current_service to new_service
 * @current_service is the current service of the playlist Apple Music or Spotify
 * @catalog is a boolean 1 it will search the catalog 0 will search the library
 */
-async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
+async function convertPlaylist(playlist_id, current_service, mm_playlist_id, playlist_name){
   var new_sercie;
   if(current_service == "Apple Music"){
     new_service = "Spotify";
@@ -619,7 +619,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
      handle = await dbHasSong(track.id).then(async function(resp){
        if(resp == 'false'){
          //replace spaces with plus and get rid of special characters
-         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace(/&/g, "").replace("/", "").replace(/%/, "");
+         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace(/&/g, "").replace("/", "").replace(/%/, "").replace(/?/g, "");
          if(new_service == "Spotify"){
            await spotifySearch('q=' + search + '&limit=1&type=track').then(async function(value){
              var response = JSON.parse(value);
@@ -674,7 +674,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id){
        }
      });
    }
-   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${url}/convert.html?id=${mm_playlist_id}">Converted Playlist</a>`;
+   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${url}/convert.html?id=${mm_playlist_id},name=${playlist_name}">Converted Playlist</a>`;
  });
 }
 
@@ -713,13 +713,13 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
           dbPlaylistExists(playlist_id).then(value => {
             var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
             console.log("New playlist: ", mm_playlist_id);
-            convertPlaylist(playlist_id, current_service, mm_playlist_id);
+            convertPlaylist(playlist_id, current_service, mm_playlist_id, title);
           });
         } else {
           var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
           console.log("playlist id:",mm_playlist_id);
           dbDeleteTracks(mm_playlist_id).then(()=>{
-            convertPlaylist(playlist_id, current_service, mm_playlist_id);
+            convertPlaylist(playlist_id, current_service, mm_playlist_id,title);
           }); // delete the tracks currently associated with the playlist
         }
       });
