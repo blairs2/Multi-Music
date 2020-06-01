@@ -162,22 +162,6 @@ function dbUpdateAppleToken(id, token){
     xhttp.open('POST', 'http://' + url + '/db/user/apple/' + id + '/' + token, true);
     xhttp.send(); // Gets the response
 }
-async function dbUpdateSpotifyToken(id, token){
-    var xhttp = new XMLHttpRequest();
-    return new Promise(function(resolve, reject) {
-      xhttp.onreadystatechange = function ReceivedCallback() {
-      if (this.readyState == 4) { //Upon getting a response
-        if(this.status == 200){
-          resolve(this.responseText);
-        } else {
-        reject("Error");
-      }
-     }
-    };
-    xhttp.open('POST', 'http://' + URL + '/db/user/spotify/' + id + '/' + token , true);
-    xhttp.send(); // Gets the response
-   });
-  }
 
 /**
  * add a song to the database
