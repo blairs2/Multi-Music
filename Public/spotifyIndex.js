@@ -37,9 +37,9 @@ async function spotifyGetUser(){
 /**
  * Get a list of the the user playlists and all the tracks in each playlist
  */
-async function spotifyGetUserPlaylists(){
+function spotifyGetUserPlaylists(){
     var xhttp = new XMLHttpRequest();
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
       xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
         if(this.status == 200){
