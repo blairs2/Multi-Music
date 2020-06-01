@@ -180,8 +180,9 @@
             // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
        }
      };
-        xhttp.open("POST", "http://" + window.location.host + "/apple-music/library/playlist/" + appleToken.replace(/\//g, '%2F'), true);
-        xhttp.send(body); // Gets the response
+     xhttp.open("POST", "http://" + window.location.host + "/apple-music/library/playlist/" + appleToken.replace(/\//g, '%2F'), true);
+     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+     xhttp.send(body); // Gets the response
     }
 
   document.getElementById("convert-apple-btn").addEventListener("click", ()=>{
