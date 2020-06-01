@@ -34,6 +34,23 @@ async function spotifyGetUser(){
     });
 }
 
+async function spotifyCheckUser(id){
+    var xhttp = new XMLHttpRequest();
+    return new Promise(function(resolve, reject) {
+        xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4) { //Upon getting a response
+          if(this.status == 200){
+            resolve("success");
+          } else {
+            reject("Error");
+          }
+        }
+      };
+    xhttp.open('GET', 'http://' + URL + '/spotify/user/' + id , true);
+    xhttp.send(); // Gets the response
+    }
+}
+
 /**
  * Get a list of the the user playlists and all the tracks in each playlist
  */
@@ -241,4 +258,24 @@ function spotifySearch(searchTerm){
         xhttp.send(); // Gets the response
     });
   });
+}
+async function isAuthorized(){
+    return new Promise(async function(resolve, reject) {
+        id = getCookie(); //get user_ID from cookie
+        await dbGetUserTokens(id).then((value) =>{
+            var x = JSON.parse(value);
+            if (x[0].spotifyToken == null){
+               reject(false);
+            } else {
+                await spotifyCheckUser(x[0].spotifyToken).then((value) =>{
+                    var y = JSON.parse(value);
+                    if (y == "success"){
+                        resolve(true);
+                    }else {
+                        reject(false);
+                    }
+                });  
+            }
+        });
+    });
 }
