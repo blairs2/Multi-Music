@@ -1,4 +1,4 @@
-let url = window.location.host;
+const url = window.location.host;
 /**
  * Redirects to the spotify login for user to authorize our program
  */

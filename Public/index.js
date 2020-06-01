@@ -1,4 +1,4 @@
-let url = window.location.host;
+ // const url = window.location.host;
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
@@ -49,8 +49,6 @@ document.addEventListener('musickitloaded', () => {
     });
   });
 });
-
-
 
 document.getElementById('search-input').addEventListener("keyup", async function(event){
   //When user clicks enter in our search bar
