@@ -19,7 +19,7 @@ function spotifyLogin(){
 /**
  * Get the user data for the currently logged in user
  */
-function spotifyGetUser(){
+async function spotifyGetUser(){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -54,9 +54,9 @@ async function spotifyCheckUser(id){
 /**
  * Get a list of the the user playlists and all the tracks in each playlist
  */
-async function spotifyGetUserPlaylists(){
+function spotifyGetUserPlaylists(){
     var xhttp = new XMLHttpRequest();
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
       xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
         if(this.status == 200){
@@ -80,9 +80,9 @@ async function spotifyGetUserPlaylists(){
  * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-async function spotifyGetPlaylistTracks(playlistid){
+function spotifyGetPlaylistTracks(playlistid){
    var xhttp = new XMLHttpRequest();
-   return new Promise(function(resolve, reject) {
+   return new Promise(async function(resolve, reject) {
      xhttp.onreadystatechange = function ReceivedCallback() {
      if (this.readyState == 4) { //Upon getting a response
        if(this.status == 200){
@@ -98,7 +98,7 @@ async function spotifyGetPlaylistTracks(playlistid){
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + playlistid + "/" + x[0].spotifyToken , true);
         xhttp.send(); // Gets the response
       });
-   
+
   });
 }
 
@@ -106,9 +106,9 @@ async function spotifyGetPlaylistTracks(playlistid){
  * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-async function spotifyGetPlaylistAttributes(playlistid){
+function spotifyGetPlaylistAttributes(playlistid){
   var xhttp = new XMLHttpRequest();
-  return new Promise(function(resolve, reject) {
+  return new Promise(async function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4) { //Upon getting a response
       if(this.status == 200){
@@ -133,7 +133,7 @@ async function spotifyGetPlaylistAttributes(playlistid){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be deleted
  */
-function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
+async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -153,7 +153,7 @@ function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be added
  */
-function spotifyAddTrackToPlaylist(playlistid, trackURI){
+async function spotifyAddTrackToPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -218,7 +218,7 @@ async function spotifyCreateNewPlaylist(userID, name, public = false, descriptio
  * @param {int} index the index where the tracks are to be moved to
  * @param {int} length the number of tracks to be moved
  */
-function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
+async function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -238,9 +238,9 @@ function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
  * Search Spotify for tracks containing the search term
  * @param {string} searchTerm what to search the spotify library for
  */
-async function spotifySearch(searchTerm){
+function spotifySearch(searchTerm){
    var xhttp = new XMLHttpRequest();
-   return new Promise(function(resolve, reject) {
+   return new Promise(async function(resolve, reject) {
      xhttp.onreadystatechange = function ReceivedCallback() {
        if (this.readyState == 4) { //Upon getting a response
          if(this.status == 200){
@@ -254,12 +254,11 @@ async function spotifySearch(searchTerm){
    id = getCookie(); //get user_ID from cookie
    await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/search/' + searchTerm + "/" + x[0].spotifyToken, true);
+        xhttp.open('GET', 'http://' + url + '/spotify/search/' + searchTerm + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
   });
 }
-
 async function isAuthorized(){
     return new Promise(async function(resolve, reject) {
         id = getCookie(); //get user_ID from cookie

@@ -66,7 +66,7 @@ async function dbHasSong(ID){
     });
 	}
 
-function RegisterUser(){
+async function RegisterUser(){
     var name = document.forms["register"]["userName"].value;
     var pass = document.forms["register"]["password"].value;
     var passC = document.forms["register"]["password_confirm"].value;
@@ -79,7 +79,7 @@ function RegisterUser(){
             x = JSON.parse(value);
             if (x == false){
            // if (name != "Nathan") {
-                console.log("error this shouldn't happen"); 
+                console.log("error this shouldn't happen");
             } else {
                 setCookie(x[0].userID);
                 //setCookie("REG");
