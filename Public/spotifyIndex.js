@@ -19,18 +19,24 @@ function spotifyLogin(){
 /**
  * Get the user data for the currently logged in user
  */
-function spotifyGetUser(){
+async function spotifyGetUser(){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
-    };
-    id = getCookie(); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/user/' + x[0].spotifyToken , true);
-        xhttp.send(); // Gets the response
+    return new Promise(function(resolve, reject) {
+        xhttp.onreadystatechange = function ReceivedCallback() {
+            if (this.readyState == 4) { //Upon getting a response
+              if(this.status == 200){
+                resolve(this.responseText);
+              } else {
+                reject("Error");
+              }
+            }
+          };
+        id = getCookie(); //get user_ID from cookie
+        await dbGetUserTokens(id).then((value) =>{
+            var x = JSON.parse(value);
+            xhttp.open('GET', 'http://' + url + '/spotify/user/' + x[0].spotifyToken , true);
+            xhttp.send(); // Gets the response
+        });
     });
 }
 
@@ -48,7 +54,7 @@ async function spotifyCheckUser(id){
       };
     xhttp.open('GET', 'http://' + URL + '/spotify/user/' + id , true);
     xhttp.send(); // Gets the response
-    }
+    });
 }
 
 /**
@@ -153,7 +159,7 @@ function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be added
  */
-function spotifyAddTrackToPlaylist(playlistid, trackURI){
+function spotifyAddTrackToPlaylist(playlistid, uris){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -163,8 +169,9 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken , true);
-        xhttp.send(); // Gets the response
+        xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + x[0].spotifyToken , true);
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhttp.send(JSON.stringify(uris)); // Gets the response
     });
 }
 
@@ -198,17 +205,24 @@ async function spotifyRenamePlaylist(playlistid, name){
  */
 async function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
+    return new Promise(function(resolve, reject) {
+        xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4) { //Upon getting a response
+          if(this.status == 200){
+            // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+            resolve(this.responseText);
+          } else {
+          reject("Error");
         }
-    };
+       }
+      };
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
+});
 }
 
 /**
@@ -240,11 +254,10 @@ function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
  */
 async function spotifySearch(searchTerm){
    var xhttp = new XMLHttpRequest();
-   return new Promise(function(resolve, reject) {
+   return new Promise(async function(resolve, reject) {
      xhttp.onreadystatechange = function ReceivedCallback() {
        if (this.readyState == 4) { //Upon getting a response
          if(this.status == 200){
-           // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
            resolve(this.responseText);
          } else {
          reject("Error");
