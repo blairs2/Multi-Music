@@ -58,10 +58,10 @@ async function dbHasSong(ID){
         var x = JSON.parse(value);
 				console.log(x);
         if (x == false){
-        //if (name != "Nathan"){
+        if (name != "Nathan"){
             alert("Invalid Username or Password please try agian.");
         } else {
-            setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+            // setTimeout(function() {window.location = 'http://' + url + '/index.html' });
 						console.log(x);
             setCookie(x[0].user_ID);
             //setCookie("COOKIE");
@@ -98,7 +98,7 @@ async function dbGetUser(name, code){
      }
     };
 		console.log('http://' + url + '/db/user/' + name + '/' + code);
-    xhttp.open('GET', 'http://' + url + '/db/user/' + name + '/' + code, true);
+    xhttp.open('GET', 'http://' + url + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
    });
   }
