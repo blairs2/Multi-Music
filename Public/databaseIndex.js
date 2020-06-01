@@ -52,12 +52,15 @@ async function dbHasSong(ID){
    });
  }
 
- function login(){
+async function login(){
+	console.log("Here");
     var name = document.forms["login-form"]["email"].value;
     var pass = document.forms["login-form"]["password"].value;
-    dbGetUser(name, pass).then((value) => {
+    console.log(name);
+	console.log(pass);
+	await dbGetUser(name, pass).then((value) => {
         var x = JSON.parse(value);
-        if (x == false){
+        if (x[0] == false){
             alert("Invalid Username or Password please try agian.");
         } else {
             setTimeout(function() {window.location = 'http://' + url + '/index.html' });
@@ -112,10 +115,11 @@ async function dbGetUser(name, code){
     return new Promise(function(resolve, reject) {
       xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
+	      console.log(this.status);
         if(this.status == 200){
           resolve(this.responseText);
         } else {
-        reject("Error");
+        reject("Error Here");
       }
      }
     };
@@ -191,7 +195,7 @@ async function dbAddSong(title, artist, spotifyID, appleID){
 }
 
 /**
- * add playlist to database
+i * add playlist to database
  * @param {string} title the title of the playlist
  * @param {string} user the id of the author of the playlist
  * @param {string} spotifyID the spotifyID of the playlist

@@ -19,7 +19,13 @@ document.addEventListener('musickitloaded', () => {
     window.music = music;
     //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
     music.authorize().then(musicUserToken => {
-      addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
+        id = getCookie();
+	    await dbGetUserTokens(id).then((value) =>{
+		    var x = JSON.parse(value);
+		    dbUpdateAppleToken(x[0].user_ID, musicUserToken);
+	    });
+	    
+	// Here we want to call a function to add the musicUserToken to our database
       //Populates the left hand side of screen with all the playlsits in the users library
       // retreiveUserPlaylists().then(playlists =>{
       //   //This block of code generates the list of playlists on the left hand side of the screen
@@ -397,19 +403,10 @@ async function addTrackToPlaylist(playlist_id){
     });
 }
 
-async function addAppleMusicUserToken(musicUserToken){
-  id = getCookie(); //get user_ID from cookie
-  await dbGetUserTokens(id).then((value) =>{
-    var x = JSON.parse(value);
-    dbUpdateAppleToken(x[0].appleToken, musicUserToken);
-  });
-  console.log(musicUserToken);
-}
-
 async function getPlaylistTracks(playlist_id){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
-    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+	  if (this.readyState == 4 && this.status == 200) { //Upon getting a response
       if(JSON.parse(this.responseText).hasOwnProperty("errors")){
 
       }
