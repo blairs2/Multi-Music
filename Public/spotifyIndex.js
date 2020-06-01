@@ -63,9 +63,9 @@ function spotifyGetUserPlaylists(){
  * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-async function spotifyGetPlaylistTracks(playlistid){
+function spotifyGetPlaylistTracks(playlistid){
    var xhttp = new XMLHttpRequest();
-   return new Promise(function(resolve, reject) {
+   return new Promise(async function(resolve, reject) {
      xhttp.onreadystatechange = function ReceivedCallback() {
      if (this.readyState == 4) { //Upon getting a response
        if(this.status == 200){
@@ -89,9 +89,9 @@ async function spotifyGetPlaylistTracks(playlistid){
  * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-async function spotifyGetPlaylistAttributes(playlistid){
+function spotifyGetPlaylistAttributes(playlistid){
   var xhttp = new XMLHttpRequest();
-  return new Promise(function(resolve, reject) {
+  return new Promise(async function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4) { //Upon getting a response
       if(this.status == 200){

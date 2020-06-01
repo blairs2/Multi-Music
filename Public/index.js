@@ -274,7 +274,7 @@ async function retrieveUserSongs(){
  }
 
 //Gets the users library of artists (default 25)
-function retrieveUserArtists(){
+async function retrieveUserArtists(){
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function ReceivedCallback() {
    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -292,7 +292,7 @@ function retrieveUserArtists(){
 }
 
 //Gets the users library of albums (defualt 25)
-function retrieveUserAlbums(){
+async function retrieveUserAlbums(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -328,10 +328,8 @@ function retrieveSearchHints(searchTerm){
 async function retirevePlaylist(playlist_id){
   xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-
       }
     };
-
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
