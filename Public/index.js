@@ -20,7 +20,7 @@ document.addEventListener('musickitloaded', () => {
     //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
     music.authorize().then(musicUserToken => {
         id = getCookie();
-	    await dbGetUserTokens(id).then((value) =>{
+	    dbGetUserTokens(id).then((value) =>{
 		    var x = JSON.parse(value);
 		    dbUpdateAppleToken(x[0].user_ID, musicUserToken);
 	    });
