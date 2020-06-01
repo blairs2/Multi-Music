@@ -35,6 +35,23 @@ function spotifyGetUser(){
     });
 }
 
+async function spotifyCheckUser(id){
+    var xhttp = new XMLHttpRequest();
+    return new Promise(function(resolve, reject) {
+        xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4) { //Upon getting a response
+          if(this.status == 200){
+            resolve("success");
+          } else {
+            reject("Error");
+          }
+        }
+      };
+    xhttp.open('GET', 'http://' + URL + '/spotify/user/' + id , true);
+    xhttp.send(); // Gets the response
+    }
+}
+
 /**
  * Get a list of the the user playlists and all the tracks in each playlist
  */
@@ -157,7 +174,7 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {string} name the new name of the playlist
  */
-function spotifyRenamePlaylist(playlistid, name){
+async function spotifyRenamePlaylist(playlistid, name){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -180,7 +197,7 @@ function spotifyRenamePlaylist(playlistid, name){
  * @param {string} description a description of the playlist
  * @param {boolean} collaborative true if playlist can be edited by other users
  */
-function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
+async function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -243,6 +260,31 @@ async function spotifySearch(searchTerm){
   });
 }
 
+async function isAuthorized(){
+    return new Promise(function(resolve, reject) {
+        var authorized = "";
+        id = getCookie(); //get user_ID from cookie
+        await dbGetUserTokens(id).then((value) =>{
+            var x = JSON.parse(value);
+            if (x[0].spotifyToken == null){
+               reject(false);
+            } else {
+                await spotifyCheckUser(x[0].spotifyToken).then((value) =>{
+                    var y = JSON.parse(value);
+                    if (y == "success"){
+                        resolve(true);
+                    }else {
+                        reject(false);
+                    }
+                });  
+            }
+        });
+    });
+}
+
+async function populatePlaylist(){
+    
+}
 
 // get token
 //     tokens = window.location.href.split('#/user/').pop();

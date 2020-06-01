@@ -247,8 +247,8 @@ async function retreiveUserPlaylists(){
         var x = JSON.parse(value);
         xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + x[0].appleToken, true);
         xhttp.send(); // Gets the response
+    });
   });
- });
 }
 
 //Gets the users library of songs (default 25)
