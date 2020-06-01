@@ -21,31 +21,31 @@ document.addEventListener('musickitloaded', () => {
     music.authorize().then(musicUserToken => {
       addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
       //Populates the left hand side of screen with all the playlsits in the users library
-      retreiveUserPlaylists().then(playlists =>{
-        //This block of code generates the list of playlists on the left hand side of the screen
-        var cloudPlaylists = JSON.parse(playlists).playlists;
-        var retval = '';
-        for(var i =0; i < cloudPlaylists.length; i++){
-          var playlistName = cloudPlaylists[i].title;
-          var playlist_id = cloudPlaylists[i].id;
-
-          retval += `<button class="list-group-item playlist-button" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
-        }
-        document.getElementById('user-playlists').innerHTML = retval;
-        var user_playlists = document.getElementsByClassName("playlist-button");
-        //Add event listener to each playlist.
-        //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
-        for (var i = 0; i < user_playlists.length; i++) {
-           user_playlists[i].addEventListener('click', function() {
-               //Generates the div to be populated in playlist view
-               document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
-               //Gets the attributes of a user's playlist
-               //Function being called will produce  upon recieving a json response
-               getPlaylistAttributes(this.getAttribute("data-value"));
-               getPlaylistTracks(this.getAttribute("data-value"));
-              },false);
-       }
-      });
+      // retreiveUserPlaylists().then(playlists =>{
+      //   //This block of code generates the list of playlists on the left hand side of the screen
+      //   var cloudPlaylists = JSON.parse(playlists).playlists;
+      //   var retval = '';
+      //   for(var i =0; i < cloudPlaylists.length; i++){
+      //     var playlistName = cloudPlaylists[i].title;
+      //     var playlist_id = cloudPlaylists[i].id;
+      //
+      //     retval += `<button class="list-group-item playlist-button" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
+      //   }
+      //   document.getElementById('user-playlists').innerHTML = retval;
+      //   var user_playlists = document.getElementsByClassName("playlist-button");
+      //   //Add event listener to each playlist.
+      //   //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
+      //   for (var i = 0; i < user_playlists.length; i++) {
+      //      user_playlists[i].addEventListener('click', function() {
+      //          //Generates the div to be populated in playlist view
+      //          document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+      //          //Gets the attributes of a user's playlist
+      //          //Function being called will produce  upon recieving a json response
+      //          getPlaylistAttributes(this.getAttribute("data-value"));
+      //          getPlaylistTracks(this.getAttribute("data-value"));
+      //         },false);
+      //  }
+      // });
     });
   });
 });
