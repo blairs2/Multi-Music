@@ -48,18 +48,6 @@
            <li class="nav-item">
              <a class="nav-link" onclick="contactLoad()" href="#">Contact</a>
            </li>
-          <!-- <li class="nav-item">
-            <button id="login-btn">Login to Apple Music</button>
-          </li> -->
-          <li class="nav-item">
-            <button id="login-spotify">Login to Spotify</button>
-          </li>
-          <li class="nav-item">
-            <button id="setCookie">set cookie</button>
-          </li>
-          <li class="nav-item">
-            <button id="getCookie">get cookie</button>
-          </li>
         </ul>
 
         <form class="form-inline">
@@ -94,8 +82,6 @@
 
           <br>
           <a href="#" class="list-group-item">Home</a>
-          <!--<a href="#"  class="list-group-item">Playlist Library</a>-->
-          <a href="#" class="list-group-item">Convert</a>
         </div>
       </div>
       <br>
@@ -111,6 +97,11 @@
 
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
         <div id="generated-content">
+          <div class="row">
+            <h5>Choose service to add playlist to:</h5>
+              <button id="convert-spotify" type="button" class="btn"><img style="width:100px;height:30px;" src="vendor/Spotify.png" alt=""></button>&emsp;
+              <button id="convert-apple-btn" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
+              <br><br><br>
         </div>
         <!-- /.row -->
 
@@ -135,21 +126,73 @@
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
-  <script type="text/javascript" src="/index.js"></script>
+  <!-- <script type="text/javascript" src="/index.js"></script>
   <script type="text/javascript" src="/spotifyIndex.js"></script>
-  <script type="text/javascript" src="/databaseIndex.js"></script>
+  <script type="text/javascript" src="/databaseIndex.js"></script> -->
   <script type="text/javascript">
-    document.getElementById("setCookie").addEventListener("click", () => {
-      setCookie(12);
+  document.addEventListener('musickitloaded', () => {
+    // MusicKit global is now defined
+    fetch('/token').then(response => response.json()).then(res => {
+      /***
+        Configure our MusicKit instance with the signed token from server, returns a configured MusicKit Instance
+        https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance
+      ***/
+      const music = MusicKit.configure({
+        developerToken: res.token,
+        app: {
+          name: 'MultiMusic',
+          build: '2020.5.7'
+        }
+      });
+
+      // expose our instance globally for testing
+      window.music = music;
+      //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
+  });
+});
+
+  async function dbRetrieveConvert(){
+     var xhttp = new XMLHttpRequest();
+     return new Promise(function(resolve, reject) {
+       xhttp.onreadystatechange = function ReceivedCallback() {
+       if (this.readyState == 4) { //Upon getting a response
+         if(this.status == 200){
+           // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+           resolve(this.responseText);
+         } else {
+           reject("Error");
+       }
+      }
+     };
+     var url = (new URL(document.location));
+     xhttp.open("GET", "http://" + window.location.host + "/playlist/convert/" + url.searchParams.get("id"), true);
+     xhttp.send(); // Gets the response
+    });
+  }
+
+  document.getElementById("convert-apple-btn").addEventListener("click", ()=>{
+    music.authorize().then((musicUserToken)=>{
+      dbRetrieveConvert().then(resp => {
+        var resp_obj = JSON.parse(resp);
+        if(resp_obj != false){
+          var data = [];
+          for(var i = 0; i < resp_obj.length; i++){
+            data.push({id:resp_obj[i].apple_Song_ID, type:"songs"});
+          }
+          console.log(data);
+          var body = { attributes:{
+                name:url.searchParams.get("name"),
+               },
+              relationships:{
+                tracks: data
+              }
+            }
+        }
+        console.log(body);
+      });
     });
 
-    document.getElementById("getCookie").addEventListener("click", () => {
-      console.log(getCookie());
-    });
-    document.getElementById("login-spotify").addEventListener('click', () => {
-        spotifyLogin();
-    });
-
+  });
   </script>
 
 </body>

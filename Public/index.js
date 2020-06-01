@@ -1,4 +1,4 @@
-//const URL = window.location.host;
+ // const url = window.location.host;
 //Gives front end access to apple musickit js
 document.addEventListener('musickitloaded', () => {
   // MusicKit global is now defined
@@ -49,8 +49,6 @@ document.addEventListener('musickitloaded', () => {
     });
   });
 });
-
-
 
 document.getElementById('search-input').addEventListener("keyup", async function(event){
   //When user clicks enter in our search bar
@@ -115,13 +113,20 @@ document.getElementById('search-input').addEventListener("keyup", async function
 
              Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
                //The response should be a list with only one element
-               document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(JSON.parse(values[0]).playlists[0], this.getAttribute("data-service"));
+               var playlistAttr = JSON.parse(values[0]).playlists[0];
+               document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(playlistAttr, this.getAttribute("data-service"));
                //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
                document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
                document.getElementById("playlist-convert").addEventListener("click", () => {
                  var playlist_id = document.getElementById("playlist-convert").getAttribute("data-value");
-                 mm_playlist_id = establishPlaylist(playlist_id); //checks if playlist is already in the db, makes it if not
-                 convertPlaylist(playlist_id, document.getElementById("playlist-convert").getAttribute("data-service"));
+                 var user_id = getCookie(); //change this to read username from cookie
+                 var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
+                 //checks if playlist is already in the db, makes it if not
+                 document.getElementById("playlist-convert").disabled= true;
+                 document.getElementById("convert-link").innerHTML = "<span>Loading playlist link</span>";
+
+                 establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service);
+                 // convertPlaylist(playlist_id, current_service);
 
                },false);
 
@@ -245,7 +250,7 @@ async function retreiveUserPlaylists(){
   id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + x[0].appleToken, true);
+        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + x[0].appleToken, true);
         xhttp.send(); // Gets the response
     });
   });
@@ -259,13 +264,13 @@ function retrieveUserSongs(){
       console.log(JSON.parse(this.responseText));
       //Code to change the generated-content inner html
     }
-  };
+  };  
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/songs/" + x[0].appleToken, true);
-  xhttp.send(); // Gets the response
-});
+      xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + x[0].appleToken, true);
+      xhttp.send(); // Gets the response
+  });
  }
 
 //Gets the users library of artists (default 25)
@@ -277,12 +282,13 @@ function retrieveUserArtists(){
      //Code to change the generated-content inner html
    }
  };
+
  id = getCookie(); //get user_ID from cookie
  await dbGetUserTokens(id).then((value) =>{
      var x = JSON.parse(value);
- xhttp.open("GET", "http://" + URL + "/apple-music/library/artists/" + x[0].appleToken, true);
- xhttp.send(); // Gets the response
-});
+      xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + x[0].appleToken, true);
+      xhttp.send(); // Gets the response
+  });
 }
 
 //Gets the users library of albums (defualt 25)
@@ -294,12 +300,13 @@ function retrieveUserAlbums(){
       //Code to change the generated-content inner html
     }
   };
+
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/albums/" + x[0].appleToken, true);
-  xhttp.send(); // Gets the response
-});
+      xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + x[0].appleToken, true);
+      xhttp.send(); // Gets the response
+    });
  }
 
 //As the user is typing into the search bar. this will fetch search hits for the drop down
@@ -311,8 +318,7 @@ function retrieveSearchHints(searchTerm){
 
     }
   };
-
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/search/hints/" + searchTerm, true);
+  xhttp.open("GET", "http://" + url + "/apple-music/catalog/search/hints/" + searchTerm, true);
   xhttp.send(); // Gets the response
 
  }
@@ -325,12 +331,13 @@ function retirevePlaylist(playlist_id){
 
       }
     };
+
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-    xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken, true);
-    xhttp.send(); // Gets the response
-  });
+        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken, true);
+        xhttp.send(); // Gets the response
+    });
    }
 
 //seperate from retrievePlaylist which gets the information about the playlist.
@@ -345,9 +352,9 @@ function retrievePlaylistTracks(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + x[0].appleToken, true);
-  xhttp.send(); // Gets the response
-});
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + x[0].appleToken, true);
+      xhttp.send(); // Gets the response
+  });
 }
 
 //Searches for term across every catagory
@@ -365,8 +372,7 @@ async function searchByTerm(searchTerm){
      }
     }
    };
-
-   xhttp.open("GET", "http://" + URL + "/apple-music/catalog/search/" + searchTerm, true);
+   xhttp.open("GET", "http://" + url + "/apple-music/catalog/search/" + searchTerm, true);
    xhttp.send(); // Gets the response
   });
 }
@@ -388,9 +394,9 @@ function addPlaylist(playlist_name, description){
    id = getCookie(); //get user_ID from cookie
    await dbGetUserTokens(id).then((value) =>{
        var x = JSON.parse(value);
-   xhttp.open("POST", "http://" + URL + "/apple-music/library/playlist/" + x[0].appleToken, true);
-   xhttp.send(); // Gets the response
-  });
+        xhttp.open("POST", "http://" + url + "/apple-music/library/playlist/" + x[0].appleToken, true);
+        xhttp.send(); // Gets the response
+     });
   }
 
 function addTrackToPlaylist(playlist_id){
@@ -405,8 +411,8 @@ function addTrackToPlaylist(playlist_id){
      id = getCookie(); //get user_ID from cookie
      await dbGetUserTokens(id).then((value) =>{
          var x = JSON.parse(value);
-     xhttp.open("POST", "http://" + URL + "/apple-music/library/" + playlist_id + "/playlist/" + x[0].appleToken, true);
-     xhttp.send(); // Gets the response
+         xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + x[0].appleToken, true);
+         xhttp.send(); // Gets the response
     });
 }
 
@@ -439,27 +445,12 @@ function getPlaylistTracks(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
-  xhttp.send(); // Gets the response
-});
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + x[0].appleToken , true);
+      xhttp.send(); // Gets the response
+  });
 }
 
-//   var xhttp = new XMLHttpRequest();
-//   return new Promise(function(resolve, reject) {
-//     xhttp.onreadystatechange = function ReceivedCallback() {
-//     if (this.readyState == 4) { //Upon getting a response
-//       if(this.status == 200){
-//         // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
-//         resolve(this.responseText);
-//       } else {
-//       reject("Error");
-//     }
-//    }
-//   };
-//   xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id + "/relationships" , true);
-//   xhttp.send(); // Gets the response
-//  });
-// }
+
 
 function getPlaylistAttributes(playlist_id){
   var xhttp = new XMLHttpRequest();
@@ -477,9 +468,9 @@ function getPlaylistAttributes(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-  xhttp.open("GET", "http://" + URL + "/apple-music/library/playlists/" + playlist_id , true);
-  xhttp.send(); // Gets the response
-});
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken , true);
+      xhttp.send(); // Gets the response
+  });
 }
 
 /*Gets tracks of a playlist on apple musics catalog, not a users library*/
@@ -496,7 +487,7 @@ async function getCatalogPlaylistTracks(playlist_id){
     }
    }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/playlists/" + playlist_id + "/relationships" , true);
+  xhttp.open("GET", "http://" + url + "/apple-music/catalog/playlists/" + playlist_id + "/relationships" , true);
   xhttp.send(); // Gets the response
  });
 }
@@ -515,7 +506,7 @@ async function getCatalogPlaylistAttributes(playlist_id){
     }
    }
   };
-  xhttp.open("GET", "http://" + URL + "/apple-music/catalog/playlists/" + playlist_id , true);
+  xhttp.open("GET", "http://" + url + "/apple-music/catalog/playlists/" + playlist_id , true);
   xhttp.send(); // Gets the response
  });
 }
@@ -592,6 +583,7 @@ function displayPlaylistAttributes(playlist_attributes, service){
   }
   retval += '</div>';
   retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button>`;
+  retval += '<div id="convert-link"> </div>';
   return retval;
 }
 
@@ -609,13 +601,14 @@ function displayPlaylistTracks(playlist_tracks){
     songId = playlist_tracks[i].id;
     if(playlist_tracks[i].hasOwnProperty("artwork")){
       url = playlist_tracks[i].artwork;
+
     } else {
       url = "/assets/Missing_content.png";
     }
     retval += `<button type="button" class="list-group-item song-button" value="song" data-value="${songId}"><img class="song-button-img" src=${url}><span>${title}</span>&emsp;<span>${artist}</span></button>`;
   }
   retval += "</div>";
-  return retval
+  return retval;
 }
 
 /*
@@ -633,7 +626,7 @@ will convert playlist from current_service to new_service
 * @current_service is the current service of the playlist Apple Music or Spotify
 * @catalog is a boolean 1 it will search the catalog 0 will search the library
 */
-async function convertPlaylist(playlist_id, current_service){
+async function convertPlaylist(playlist_id, current_service, mm_playlist_id, playlist_name){
   var new_sercie;
   if(current_service == "Apple Music"){
     new_service = "Spotify";
@@ -649,41 +642,72 @@ async function convertPlaylist(playlist_id, current_service){
     } catch(e) {
       console.log(e);
     }
-
   }
- Promise.all([playlistTracks]).then((values) => {
-   var tracks = JSON.parse(playlistTracks).tracks;
-   var search, track, matches;
+ Promise.all([playlistTracks]).then(async function(values){
+   var tracks = JSON.parse(values[0]).tracks;
+   var search, track, matches, handle;
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
-     search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+');
-     if(new_service == "Spotify"){
-       spotifySearch('q=' + search + '&limit=1&type=track').then((value) => {
-         var response = JSON.parse(value);
-         if(response.hasOwnProperty("songs")){
-           var song_matches = response.songs.data;
-           if(song_matches.length > 0){
-             console.log(new_service + " Match", song_matches[0].title);
-           } else {
-             console.log("NOT FOUND");
-           }
-         }
-       });
-     } else if(new_service == "Apple Music") {
-       searchByTerm('term=' + search + '&limit=1&types=songs').then((value) => {
-         var response = JSON.parse(value);
-         if(response.hasOwnProperty("songs")){
-           var song_matches = response.songs.data;
-           if(song_matches.length > 0){
-             console.log(new_service + " Match", song_matches[0].title);
-           } else {
-             console.log("NOT FOUND");
-           }
-         }
-       });
-     }
 
+     handle = await dbHasSong(track.id).then(async function(resp){
+       if(resp == 'false'){
+         //replace spaces with plus and get rid of special characters
+         search = (removeFeatureFromSong(track.title) + "+" + track.artist).replace(/ /g, '+').replace(/&/g, "").replace("/", "").replace(/%/, "").replace(/?/g, "");
+         if(new_service == "Spotify"){
+           await spotifySearch('q=' + search + '&limit=1&type=track').then(async function(value){
+             var response = JSON.parse(value);
+             if(response.hasOwnProperty("songs")){
+               var song_matches = response.songs.data;
+               if(song_matches.length > 0){
+                 //add the new song to db
+                 await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(async function(){
+                   // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id);
+                   await dbHasSong(track.id).then(async function(resp1){
+                     var response_json = JSON.parse(resp1);
+                     if(response_json != false){
+                       var song_id = response_json[0].song_ID;
+                       // console.log("Add song:", song_id);
+                       await dbAddSongToPlaylist(mm_playlist_id, song_id);
+                     }
+                   });
+                 });
+               } else {
+                 console.log(track.title, "NOT FOUND");
+               }
+             }
+           });
+         } else if(new_service == "Apple Music") {
+           await searchByTerm('term=' + search + '&limit=1&types=songs').then(async function(value){
+             var response = JSON.parse(value);
+             if(response.hasOwnProperty("songs")){
+               var song_matches = response.songs.data;
+               if(song_matches.length > 0){
+                 await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id,).then(async function(){
+                   // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
+                   await dbHasSong(track.id).then(async function(resp1){
+                     var response_json = JSON.parse(resp1);
+                     if(response_json != false){
+                       var song_id = response_json[0].song_ID;
+                       await dbAddSongToPlaylist(mm_playlist_id, song_id);
+                     }
+
+                   });
+                 });
+
+               } else {
+                 console.log(track.title, "NOT FOUND");
+               }
+             }
+           });
+         }
+       } else {
+         var repsonse_json = JSON.parse(resp);
+         var song_id = repsonse_json[0].song_ID;
+         await dbAddSongToPlaylist(mm_playlist_id, song_id);
+       }
+     });
    }
+   document.getElementById('convert-link').innerHTML = `<a class="nav-link" href="http://${url}/convert.html?id=${mm_playlist_id},name=${playlist_name}">Converted Playlist</a>`;
  });
 }
 
@@ -705,7 +729,31 @@ function removeFeatureFromSong(song_title){
 * @playlist_id is applemusic or spotify playlist id
 *
 */
-async function establishPlaylist(playlist_id){
-
-
+async function establishPlaylist(playlist_id, title, user_id, current_service){
+      var db_playlist_id = dbPlaylistExists(playlist_id).then(response => {
+        if(response == 'false'){
+          if(current_service == "Apple Music"){
+            dbAddPlaylist(title, user_id, spotifyID=null, appleID=playlist_id).then(()=>{
+                // console.log(title, user_id, current_service, playlist_id);
+            });
+          } else if (current_service == "Spotify"){
+            dbAddPlaylist(title, user_id, spotifyID=playlist_id, appleID=null).then(()=>{
+              // console.log(title, user_id, current_service, playlist_id);
+            });
+          } else {
+            console.log("Invalid Service");
+          }
+          dbPlaylistExists(playlist_id).then(value => {
+            var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
+            console.log("New playlist: ", mm_playlist_id);
+            convertPlaylist(playlist_id, current_service, mm_playlist_id, title);
+          });
+        } else {
+          var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
+          console.log("playlist id:",mm_playlist_id);
+          dbDeleteTracks(mm_playlist_id).then(()=>{
+            convertPlaylist(playlist_id, current_service, mm_playlist_id,title);
+          }); // delete the tracks currently associated with the playlist
+        }
+      });
 }

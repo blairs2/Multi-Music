@@ -1,18 +1,17 @@
- var URL = "localhost:8080";
-
+const url = window.location.host;
 /**
  * Redirects to the spotify login for user to authorize our program
  */
 function spotifyLogin(){
     console.log("CLICK");
-    location.href = "http://"+ URL +"/spotify/login";
+    location.href = "http://"+ url +"/spotify/login";
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         // Typical action to be performed when the document is ready:    }
         console.log(xhttp.responseText);
     }
-    xhttp.open("GET", "http://"+ URL +"/spotify/login", true);
+    xhttp.open("GET", "http://"+ url +"/spotify/login", true);
     xhttp.send();
     }
 }
@@ -30,7 +29,7 @@ function spotifyGetUser(){
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/user/' + x[0].spotifyToken , true);
+        xhttp.open('GET', 'http://' + url + '/spotify/user/' + x[0].spotifyToken , true);
         xhttp.send(); // Gets the response
     });
 }
@@ -70,7 +69,7 @@ async function spotifyGetUserPlaylists(){
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
          var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/playlists/' + x[0].spotifyToken , true);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlists/' + x[0].spotifyToken , true);
         xhttp.send(); // Gets the response
         });
     });
@@ -96,9 +95,9 @@ async function spotifyGetPlaylistTracks(playlistid){
    id = getCookie(); //get user_ID from cookie
    await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/playlist/tracks/' + playlistid + "/" + x[0].spotifyToken , true);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + playlistid + "/" + x[0].spotifyToken , true);
         xhttp.send(); // Gets the response
-   });
+      });
    
   });
 }
@@ -123,7 +122,7 @@ async function spotifyGetPlaylistAttributes(playlistid){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/playlist/' + playlistid + "/" + x[0].spotifyToken, true);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/' + playlistid + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
   });
@@ -144,7 +143,7 @@ function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/playlist/delete/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken, true);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/delete/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
 }
@@ -164,7 +163,7 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/playlist/add/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken , true);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken , true);
         xhttp.send(); // Gets the response
     });
 }
@@ -184,7 +183,7 @@ async function spotifyRenamePlaylist(playlistid, name){
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/playlist/details/' + playlistid + '/' + name + "/" + x[0].spotifyToken, true);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/details/' + playlistid + '/' + name + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
 }
@@ -207,7 +206,7 @@ async function spotifyCreateNewPlaylist(userID, name, public = false, descriptio
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + x[0].spotifyToken, true);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
 }
@@ -229,9 +228,10 @@ function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + URL + '/spotify/playlist/reorder/' + playlistid + '/' + start + '/' + index + '/' + length +  "/" + x[0].spotifyToken, true);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/reorder/' + playlistid + '/' + start + '/' + index + '/' + length +  "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
     });
+
 }
 
 /**
@@ -251,8 +251,8 @@ async function spotifySearch(searchTerm){
        }
       }
      };
-     id = getCookie(); //get user_ID from cookie
-     await dbGetUserTokens(id).then((value) =>{
+   id = getCookie(); //get user_ID from cookie
+   await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
         xhttp.open('GET', 'http://' + URL + '/spotify/search/' + searchTerm + "/" + x[0].spotifyToken, true);
         xhttp.send(); // Gets the response
@@ -280,8 +280,3 @@ async function isAuthorized(){
         });
     });
 }
-
-// get token
-//     tokens = window.location.href.split('#/user/').pop();
-//     token = tokens.slice(0, tokens.indexOf('/'));
-//     console.log(token);
