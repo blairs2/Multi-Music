@@ -175,18 +175,18 @@ router.get('/spotify/playlists/:token', function(req, responce){
 
 //Get the tracks of a playlist specified by the playlistid
 
-router.get('/spotify/playlist/tracks/:playlistid/:token', function(req, response){
-  if(req.params.token == null){
-    console.log("error invalid token");
-  } else {
+router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
+  // if(req.params.token == null){
+  //   console.log("error invalid token");
+  // } else {
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
-        headers: { 'Authorization': 'Bearer ' + req.params.token },
+        headers: { 'Authorization': 'Bearer ' + serverToken},
         json: true
       };
-      if (accessToken == ""){ // use sever token if user is not logged in
-        options.headers = { 'Authorization': 'Bearer ' + serverToken }
-      }
+      // if (accessToken == ""){ // use sever token if user is not logged in
+      //   options.headers = { 'Authorization': 'Bearer ' + serverToken }
+      // }
       request.get(options, function(error, res, body) {
         if (error){ // if request fails
           console.log("ERROR getting user playlist")
@@ -214,23 +214,23 @@ router.get('/spotify/playlist/tracks/:playlistid/:token', function(req, response
           response.send(retval);
         }
       });
-    }
+    // }
 });
 
 
 //Get a playlist specified by the playlistid
-router.get('/spotify/playlist/:playlistid/:token', function(req, response){
-  if(req.params.token == null){
-    console.log("error invalid token");
-  } else {
+router.get('/spotify/playlist/:playlistid', function(req, response){
+  // if(req.params.token == null){
+  //   console.log("error invalid token");
+  // } else {
   options = { // set request options
       uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
-      headers: { 'Authorization': 'Bearer ' + req.params.token },
+      headers: { 'Authorization': 'Bearer ' + serverToken },
       json: true
     };
-    if (accessToken == ""){ // use sever token if user is not logged in
-      options.headers = { 'Authorization': 'Bearer ' + serverToken }
-    }
+    // if (accessToken == ""){ // use sever token if user is not logged in
+    //   options.headers = { 'Authorization': 'Bearer ' + serverToken }
+    // }
     request.get(options, function(error, res, body) {
       if (error){ // if request fails
         console.log("ERROR getting user playlist")
@@ -250,7 +250,7 @@ router.get('/spotify/playlist/:playlistid/:token', function(req, response){
         response.send(retval);
         //response.send(body);
     });
-  }
+  // }
 });
 
 //Delete the specified track from the specified playlist

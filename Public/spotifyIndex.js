@@ -75,12 +75,12 @@ function spotifyGetPlaylistTracks(playlistid){
      }
     }
    };
-   id = getCookie("userID"); //get user_ID from cookie
-   await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + playlistid + "/" + x[0].spotifyToken , true);
+   // id = getCookie("userID"); //get user_ID from cookie
+   // await dbGetUserTokens(id).then((value) =>{
+   //      var x = JSON.parse(value);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + playlistid, true);
         xhttp.send(); // Gets the response
-      });
+      // });
 
   });
 }
@@ -102,12 +102,12 @@ function spotifyGetPlaylistAttributes(playlistid){
     }
    }
   };
-  id = getCookie("userID"); //get user_ID from cookie
-  await dbGetUserTokens(id).then((value) =>{
-       var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/' + playlistid + "/" + x[0].spotifyToken, true);
+  // id = getCookie("userID"); //get user_ID from cookie
+  // await dbGetUserTokens(id).then((value) =>{
+  //      var x = JSON.parse(value);
+        xhttp.open('GET', 'http://' + url + '/spotify/playlist/' + playlistid, true);
         xhttp.send(); // Gets the response
-    });
+    // });
   });
 }
 
