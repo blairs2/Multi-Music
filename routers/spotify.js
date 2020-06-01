@@ -373,9 +373,10 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length/:token',
 
 // search spotify for tracks containing the keyword
 router.get('/spotify/search/:keyword/:token', function(req, response){
-  if(req.params.token == null){
-    console.log("error invalid token");
-  } else {
+  console.log(req.params.token);
+  // if(req.params.token == null){
+  //   console.log("error invalid token");
+  // } else {
   var search_term  = req.params.keyword.split(' ').join('+'); // replace spaces in search term
   options = { // set request options
     uri: 'https://api.spotify.com/v1/search?' + search_term,
@@ -441,7 +442,7 @@ router.get('/spotify/search/:keyword/:token', function(req, response){
         response.send(retval);
     }
   });
-}
+// }
 });
 
 module.exports = router;
