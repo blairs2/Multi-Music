@@ -371,7 +371,7 @@ router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length/:token',
 });
 
 // search spotify for tracks containing the keyword
-router.get('/spotify/search/:keyword/:token', function(req, response){
+router.get('/spotify/search/:keyword', function(req, response){
   // if(req.params.token == null){
   //   console.log("error invalid token");
   // } else {
