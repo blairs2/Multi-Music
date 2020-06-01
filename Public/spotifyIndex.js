@@ -275,7 +275,7 @@ function spotifySearch(searchTerm){
 async function isAuthorized(){
     return new Promise(async function(resolve, reject) {
         id = getCookie(); //get user_ID from cookie
-        await dbGetUserTokens(id).then((value) =>{
+        await dbGetUserTokens(id).then(async (value) =>{
             var x = JSON.parse(value);
             if (x[0].spotifyToken == null){
                reject(false);
