@@ -24,7 +24,6 @@ document.addEventListener('musickitloaded', () => {
 		    var x = JSON.parse(value);
 		    dbUpdateAppleToken(x[0].user_ID, musicUserToken);
 	    });
-    });
 	// Here we want to call a function to add the musicUserToken to our database
       //Populates the left hand side of screen with all the playlsits in the users library
       // retreiveUserPlaylists().then(playlists =>{
