@@ -252,7 +252,7 @@ async function spotifyReorderTracksInPlaylist(playlistid, start, index, length =
  * Search Spotify for tracks containing the search term
  * @param {string} searchTerm what to search the spotify library for
  */
-function spotifySearch(searchTerm){
+async function spotifySearch(searchTerm){
    var xhttp = new XMLHttpRequest();
    return new Promise(async function(resolve, reject) {
      xhttp.onreadystatechange = function ReceivedCallback() {
