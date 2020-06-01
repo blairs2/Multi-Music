@@ -180,7 +180,7 @@
             // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
        }
      };
-        xhttp.open("POST", "http://" + url + "/apple-music/library/playlist/" + appleToken, true);
+        xhttp.open("POST", "http://" + window.location.host + "/apple-music/library/playlist/" + appleToken.replace(/\//g, '%2F'), true);
         xhttp.send(body); // Gets the response
     }
 
@@ -204,7 +204,7 @@
               }
             }
             console.log(body, musicUserToken);
-            addPlaylist(body, musicUserToken); 
+            addPlaylist(JSON.stringify(body), musicUserToken);
 
         } else {
 

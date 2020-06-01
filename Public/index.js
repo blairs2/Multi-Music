@@ -250,7 +250,7 @@ function retreiveUserPlaylists(){
   id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + x[0].appleToken, true);
+        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + x[0].appleToken.replace(/\//g, '%2F'), true);
         xhttp.send(); // Gets the response
   });
  });
@@ -268,7 +268,7 @@ async function retrieveUserSongs(){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + x[0].appleToken, true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + x[0].appleToken.replace(/\//g, '%2F'), true);
       xhttp.send(); // Gets the response
   });
  }
@@ -286,7 +286,7 @@ async function retrieveUserArtists(){
  id = getCookie(); //get user_ID from cookie
  await dbGetUserTokens(id).then((value) =>{
      var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + x[0].appleToken, true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + x[0].appleToken.replace(/\//g, '%2F'), true);
       xhttp.send(); // Gets the response
   });
 }
@@ -304,7 +304,7 @@ async function retrieveUserAlbums(){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + x[0].appleToken, true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + x[0].appleToken.replace(/\//g, '%2F'), true);
       xhttp.send(); // Gets the response
     });
  }
@@ -333,7 +333,7 @@ async function retirevePlaylist(playlist_id){
     id = getCookie(); //get user_ID from cookie
     await dbGetUserTokens(id).then((value) =>{
         var x = JSON.parse(value);
-        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken, true);
+        xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken.replace(/\//g, '%2F'), true);
         xhttp.send(); // Gets the response
     });
    }
@@ -350,7 +350,7 @@ async function retrievePlaylistTracks(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + x[0].appleToken, true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + x[0].appleToken.replace(/\//g, '%2F'), true);
       xhttp.send(); // Gets the response
   });
 }
@@ -392,7 +392,7 @@ async function addTrackToPlaylist(playlist_id){
      id = getCookie(); //get user_ID from cookie
      await dbGetUserTokens(id).then((value) =>{
          var x = JSON.parse(value);
-         xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + x[0].appleToken, true);
+         xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + x[0].appleToken.replace(/\//g, '%2F'), true);
          xhttp.send(); // Gets the response
     });
 }
@@ -426,7 +426,7 @@ async function getPlaylistTracks(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + x[0].appleToken , true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + x[0].appleToken.replace(/\//g, '%2F') , true);
       xhttp.send(); // Gets the response
   });
 }
@@ -449,7 +449,7 @@ async function getPlaylistAttributes(playlist_id){
   id = getCookie(); //get user_ID from cookie
   await dbGetUserTokens(id).then((value) =>{
       var x = JSON.parse(value);
-      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken , true);
+      xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken.replace(/\//g, '%2F') , true);
       xhttp.send(); // Gets the response
   });
 }
