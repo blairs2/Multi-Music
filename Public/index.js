@@ -119,7 +119,8 @@ document.getElementById('search-input').addEventListener("keyup", async function
               document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
               document.getElementById("playlist-convert").addEventListener("click", () => {
                 var playlist_id = document.getElementById("playlist-convert").getAttribute("data-value");
-                var user_id = getCookie("userID"); //change this to read username from cookie
+                // var user_id = getCookie("userID"); //change this to read username from cookie
+                var user_id = 12; //for testing
                 var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
                 //checks if playlist is already in the db, makes it if not
                 document.getElementById("playlist-convert").disabled= true;
