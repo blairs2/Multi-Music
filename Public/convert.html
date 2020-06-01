@@ -191,7 +191,7 @@
     }
 
   document.getElementById("convert-apple-btn").addEventListener("click", ()=>{
-    document.getElementById("convert-apple-btn").disable = true;
+    document.getElementById("convert-apple-btn").disabled = true;
     var url = (new URL(document.location));
     var playlist_name = url.searchParams.get("name");
     music.authorize().then((musicUserToken)=>{
