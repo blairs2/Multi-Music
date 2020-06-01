@@ -103,6 +103,9 @@
               <button id="convert-apple-btn" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
               <br><br><br>
         </div>
+        <div id="message">
+
+        </div>
         <!-- /.row -->
 
       </div>
@@ -208,7 +211,14 @@
             };
 
             console.log(body, musicUserToken);
-            addPlaylist(JSON.stringify(body), musicUserToken);
+            addPlaylist(JSON.stringify(body), musicUserToken).then((response)=>{
+              if(JSON.parse(response).hasOwnProperty("error")){
+                document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your library.</b>";
+              } else {
+                document.getElementById("message").innerHTML += "<b>Your playlist was added to your library!</b>";
+              }
+
+            });
 
         } else {
 
