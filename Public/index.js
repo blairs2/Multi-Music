@@ -629,7 +629,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
    var search, track, matches, handle;
    for(var i = 0; i < tracks.length; i++){
      track = tracks[i];
-     document.getElementById("convert-link").innerHTML = `<span>Loading playlist link${i}/${tracks}</span>`;
+     document.getElementById("convert-link").innerHTML = `<span>Loading playlist link${i}/${tracks.length}</span>`;
      handle = await dbHasSong(track.id).then(async function(resp){
        if(resp == 'false'){
          //replace spaces with plus and get rid of special characters
@@ -641,7 +641,8 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
                  //add the new song to db
-                 await dbAddSong(song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id).then(async function(){
+
+                 await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), song_matches[0].id, track.id).then(async function(){
                    // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id);
                    await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
@@ -663,7 +664,7 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
              if(response.hasOwnProperty("songs")){
                var song_matches = response.songs.data;
                if(song_matches.length > 0){
-                 await dbAddSong(song_matches[0].title, song_matches[0].artist, track.id, song_matches[0].id,).then(async function(){
+                 await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), track.id, song_matches[0].id,).then(async function(){
                    // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
                    await dbHasSong(track.id).then(async function(resp1){
                      var response_json = JSON.parse(resp1);
@@ -714,11 +715,11 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
       var db_playlist_id = dbPlaylistExists(playlist_id).then(response => {
         if(response == 'false'){
           if(current_service == "Apple Music"){
-            dbAddPlaylist(title, user_id, spotifyID=null, appleID=playlist_id).then(()=>{
+            dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=null, appleID=playlist_id).then(()=>{
                 // console.log(title, user_id, current_service, playlist_id);
             });
           } else if (current_service == "Spotify"){
-            dbAddPlaylist(title, user_id, spotifyID=playlist_id, appleID=null).then(()=>{
+            dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=playlist_id, appleID=null).then(()=>{
               // console.log(title, user_id, current_service, playlist_id);
             });
           } else {
