@@ -56,8 +56,8 @@ window.addEventListener('load', async function(){
   //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
   for (var i = 0; i < user_playlists.length; i++) {
        user_playlists[i].addEventListener('click', async function() {
-       //sets up divs to be populated
-       document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+         //Shows loading
+         document.getElementById("generated-content").innerHTML = "<h4 style='text-align: center;'>Loading Playlist</h4>"
          //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
          //upon retriving a response the function being called will generate attribute content to dislay on the screen
          try {
@@ -84,6 +84,8 @@ window.addEventListener('load', async function(){
 
 
          Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
+           //sets up divs to be populated
+           document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
            //The response should be a list with only one element
            var playlistAttr = JSON.parse(values[0]).playlists[0];
            document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(playlistAttr, this.getAttribute("data-service"));
@@ -119,7 +121,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
  //When user clicks enter in our search bar
   var searchTerm = (document.getElementById('search-input').value).replace(/ /g, '+'); // '/ /g' is a regular expression that replaces all space instances with '+'
   if (event.keyCode === 13) { //on enter key
-    document.getElementById('generated-content').innerHTML = ''; //Clear the screen for the search results
+    document.getElementById("generated-content").innerHTML = "<h4 style='text-align: center;'>Loading Search</h4>"; //Clear the screen for the search results
     //Using promises ensures that both functions will be completed before the final step
     try {
       var applePromise = await searchByTerm("term=" + searchTerm + "&limit=10&types=songs,albums,playlists");
@@ -150,8 +152,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
      //add event listener to playlists in search results
      for (var i = 0; i < playlist_elements.length; i++) {
           playlist_elements[i].addEventListener('click', async function() {
-          //sets up divs to be populated
-          document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+          document.getElementById("generated-content").innerHTML = "<h4 style='text-align: center;'>Loading Playlist</h4>"
             //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
             //upon retriving a response the function being called will generate attribute content to dislay on the screen
             try {
@@ -177,6 +178,8 @@ document.getElementById('search-input').addEventListener("keyup", async function
 
 
             Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
+              //sets up divs to be populated
+              document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
               //The response should be a list with only one element
               var playlistAttr = JSON.parse(values[0]).playlists[0];
               document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(playlistAttr, this.getAttribute("data-service"));

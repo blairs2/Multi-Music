@@ -109,8 +109,8 @@ router.post('/db/user/apple/:id/:token', function(req, response){
 
 //add song to db
 router.put('/db/song/:title/:artist/:spotifyID/:appleID', function(req, response){
-  var format_title = (req.params.title).replace('"', "\\\""); //add escape char before quote
-  var format_artist = (req.params.artist).replace('"', "\\\"");
+  var format_title = (req.params.title).replace(/"/g, "\\\""); //add escape char before quote
+  var format_artist = (req.params.artist).replace(/"/g, "\\\"");
     con.query( "INSERT INTO Song(title, artist, spotify_Song_ID, apple_Song_ID) " +
                 "VALUES (\"" + format_title + "\", \"" +
                          format_artist + "\", \"" +
@@ -126,7 +126,7 @@ router.put('/db/song/:title/:artist/:spotifyID/:appleID', function(req, response
 
 //add playlist to db
 router.put('/db/playlist/:title/:userID/:spotifyID/:appleID', function(req, response){
-    var format_title = (req.params.title).replace('"', "\\\""); //add escape char before quote
+    var format_title = (req.params.title).replace(/"/g, "\\\""); //add escape char before quote
     console.log("router");
     con.query( "INSERT INTO Playlist(playlist_Name, user_ID, spotify_Playlist_ID, apple_Playlist_ID) " +
                 "VALUES (\"" + format_title + "\", " +
