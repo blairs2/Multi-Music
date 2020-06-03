@@ -32,7 +32,7 @@ setServerToken();
 
 
 
-let timerId = setInterval(setServerToken(), 60 * 60 * 1000);
+let timerId = setInterval(() => setServerToken(), 60 * 60 * 1000);
 
 function setServerToken(){
   var options = { //request options for getting sever token
