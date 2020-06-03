@@ -19,27 +19,24 @@ function spotifyLogin(){
 /**
  * Get the user data for the currently logged in user
  */
-async function spotifyGetUser(){
+function spotifyGetUser(){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie("userID"); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/user/' + x[0].spotifyToken , true);
-        xhttp.send(); // Gets the response
-    });
+    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    xhttp.open('GET', 'http://' + url + '/spotify/user/' + spotifyToken , true);
+    xhttp.send(); // Gets the response
 }
 
 /**
  * Get a list of the the user playlists and all the tracks in each playlist
  */
-function spotifyGetUserPlaylists(){
+async function spotifyGetUserPlaylists(){
     var xhttp = new XMLHttpRequest();
-    return new Promise(async function(resolve, reject) {
+    return new Promise(function(resolve, reject) {
       xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
         if(this.status == 200){
@@ -49,12 +46,9 @@ function spotifyGetUserPlaylists(){
         }
       }
     };
-    id = getCookie("userID"); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-         var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlists/' + x[0].spotifyToken , true);
-        xhttp.send(); // Gets the response
-        });
+    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    xhttp.open('GET', 'http://' + url + '/spotify/user/playlists/' + spotifyToken , true);
+    xhttp.send(); // Gets the response
     });
 }
 
@@ -63,9 +57,9 @@ function spotifyGetUserPlaylists(){
  * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-function spotifyGetPlaylistTracks(playlistid){
+async function spotifyGetPlaylistTracks(playlistid){
    var xhttp = new XMLHttpRequest();
-   return new Promise(async function(resolve, reject) {
+   return new Promise(function(resolve, reject) {
      xhttp.onreadystatechange = function ReceivedCallback() {
      if (this.readyState == 4) { //Upon getting a response
        if(this.status == 200){
@@ -75,13 +69,8 @@ function spotifyGetPlaylistTracks(playlistid){
      }
     }
    };
-   // id = getCookie("userID"); //get user_ID from cookie
-   // await dbGetUserTokens(id).then((value) =>{
-   //      var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + playlistid, true);
-        xhttp.send(); // Gets the response
-      // });
-
+   xhttp.open('GET', 'http://' + url + '/spotify/playlist/tracks/' + playlistid + '/' + spotifyToken , true);
+   xhttp.send(); // Gets the response
   });
 }
 
@@ -89,9 +78,9 @@ function spotifyGetPlaylistTracks(playlistid){
  * Get the tracks from the Spotify playlist specifed by the playlistid
  * @param {string} playlistid the id of the playlist to get
  */
-function spotifyGetPlaylistAttributes(playlistid){
+async function spotifyGetPlaylistAttributes(playlistid){
   var xhttp = new XMLHttpRequest();
-  return new Promise(async function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4) { //Upon getting a response
       if(this.status == 200){
@@ -102,12 +91,9 @@ function spotifyGetPlaylistAttributes(playlistid){
     }
    }
   };
-  // id = getCookie("userID"); //get user_ID from cookie
-  // await dbGetUserTokens(id).then((value) =>{
-  //      var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/' + playlistid, true);
-        xhttp.send(); // Gets the response
-    // });
+  spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+  xhttp.open('GET', 'http://' + url + '/spotify/playlist/' + playlistid + '/' + spotifyToken, true);
+  xhttp.send(); // Gets the response
   });
 }
 
@@ -116,19 +102,16 @@ function spotifyGetPlaylistAttributes(playlistid){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be deleted
  */
-async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
+function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie("userID"); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/delete/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken, true);
-        xhttp.send(); // Gets the response
-    });
+    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/delete/' + playlistid + '/' + trackURI + "/" + spotifyToken, true);
+    xhttp.send(); // Gets the response
 }
 
 /**
@@ -136,19 +119,16 @@ async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be added
  */
-async function spotifyAddTrackToPlaylist(playlistid, trackURI){
+function spotifyAddTrackToPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie("userID"); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + trackURI + "/" + x[0].spotifyToken , true);
-        xhttp.send(); // Gets the response
-    });
+    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + trackURI + "/" + spotifyToken , true);
+    xhttp.send(); // Gets the response
 }
 
 /**
@@ -156,19 +136,16 @@ async function spotifyAddTrackToPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {string} name the new name of the playlist
  */
-async function spotifyRenamePlaylist(playlistid, name){
+function spotifyRenamePlaylist(playlistid, name){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie("userID"); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/details/' + playlistid + '/' + name + "/" + x[0].spotifyToken, true);
-        xhttp.send(); // Gets the response
-    });
+    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/details/' + playlistid + '/' + name + "/" + spotifyToken, true);
+    xhttp.send(); // Gets the response
 }
 
 /**
@@ -179,19 +156,16 @@ async function spotifyRenamePlaylist(playlistid, name){
  * @param {string} description a description of the playlist
  * @param {boolean} collaborative true if playlist can be edited by other users
  */
-async function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
+function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie("userID"); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + x[0].spotifyToken, true);
-        xhttp.send(); // Gets the response
-    });
+    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + spotifyToken, true);
+    xhttp.send(); // Gets the response
 }
 
 /**
@@ -201,20 +175,16 @@ async function spotifyCreateNewPlaylist(userID, name, public = false, descriptio
  * @param {int} index the index where the tracks are to be moved to
  * @param {int} length the number of tracks to be moved
  */
-async function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
+function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
             console.log(JSON.parse(this.responseText));
         }
     };
-    id = getCookie("userID"); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/playlist/reorder/' + playlistid + '/' + start + '/' + index + '/' + length +  "/" + x[0].spotifyToken, true);
-        xhttp.send(); // Gets the response
-    });
-
+    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/reorder/' + playlistid + '/' + start + '/' + index + '/' + length +  "/" + spotifyToken, true);
+    xhttp.send(); // Gets the response
 }
 
 /**
@@ -223,7 +193,7 @@ async function spotifyReorderTracksInPlaylist(playlistid, start, index, length =
  */
 function spotifySearch(searchTerm){
    var xhttp = new XMLHttpRequest();
-   return new Promise(async function(resolve, reject) {
+   return new Promise(function(resolve, reject) {
      xhttp.onreadystatechange = function ReceivedCallback() {
        if (this.readyState == 4) { //Upon getting a response
          if(this.status == 200){
@@ -234,11 +204,7 @@ function spotifySearch(searchTerm){
        }
       }
      };
-   // id = getCookie("userID"); //get user_ID from cookie
-   // await dbGetUserTokens(id).then((value) =>{
-   //      var x = JSON.parse(value);
-        xhttp.open('GET', 'http://' + url + '/spotify/search/' + searchTerm, true);
-        xhttp.send(); // Gets the response
-    // });
+    xhttp.open('GET', 'http://' + url + '/spotify/search/' + searchTerm, true);
+    xhttp.send(); // Gets the response
   });
 }

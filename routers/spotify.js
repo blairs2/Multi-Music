@@ -69,15 +69,15 @@ function generateRandomString(length) {
   return text;
 };
 
-router.get('/spotify/login', function(req, responce) {
+router.get('/spotify/login', function(req, response) {
     const state = generateRandomString(16);
-    responce.cookie(stateKey, state);
+    response.cookie(stateKey, state);
     console.log("stateB");
     console.log(state);
-    responce.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
+    response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
   });
 
-router.get('/spotify/callback', function(req, responce) {
+router.get('/spotify/callback', function(req, response) {
       // request refresh and access tokens
       // after checking the state parameter
       const { code, state } = req.query;
@@ -87,7 +87,7 @@ router.get('/spotify/callback', function(req, responce) {
       // console.log(state);
       const storedState = req.cookies ? req.cookies[stateKey] : null;
       if (state === null || state !== storedState) { // if the state is vailid
-        responce.redirect('/#' +
+        response.redirect('/#' +
           querystring.stringify({
             error: 'state_mismatch'
           }));
@@ -100,9 +100,10 @@ router.get('/spotify/callback', function(req, responce) {
           //dbUpdateSpotifyToken(id, access_token);
           // console.log(accessToken);
           refreshToken = refresh_token;
-          responce.redirect(`/#/user/${access_token}/${refresh_token}`);
+          response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
+          response.redirect(`/#/user/${access_token}/${refresh_token}`);
         }).catch(err => {
-          responce.redirect('/#/error/invalid token');
+          response.redirect('/#/error/invalid token');
         });
 
       };
@@ -110,7 +111,7 @@ router.get('/spotify/callback', function(req, responce) {
 
 });
 
-router.get('/spotify/refresh', function(req, responce) {
+router.get('/spotify/refresh', function(req, response) {
   spotifyApi.refreshAccessToken().then(
     function(data) {
       console.log('The access token has been refreshed!');
@@ -143,7 +144,7 @@ router.get('/spotify/user/:token', function(req, response){
 })
 
 //Get a list of all the user playlists
-router.get('/spotify/playlists/:token', function(req, responce){
+router.get('/spotify/user/playlists/:token', function(req, response){
   if(req.params.token == null){
     console.log("error invalid token");
   } else {
@@ -160,7 +161,7 @@ router.get('/spotify/playlists/:token', function(req, responce){
             retval = { playlists: []}
             for(i = 0; i < body.items.length; i++){
                 retval.playlists.push({
-                  name: body.items[i].name,
+                  title: body.items[i].name,
                   description: body.items[i].description,
                   href: body.items[i].href,
                   id: body.items[i].id,
@@ -170,9 +171,9 @@ router.get('/spotify/playlists/:token', function(req, responce){
                            body.items[i].images[1].url : null
                 });
             }
-            responce.send(retval);
+            response.send(retval);
         }
-        // console.log(responce);
+        // console.log(response);
 
     });
   }
@@ -181,62 +182,57 @@ router.get('/spotify/playlists/:token', function(req, responce){
 
 //Get the tracks of a playlist specified by the playlistid
 
-router.get('/spotify/playlist/tracks/:playlistid', function(req, response){
-  // if(req.params.token == null){
-  //   console.log("error invalid token");
-  // } else {
+router.get('/spotify/playlist/tracks/:playlistid/:token', function(req, response){
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
-        headers: { 'Authorization': 'Bearer ' + serverToken},
         json: true
-      };
-      // if (accessToken == ""){ // use sever token if user is not logged in
-      //   options.headers = { 'Authorization': 'Bearer ' + serverToken }
-      // }
-      request.get(options, function(error, res, body) {
-        if (error){ // if request fails
-          console.log("ERROR getting user playlist")
-        } else {
-          //console.log(body);
-          retval = { tracks: []};
+    };
+      if(req.params.token != null && req.params.token != ''){
+        options.headers = { 'Authorization': 'Bearer ' + req.params.token};
+      } else {
+        options.headers = { 'Authorization': 'Bearer ' + serverToken };
+      }
 
-          for(i = 0; i < body.tracks.limit; i++){
-            if(body.tracks.items[i] != null && body.tracks.items[i].track != null){
-              retval.tracks.push({
-                title: body.tracks.items[i].track.name,
-                artist: body.tracks.items[i].track.artists[0].name,
-                id: body.tracks.items[i].track.id,
-                artwork: body.tracks.items[i].track.album.images.length != 0 ?
-                           body.tracks.items[i].track.album.images.length == 1 ?
-                           body.tracks.items[i].track.album.images[1].url :
-                           body.tracks.items[i].track.album.images[0].url : null,
-                href: body.tracks.items[i].track.href,
-                contentRating: body.tracks.items[i].track.explicit ? "explicit" : "clean",
-                album: body.tracks.items[i].track.album.name
-              });
-            }
+    request.get(options, function(error, res, body) {
+      if (error){ // if request fails
+        console.log("ERROR getting user playlist")
+      } else {
+        //console.log(body);
+        retval = { tracks: []};
+
+        for(i = 0; i < body.tracks.limit; i++){
+          if(body.tracks.items[i] != null && body.tracks.items[i].track != null){
+            retval.tracks.push({
+              title: body.tracks.items[i].track.name,
+              artist: body.tracks.items[i].track.artists[0].name,
+              id: body.tracks.items[i].track.id,
+              artwork: body.tracks.items[i].track.album.images.length != 0 ?
+                         body.tracks.items[i].track.album.images.length == 1 ?
+                         body.tracks.items[i].track.album.images[1].url :
+                         body.tracks.items[i].track.album.images[0].url : null,
+              href: body.tracks.items[i].track.href,
+              contentRating: body.tracks.items[i].track.explicit ? "explicit" : "clean",
+              album: body.tracks.items[i].track.album.name
+            });
           }
-          //response.send(body);
-          response.send(retval);
         }
-      });
-    // }
+        response.send(retval);
+      }
+    });
 });
 
 
 //Get a playlist specified by the playlistid
-router.get('/spotify/playlist/:playlistid', function(req, response){
-  // if(req.params.token == null){
-  //   console.log("error invalid token");
-  // } else {
-  options = { // set request options
-      uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
-      headers: { 'Authorization': 'Bearer ' + serverToken },
-      json: true
+router.get('/spotify/playlist/:playlistid/:token', function(req, response){
+    options = { // set request options
+        uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
+        json: true
     };
-    // if (accessToken == ""){ // use sever token if user is not logged in
-    //   options.headers = { 'Authorization': 'Bearer ' + serverToken }
-    // }
+      if(req.params.token != null && req.params.token != ''){
+        options.headers = { 'Authorization': 'Bearer ' + req.params.token};
+      } else {
+        options.headers = { 'Authorization': 'Bearer ' + serverToken };
+      }
     request.get(options, function(error, res, body) {
       if (error){ // if request fails
         console.log("ERROR getting user playlist")
@@ -247,16 +243,14 @@ router.get('/spotify/playlist/:playlistid', function(req, response){
           description: body.description,
           href: body.href,
           id: body.id,
-          artwork: body.images.length != 0 ?
+          artwork: body.images != null ?
             body.images.length == 1 ?
             body.images[0].url :
             body.images[1].url : null
           });
       }
         response.send(retval);
-        //response.send(body);
     });
-  // }
 });
 
 //Delete the specified track from the specified playlist

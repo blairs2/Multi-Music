@@ -18,36 +18,110 @@ document.addEventListener('musickitloaded', () => {
    // expose our instance globally for testing
    window.music = music;
    //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-   music.authorize().then(musicUserToken => {
-     addAppleMusicUserToken(musicUserToken); // Here we want to call a function to add the musicUserToken to our database
-     //Populates the left hand side of screen with all the playlsits in the users library
-     // retreiveUserPlaylists().then(playlists =>{
-     //   //This block of code generates the list of playlists on the left hand side of the screen
-     //   var cloudPlaylists = JSON.parse(playlists).playlists;
-     //   var retval = '';
-     //   for(var i =0; i < cloudPlaylists.length; i++){
-     //     var playlistName = cloudPlaylists[i].title;
-     //     var playlist_id = cloudPlaylists[i].id;
-     //
-     //     retval += `<button class="list-group-item playlist-button" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
-     //   }
-     //   document.getElementById('user-playlists').innerHTML = retval;
-     //   var user_playlists = document.getElementsByClassName("playlist-button");
-     //   //Add event listener to each playlist.
-     //   //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
-     //   for (var i = 0; i < user_playlists.length; i++) {
-     //      user_playlists[i].addEventListener('click', function() {
-     //          //Generates the div to be populated in playlist view
-     //          document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
-     //          //Gets the attributes of a user's playlist
-     //          //Function being called will produce  upon recieving a json response
-     //          getPlaylistAttributes(this.getAttribute("data-value"));
-     //          getPlaylistTracks(this.getAttribute("data-value"));
-     //         },false);
-     //  }
-     // });
-   });
+
  });
+});
+
+window.addEventListener('load', async function(){
+  console.log("loading");
+  //Populates the left hand side of screen with all the playlsits in the users library
+  if(getCookie("appleUserToken") != null){
+    var userPlaylistPromise = await retreiveUserPlaylists().then(playlists =>{
+      //This generates the list of playlists on the left hand side of the screen
+      var retval = displayPlaylistLibrary(playlists, "Apple Music");
+      document.getElementById('user-playlists').innerHTML = retval;
+    });
+  }
+  else if(getCookie("spotifyUserToken") != null){
+
+    await spotifyGetUserPlaylists().then(playlists =>{
+      //This generates the list of playlists on the left hand side of the screen
+      var retval = displayPlaylistLibrary(playlists, "Spotify");
+      document.getElementById('user-playlists').innerHTML = retval;
+    });
+  }
+
+  var user_playlists = document.getElementsByClassName("playlist-button");
+  //Add event listener to each playlist.
+  //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
+  for (var i = 0; i < user_playlists.length; i++) {
+       user_playlists[i].addEventListener('click', async function() {
+       //sets up divs to be populated
+       document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+         //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
+         //upon retriving a response the function being called will generate attribute content to dislay on the screen
+         try {
+           if(this.getAttribute("data-service")=="Spotify"){
+            var playlistAttributesPromise = await spotifyGetPlaylistAttributes(this.getAttribute("data-value"));
+          } else {
+            var playlistAttributesPromise = await appleUserPlaylistAttributes(this.getAttribute("data-value"));
+          }
+         } catch(e) {
+           console.log(e);
+         }
+         //triggers get request to retrieve the playlists tracks from apple music's catalog (NOT USER Library)
+         //upon retriving a response the function being called will generate track content to dislay on the screen
+         try {
+           if(this.getAttribute("data-service")=="Spotify"){
+            var playlistTracksPromise = await spotifyGetPlaylistTracks(this.getAttribute("data-value"));
+          } else {
+            var playlistTracksPromise = await appleUserPlaylistTracks(this.getAttribute("data-value"));
+          }
+         } catch(e) {
+           console.log(e);
+         }
+
+       //   if(JSON.parse(this.responseText).hasOwnProperty("errors")){
+       //
+       //   }
+       //   else{
+       //     var retval = displayPlaylistTracks(JSON.parse(this.responseText).tracks);
+       //     document.getElementById("playlist-songs").innerHTML = retval;
+       //     var song_elements = document.getElementsByClassName("song-button");
+       //    for (var i = 0; i < song_elements.length; i++) {
+       //        song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
+       //    }
+       //  }
+       // }
+       // var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0], "Apple Music");
+       // document.getElementById("playlist-attributes").innerHTML = retval;
+       // document.getElementById("playlist-convert").addEventListener("click", () => {
+       //   console.log("clicked playlist");
+       //   convertPlaylist(document.getElementById("playlist-convert").getAttribute("data-value"), document.getElementById("playlist-convert").getAttribute("data-service"));
+       //
+       // },false);
+
+         Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
+           //The response should be a list with only one element
+           var playlistAttr = JSON.parse(values[0]).playlists[0];
+           document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(playlistAttr, this.getAttribute("data-service"));
+           //Populate the songs, value[1] corresponses to playlistTracksPromise, which stores playlist tracks
+           document.getElementById("playlist-songs").innerHTML = displayPlaylistTracks(JSON.parse(values[1]).tracks);
+           document.getElementById("playlist-convert").addEventListener("click", () => {
+             var playlist_id = document.getElementById("playlist-convert").getAttribute("data-value");
+             // var user_id = getCookie("userID"); //change this to read username from cookie
+             var user_id = 12; //for testing
+             var current_service = document.getElementById("playlist-convert").getAttribute("data-service");
+             //checks if playlist is already in the db, makes it if not
+             document.getElementById("playlist-convert").disabled= true;
+             document.getElementById("convert-link").innerHTML = "<span>Loading playlist link</span>";
+
+             establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service);
+             // convertPlaylist(playlist_id, current_service);
+
+           },false);
+
+           if(this.getAttribute("data-service")=="Apple Music"){
+           //Add event listener for each song button. Upon click it will queue up the song to be played
+
+           var song_elements = document.getElementsByClassName("song-button");
+           for (var i = 0; i < song_elements.length; i++) {
+              song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
+          }
+        }
+        });
+      },false);
+    }
 });
 
 document.getElementById('search-input').addEventListener("keyup", async function(event){
@@ -248,17 +322,14 @@ function retreiveUserPlaylists(){
    }
   }
  };
- id = getCookie("userID"); //get user_ID from cookie
-   await dbGetUserTokens(id).then((value) =>{
-       var x = JSON.parse(value);
-       xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + x[0].appleToken.replace(/\//g, '%2F'), true);
-       xhttp.send(); // Gets the response
- });
+    appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+    xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + appleToken.replace(/\//g, '%2F'), true);
+    xhttp.send(); // Gets the response
 });
 }
 
 //Gets the users library of songs (default 25)
-async function retrieveUserSongs(){
+function retrieveUserSongs(){
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function ReceivedCallback() {
    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -266,16 +337,13 @@ async function retrieveUserSongs(){
      //Code to change the generated-content inner html
    }
  };
- id = getCookie("userID"); //get user_ID from cookie
- await dbGetUserTokens(id).then((value) =>{
-     var x = JSON.parse(value);
-     xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + x[0].appleToken.replace(/\//g, '%2F'), true);
-     xhttp.send(); // Gets the response
- });
+ appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+ xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + appleToken.replace(/\//g, '%2F'), true);
+ xhttp.send(); // Gets the response
 }
 
 //Gets the users library of artists (default 25)
-async function retrieveUserArtists(){
+function retrieveUserArtists(){
 var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function ReceivedCallback() {
   if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -284,16 +352,13 @@ xhttp.onreadystatechange = function ReceivedCallback() {
   }
 };
 
-id = getCookie("userID"); //get user_ID from cookie
-await dbGetUserTokens(id).then((value) =>{
-    var x = JSON.parse(value);
-     xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + x[0].appleToken.replace(/\//g, '%2F'), true);
-     xhttp.send(); // Gets the response
- });
+  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + appleToken.replace(/\//g, '%2F'), true);
+  xhttp.send(); // Gets the response
 }
 
 //Gets the users library of albums (defualt 25)
-async function retrieveUserAlbums(){
+function retrieveUserAlbums(){
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function ReceivedCallback() {
    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -302,12 +367,9 @@ async function retrieveUserAlbums(){
    }
  };
 
- id = getCookie("userID"); //get user_ID from cookie
- await dbGetUserTokens(id).then((value) =>{
-     var x = JSON.parse(value);
-     xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + x[0].appleToken.replace(/\//g, '%2F'), true);
-     xhttp.send(); // Gets the response
-   });
+  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + appleToken.replace(/\//g, '%2F'), true);
+  xhttp.send(); // Gets the response
 }
 
 //As the user is typing into the search bar. this will fetch search hits for the drop down
@@ -324,37 +386,31 @@ function retrieveSearchHints(searchTerm){
 
 }
 
-//Gets an individual playlist by id.
-//Buttons for each playlist's are generated when retrieveUserPlaylsits() is run. Each playlist button has the corresponding id attached
-async function retirevePlaylist(playlist_id){
- xhttp.onreadystatechange = function ReceivedCallback() {
-   if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-     }
-   };
-   id = getCookie("userID"); //get user_ID from cookie
-   await dbGetUserTokens(id).then((value) =>{
-       var x = JSON.parse(value);
-       xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken.replace(/\//g, '%2F'), true);
-       xhttp.send(); // Gets the response
-   });
-  }
+// //Gets an individual playlist by id.
+// //Buttons for each playlist's are generated when retrieveUserPlaylsits() is run. Each playlist button has the corresponding id attached
+// function retirevePlaylist(playlist_id){
+//  xhttp.onreadystatechange = function ReceivedCallback() {
+//    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+//      }
+//    };
+//     appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+//     xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + appleToken.replace(/\//g, '%2F'), true);
+//     xhttp.send(); // Gets the response
+//   }
 
-//seperate from retrievePlaylist which gets the information about the playlist.
-//This function gets the tracks that are in the playlist
-async function retrievePlaylistTracks(playlist_id){
- var xhttp = new XMLHttpRequest();
- xhttp.onreadystatechange = function ReceivedCallback() {
-   if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-
-   }
- };
- id = getCookie("userID"); //get user_ID from cookie
- await dbGetUserTokens(id).then((value) =>{
-     var x = JSON.parse(value);
-     xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + x[0].appleToken.replace(/\//g, '%2F'), true);
-     xhttp.send(); // Gets the response
- });
-}
+// //seperate from retrievePlaylist which gets the information about the playlist.
+// //This function gets the tracks that are in the playlist
+// function retrievePlaylistTracks(playlist_id){
+//     var xhttp = new XMLHttpRequest();
+//     xhttp.onreadystatechange = function ReceivedCallback() {
+//     if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+//
+//      }
+//     };
+//     appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+//     xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/"+ playlist_id +"/relationships/" + appleToken.replace(/\//g, '%2F'), true);
+//     xhttp.send(); // Gets the response
+// }
 
 //Searches for term across every catagory
 
@@ -381,7 +437,7 @@ async function searchByTerm(searchTerm){
 /////////////////////////////
 
 
-async function addTrackToPlaylist(playlist_id){
+function addTrackToPlaylist(playlist_id){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -390,70 +446,52 @@ async function addTrackToPlaylist(playlist_id){
            // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
       }
     };
-    id = getCookie("userID"); //get user_ID from cookie
-    await dbGetUserTokens(id).then((value) =>{
-        var x = JSON.parse(value);
-        xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + x[0].appleToken.replace(/\//g, '%2F'), true);
-        xhttp.send(); // Gets the response
-   });
+    appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+    xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + appleToken.replace(/\//g, '%2F'), true);
+    xhttp.send(); // Gets the response
 }
 
-async function addAppleMusicUserToken(musicUserToken){
- id = getCookie("userID"); //get user_ID from cookie
- await dbGetUserTokens(id).then((value) =>{
-   var x = JSON.parse(value);
-   dbUpdateAppleToken(x[0].appleToken, musicUserToken);
- });
- console.log(musicUserToken);
-}
 
-async function getPlaylistTracks(playlist_id){
- var xhttp = new XMLHttpRequest();
- xhttp.onreadystatechange = function ReceivedCallback() {
-   if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-     if(JSON.parse(this.responseText).hasOwnProperty("errors")){
-
-     }
-     else{
-       var retval = displayPlaylistTracks(JSON.parse(this.responseText).tracks);
-       document.getElementById("playlist-songs").innerHTML = retval;
-       var song_elements = document.getElementsByClassName("song-button");
-      for (var i = 0; i < song_elements.length; i++) {
-          song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-      }
+async function appleUserPlaylistTracks(playlist_id){
+  var xhttp = new XMLHttpRequest();
+  return new Promise(function(resolve, reject) {
+    xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4) { //Upon getting a response
+      if(this.status == 200){
+        // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+        resolve(this.responseText);
+      } else {
+      reject("Error");
     }
    }
- };
- id = getCookie("userID"); //get user_ID from cookie
- await dbGetUserTokens(id).then((value) =>{
-     var x = JSON.parse(value);
-     xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + x[0].appleToken.replace(/\//g, '%2F') , true);
-     xhttp.send(); // Gets the response
- });
+  };
+  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + appleToken.replace(/\//g, '%2F') , true);
+  xhttp.send(); // Gets the response
+  });
 }
 
 
-
-async function getPlaylistAttributes(playlist_id){
- var xhttp = new XMLHttpRequest();
- xhttp.onreadystatechange = function ReceivedCallback() {
-   if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-     var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0], "Apple Music");
-     document.getElementById("playlist-attributes").innerHTML = retval;
-     document.getElementById("playlist-convert").addEventListener("click", () => {
-       console.log("clicked playlist");
-       convertPlaylist(document.getElementById("playlist-convert").getAttribute("data-value"), document.getElementById("playlist-convert").getAttribute("data-service"));
-
-     },false);
+async function appleUserPlaylistAttributes(playlist_id){
+  var xhttp = new XMLHttpRequest();
+  return new Promise(function(resolve, reject) {
+    xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4) { //Upon getting a response
+      if(this.status == 200){
+        // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+        resolve(this.responseText);
+      } else {
+      reject("Error");
+    }
    }
- };
- id = getCookie("userID"); //get user_ID from cookie
- await dbGetUserTokens(id).then((value) =>{
-     var x = JSON.parse(value);
-     xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + x[0].appleToken.replace(/\//g, '%2F') , true);
-     xhttp.send(); // Gets the response
- });
+  };
+  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + appleToken.replace(/\//g, '%2F') , true);
+  xhttp.send(); // Gets the response
+  });
 }
+
+
 
 /*Gets tracks of a playlist on apple musics catalog, not a users library*/
 async function getCatalogPlaylistTracks(playlist_id){
@@ -591,6 +629,22 @@ function displayPlaylistTracks(playlist_tracks){
  }
  retval += "</div>";
  return retval;
+}
+
+/*
+* Function displays the users playlists library on the left hand side of the screen
+* @playlists is a multi music json containing a list of user playlist's
+*/
+function displayPlaylistLibrary(playlists, service){
+  var cloudPlaylists = JSON.parse(playlists).playlists;
+  var retval = '';
+  for(var i =0; i < cloudPlaylists.length; i++){
+    var playlistName = cloudPlaylists[i].title;
+    var playlist_id = cloudPlaylists[i].id;
+
+    retval += `<button class="list-group-item playlist-button" data-service="${service}" data-value="${playlist_id}" >${playlistName}</button>`; //Each button includes playlist id
+  }
+  return retval;
 }
 
 /*
