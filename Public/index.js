@@ -26,14 +26,13 @@ window.addEventListener('load', async function(){
   console.log("loading");
   //Populates the left hand side of screen with all the playlsits in the users library
   if(getCookie("appleUserToken") != null && getCookie("spotifyUserToken") != null){
-
     var applePlaylsits = await retreiveUserPlaylists();
     var spotifyPlaylists = await spotifyGetUserPlaylists();
-
-    Promise.all([applePlaylsits,spotifyPlaylists]).then((values)=>{
+    await Promise.all([applePlaylsits,spotifyPlaylists]).then((values)=>{
       document.getElementById('user-playlists').innerHTML = displayPlaylistLibrary(values[0], "Apple Music");
       document.getElementById('user-playlists').innerHTML += displayPlaylistLibrary(values[1], "Spotify");
     });
+
   }
   else if(getCookie("appleUserToken") != null){
     await retreiveUserPlaylists().then(playlists =>{
