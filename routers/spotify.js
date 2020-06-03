@@ -16,6 +16,7 @@ var refreshToken = '';
 var serverToken = '';
 var stateKey = 'spotify_auth_state';
 const database = require("../Public/databaseIndex.js");
+setServerToken();
 
  // your application requests authorization
  var scopes = [
@@ -30,23 +31,28 @@ const database = require("../Public/databaseIndex.js");
   'user-read-private']; //used to read the users account details to so if they have premium
 
 
-var options = { //request options for getting sever token
-  url: 'https://accounts.spotify.com/api/token',
-    headers: {
-      'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))
-    },
-    form: {grant_type: 'client_credentials'},
-    json: true
-  };
-request.post(options, function(error, response, body) {
-  if (!error && response.statusCode === 200) {
-    // sever token to access the Spotify Web API without logging in.
-    serverToken = body.access_token;
-    console.log(serverToken);
-  } else {
-    console.log("ERROR getting server token");
-  }
-});
+
+let timerId = setInterval(setServerToken(), 60 * 60 * 1000);
+
+function setServerToken(){
+  var options = { //request options for getting sever token
+    url: 'https://accounts.spotify.com/api/token',
+      headers: {
+        'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))
+      },
+      form: {grant_type: 'client_credentials'},
+      json: true
+    };
+  request.post(options, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+      // sever token to access the Spotify Web API without logging in.
+      serverToken = body.access_token;
+      console.log(serverToken);
+    } else {
+      console.log("ERROR getting server token");
+    }
+  });
+}
 
 /**
  * Generates a random string containing numbers and letters
