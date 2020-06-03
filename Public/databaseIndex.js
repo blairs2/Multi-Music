@@ -56,16 +56,15 @@ async function login(){
 		return new Promise(async function(resolve, reject){
 			var name = document.forms["login-form"]["email"].value;
 			var pass = document.forms["login-form"]["password"].value;
-			resolve(true);
-			// await dbGetUser(name, pass).then((value) => {
-			// 			var x = JSON.parse(value);
-			// 			if (x[0] == false){
-			// 					reject(false);
-			// 			} else {
-			// 					resolve(true);
-			// 					setCookie(x[0].user_ID, "userID"); //Sets the userID cookie to hold the user id from the database
-			// 			}
-			// 	});
+			await dbGetUser(name, pass).then((value) => {
+						var x = JSON.parse(value);
+						if (x[0] == false){
+								reject(false);
+						} else {
+								resolve(true);
+								setCookie(x[0].user_ID, "userID"); //Sets the userID cookie to hold the user id from the database
+						}
+				});
 		});
 	}
 
@@ -73,8 +72,6 @@ async function RegisterUser(){
     var name = document.forms["register"]["userName"].value;
     var pass = document.forms["register"]["password"].value;
     var passC = document.forms["register"]["password_confirm"].value;
-    console.log(pass);
-    console.log(passC);
     if (pass == passC){
         dbAddUser(name, pass);
         setTimeout(function() {window.location = 'http://' + url + '/index.html' });
