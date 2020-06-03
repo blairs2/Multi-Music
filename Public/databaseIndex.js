@@ -56,21 +56,18 @@ async function login(){
 	console.log("Here");
     var name = document.forms["login-form"]["email"].value;
     var pass = document.forms["login-form"]["password"].value;
-    console.log(name);
-	console.log(pass);
-	setCookie(12, "userID"); //TESTING PURPOSES
-	setTimeout(function() {window.location = 'http://' + url + '/index.html' });
-
-	// await dbGetUser(name, pass).then((value) => {
-  //       var x = JSON.parse(value);
-  //       if (x[0] == false){
-  //           alert("Invalid Username or Password please try agian.");
-  //       } else {
-  //           setTimeout(function() {window.location = 'http://' + url + '/index.html' });
-	// 					console.log(x);
-  //           setCookie(x[0].user_ID, "userID"); //Sets the userID cookie to hold the user id from the database
-  //       }
-  //   });
+	// setCookie(12, "userID"); //TESTING PURPOSES
+	// setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+	await dbGetUser(name, pass).then((value) => {
+        var x = JSON.parse(value);
+        if (x[0] == false){
+            alert("Invalid Username or Password please try agian.");
+        } else {
+            setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+						console.log(x);
+            setCookie(x[0].user_ID, "userID"); //Sets the userID cookie to hold the user id from the database
+        }
+    });
 	}
 
 async function RegisterUser(){
