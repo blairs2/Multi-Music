@@ -25,10 +25,10 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
       <a class="navbar-brand" href="#">Multi Music</a>
-      <button id="last-btn" type="button" name="button">last</button>
-      <button id="play-btn" type="button" name="button">play</button>
-      <button id="pause-btn" type="button" name="button">pause</button>
-      <button id="next-btn" type="button" name="button">next</button>
+      <button id="last-btn" class="btn" type="button" name="button">last</button>
+      <button id="play-btn" class="btn" type="button" name="button">play</button>
+      <button id="pause-btn" class="btn" type="button" name="button">pause</button>
+      <button id="next-btn" class="btn" type="button" name="button">next</button>
 
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@
           <!-- <li class="nav-item">
             <button id="login-btn">Login to Apple Music</button>
           </li> -->
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <button id="login-spotify">Login to Spotify</button>
           </li>
           <li class="nav-item">
@@ -59,7 +59,7 @@
           </li>
           <li class="nav-item">
             <button id="getCookie">get cookie</button>
-          </li>
+          </li> -->
         </ul>
 
         <form class="form-inline">
@@ -79,7 +79,7 @@
       <div class="col-lg-2">
         <div class="row">
           &emsp;
-          <a href="#"><img class="card-img-top" src="http://placehold.it/80x80" alt=""></a>
+          <a href="#"><img class="card-img-top" src="assets/MULTILOGOBLACK.png" style="height:100px;width:100px;object-fit:cover" alt=""></a>
           &emsp;
           <h7 class="my-4">Multi Music User</h7>
         </div>
@@ -95,7 +95,7 @@
           <br>
           <a href="#" class="list-group-item">Home</a>
           <!--<a href="#"  class="list-group-item">Playlist Library</a>-->
-          <a href="#" class="list-group-item">Convert</a>
+          <!-- <a href="#" class="list-group-item">Convert</a> -->
         </div>
       </div>
       <br>
@@ -138,19 +138,8 @@
   <script type="text/javascript" src="/index.js"></script>
   <script type="text/javascript" src="/spotifyIndex.js"></script>
   <script type="text/javascript" src="/databaseIndex.js"></script>
-  <script type="text/javascript">
-    document.getElementById("setCookie").addEventListener("click", () => {
-      setCookie(12);
-    });
+  <script type="text/javascript" src="/cookiesIndex.js"></script>
 
-    document.getElementById("getCookie").addEventListener("click", () => {
-      console.log(getCookie());
-    });
-    document.getElementById("login-spotify").addEventListener('click', () => {
-        spotifyLogin();
-    });
-
-  </script>
 
 </body>
 
