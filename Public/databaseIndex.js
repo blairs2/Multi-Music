@@ -110,8 +110,7 @@ async function dbGetUser(name, code){
       }
      }
     };
-		console.log('http://' + url + '/db/user/' + name + '/' + code);
-    xhttp.open('GET', 'http://' + url + '/db/user/' + name + '/' + code, true);
+    xhttp.open('GET', 'http://' + url + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
    });
   }

@@ -81,25 +81,7 @@ window.addEventListener('load', async function(){
            console.log(e);
          }
 
-       //   if(JSON.parse(this.responseText).hasOwnProperty("errors")){
-       //
-       //   }
-       //   else{
-       //     var retval = displayPlaylistTracks(JSON.parse(this.responseText).tracks);
-       //     document.getElementById("playlist-songs").innerHTML = retval;
-       //     var song_elements = document.getElementsByClassName("song-button");
-       //    for (var i = 0; i < song_elements.length; i++) {
-       //        song_elements[i].addEventListener('click', function() { applePlay(this.getAttribute("data-value"), this.getAttribute("value")); },false);
-       //    }
-       //  }
-       // }
-       // var retval = displayPlaylistAttributes(JSON.parse(this.responseText).playlists[0], "Apple Music");
-       // document.getElementById("playlist-attributes").innerHTML = retval;
-       // document.getElementById("playlist-convert").addEventListener("click", () => {
-       //   console.log("clicked playlist");
-       //   convertPlaylist(document.getElementById("playlist-convert").getAttribute("data-value"), document.getElementById("playlist-convert").getAttribute("data-service"));
-       //
-       // },false);
+
 
          Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
            //The response should be a list with only one element
@@ -116,8 +98,7 @@ window.addEventListener('load', async function(){
              document.getElementById("playlist-convert").disabled= true;
              document.getElementById("convert-link").innerHTML = "<span>Loading playlist link</span>";
 
-             establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service);
-             // convertPlaylist(playlist_id, current_service);
+             establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service, false); //false tells apple we are searching users library
 
            },false);
 
@@ -210,8 +191,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
                 document.getElementById("playlist-convert").disabled= true;
                 document.getElementById("convert-link").innerHTML = "<span>Loading playlist link</span>";
 
-                establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service);
-                // convertPlaylist(playlist_id, current_service);
+                establishPlaylist(playlist_id, playlistAttr.title, user_id, current_service, true); //true means search catalog
 
               },false);
 
@@ -672,12 +652,16 @@ will convert playlist from current_service to new_service
 * @current_service is the current service of the playlist Apple Music or Spotify
 * @catalog is a boolean 1 it will search the catalog 0 will search the library
 */
-async function convertPlaylist(playlist_id, current_service, mm_playlist_id, playlist_name){
- var new_sercie;
+async function convertPlaylist(playlist_id, current_service, mm_playlist_id, playlist_name, catalog){
+  var new_service;
  if(current_service == "Apple Music"){
    new_service = "Spotify";
    try {
-     var playlistTracks = await getCatalogPlaylistTracks(playlist_id);
+     if(catalog){
+       var playlistTracks = await getCatalogPlaylistTracks(playlist_id); //If were searching the apple catalog
+     } else {
+       var playlistTracks = await appleUserPlaylistTracks(playlist_id); //if were searching a users library
+     }
    } catch(e) {
      console.log(e);
    }
@@ -776,7 +760,7 @@ function removeFeatureFromSong(song_title){
 * @playlist_id is applemusic or spotify playlist id
 *
 */
-async function establishPlaylist(playlist_id, title, user_id, current_service){
+async function establishPlaylist(playlist_id, title, user_id, current_service, catalog){
      var db_playlist_id = dbPlaylistExists(playlist_id).then(response => {
        if(response == 'false'){
          if(current_service == "Apple Music"){
@@ -793,13 +777,13 @@ async function establishPlaylist(playlist_id, title, user_id, current_service){
          dbPlaylistExists(playlist_id).then(value => {
            var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
            console.log("New playlist: ", mm_playlist_id);
-           convertPlaylist(playlist_id, current_service, mm_playlist_id, title);
+           convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
          });
        } else {
          var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
          console.log("playlist id:",mm_playlist_id);
          dbDeleteTracks(mm_playlist_id).then(()=>{
-           convertPlaylist(playlist_id, current_service, mm_playlist_id,title);
+           convertPlaylist(playlist_id, current_service, mm_playlist_id,title, catalog);
          }); // delete the tracks currently associated with the playlist
        }
      });
