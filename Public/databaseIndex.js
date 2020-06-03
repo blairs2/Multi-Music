@@ -53,21 +53,20 @@ async function dbHasSong(ID){
  }
 
 async function login(){
-	console.log("Here");
-    var name = document.forms["login-form"]["email"].value;
-    var pass = document.forms["login-form"]["password"].value;
-	// setCookie(12, "userID"); //TESTING PURPOSES
-	// setTimeout(function() {window.location = 'http://' + url + '/index.html' });
-	await dbGetUser(name, pass).then((value) => {
-        var x = JSON.parse(value);
-        if (x[0] == false){
-            alert("Invalid Username or Password please try agian.");
-        } else {
-            setTimeout(function() {window.location = 'http://' + url + '/index.html' });
-						console.log(x);
-            setCookie(x[0].user_ID, "userID"); //Sets the userID cookie to hold the user id from the database
-        }
-    });
+		return new Promise(async function(resolve, reject){
+			var name = document.forms["login-form"]["email"].value;
+			var pass = document.forms["login-form"]["password"].value;
+			resolve(true);
+			// await dbGetUser(name, pass).then((value) => {
+			// 			var x = JSON.parse(value);
+			// 			if (x[0] == false){
+			// 					reject(false);
+			// 			} else {
+			// 					resolve(true);
+			// 					setCookie(x[0].user_ID, "userID"); //Sets the userID cookie to hold the user id from the database
+			// 			}
+			// 	});
+		});
 	}
 
 async function RegisterUser(){

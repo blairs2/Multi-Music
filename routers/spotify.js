@@ -6,7 +6,7 @@ const Spotify = require('spotify-web-api-node');
 const spotifyApi = new Spotify({
   clientId: '832b12a20fb943ed9ef4b49ceca24b65', // Spotify client id
   clientSecret: '191f46cbc6e04274bff4214a782e13b2', // Spotify secret
-  redirectUri: 'http://18.216.254.104:8080/spotify/callback' // Spotify redirect uri
+  redirectUri: 'http://localhost:8080/spotify/callback' // Spotify redirect uri
 });
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
@@ -101,7 +101,7 @@ router.get('/spotify/callback', function(req, response) {
           // console.log(accessToken);
           refreshToken = refresh_token;
           response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
-          response.redirect(`/#/user/${access_token}/${refresh_token}`);
+          response.redirect(`/index.html`); //redirect to home page
         }).catch(err => {
           response.redirect('/#/error/invalid token');
         });

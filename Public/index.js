@@ -25,8 +25,18 @@ document.addEventListener('musickitloaded', () => {
 window.addEventListener('load', async function(){
   console.log("loading");
   //Populates the left hand side of screen with all the playlsits in the users library
-  if(getCookie("appleUserToken") != null){
-    var userPlaylistPromise = await retreiveUserPlaylists().then(playlists =>{
+  if(getCookie("appleUserToken") != null && getCookie("spotifyUserToken") != null){
+
+    var applePlaylsits = await retreiveUserPlaylists();
+    var spotifyPlaylists = await spotifyGetUserPlaylists();
+
+    Promise.all([applePlaylsits,spotifyPlaylists]).then((values)=>{
+      document.getElementById('user-playlists').innerHTML = displayPlaylistLibrary(values[0], "Apple Music");
+      document.getElementById('user-playlists').innerHTML += displayPlaylistLibrary(values[1], "Spotify");
+    });
+  }
+  else if(getCookie("appleUserToken") != null){
+    await retreiveUserPlaylists().then(playlists =>{
       //This generates the list of playlists on the left hand side of the screen
       var retval = displayPlaylistLibrary(playlists, "Apple Music");
       document.getElementById('user-playlists').innerHTML = retval;
@@ -40,6 +50,7 @@ window.addEventListener('load', async function(){
       document.getElementById('user-playlists').innerHTML = retval;
     });
   }
+
 
   var user_playlists = document.getElementsByClassName("playlist-button");
   //Add event listener to each playlist.
@@ -637,7 +648,7 @@ function displayPlaylistTracks(playlist_tracks){
 */
 function displayPlaylistLibrary(playlists, service){
   var cloudPlaylists = JSON.parse(playlists).playlists;
-  var retval = '';
+  var retval = `<h5>${service} Playlists</h5>`;
   for(var i =0; i < cloudPlaylists.length; i++){
     var playlistName = cloudPlaylists[i].title;
     var playlist_id = cloudPlaylists[i].id;
