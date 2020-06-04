@@ -308,7 +308,7 @@ function retreiveUserPlaylists(){
       }
     }
   };
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken") || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
   });
@@ -326,7 +326,7 @@ function retrieveUserSongs(){
      //Code to change the generated-content inner html
    }
  };
- appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+ appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
  xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + appleToken.replace(/\//g, '%2F'), true);
  xhttp.send(); // Gets the response
 }
@@ -344,7 +344,7 @@ xhttp.onreadystatechange = function ReceivedCallback() {
   }
 };
 
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
 }
@@ -363,7 +363,7 @@ function retrieveUserAlbums(){
    }
  };
 
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
 }
@@ -421,7 +421,7 @@ function addTrackToPlaylist(playlist_id){
 
       }
     };
-    appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+    appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
     xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + appleToken.replace(/\//g, '%2F'), true);
     xhttp.send(); // Gets the response
 }
@@ -442,7 +442,7 @@ async function appleUserPlaylistTracks(playlist_id){
     }
    }
   };
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + appleToken.replace(/\//g, '%2F') , true);
   xhttp.send(); // Gets the response
   });
@@ -464,7 +464,7 @@ async function appleUserPlaylistAttributes(playlist_id){
     }
    }
   };
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + appleToken.replace(/\//g, '%2F') , true);
   xhttp.send(); // Gets the response
   });

@@ -144,7 +144,7 @@ router.get('/spotify/user/:token', function(req, response){
 
 //Get a list of all the user playlists
 router.get('/spotify/user/playlists/:token', function(req, response){
-    if(req.params.token == 'null'){
+    if(!JSON.parse(req.params.token)){
       console.log("error invalid token");
       response.send("error invalid token");
     } else {
@@ -157,7 +157,8 @@ router.get('/spotify/user/playlists/:token', function(req, response){
         if (error) { //if request fails
             response.send("ERROR getting list of user playlist" + error);
         } else {
-            //console.log(body);
+
+            console.log(body);
             retval = { playlists: []}
             for(i = 0; i < body.items.length; i++){
                 retval.playlists.push({
@@ -181,7 +182,8 @@ router.get('/spotify/user/playlists/:token', function(req, response){
 //Get the tracks of a playlist specified by the playlistid
 
 router.get('/spotify/playlist/tracks/:playlistid/:token', function(req, response){
-    var userToken  =  JSON.parse(req.params.token);
+    var userToken  = JSON.parse(req.params.token);
+    console.log(userToken);
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
         json: true
@@ -255,7 +257,7 @@ router.get('/spotify/playlist/:playlistid/:token', function(req, response){
 
 //Delete the specified track from the specified playlist
 router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(req, response){
-  if(req.params.token == 'null'){
+  if(!JSON.parse(req.params.token)){
     response.send("error invalid token");
   } else {
     options = { // set request options
@@ -277,7 +279,7 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
 
 //Add the specified track to the specifed playlist
 router.post('/spotify/playlist/add/:playlistid/:trackURI/:token', function(req, response){
-  if(req.params.token == 'null'){
+  if(!JSON.parse(req.params.token)){
     console.log("error invalid token");
   } else {
     options = { // set request optinos
@@ -298,7 +300,7 @@ router.post('/spotify/playlist/add/:playlistid/:trackURI/:token', function(req, 
 
 //Changes the name of the playlist to the specifed name
 router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, response){
-  if(req.params.token == 'null'){
+  if(!JSON.parse(req.params.token)){
     response.send("error invalid token");
   } else {
     options = { // set request options
@@ -320,7 +322,7 @@ router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, r
 
 //Create a new empty spotify playlist
 router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collaborative/:token', function(req, response){
-  if(req.params.token == 'null'){
+  if(!JSON.parse(req.params.token)){
     response.send("error invalid token");
   } else {
     options = {
@@ -346,7 +348,7 @@ router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collab
 // reorder the songs in the specifed playlist
 // move first length songs at start to index
 router.put('/spotify/playlist/reorder/:playlistid/:start/:index/:length/:token', function(req, response){
-  if(req.params.token == 'null'){
+  if(!JSON.parse(req.params.token)){
     response.send("error invalid token");
   } else {
   options = { // set request options
