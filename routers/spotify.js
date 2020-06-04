@@ -174,13 +174,15 @@ router.get('/spotify/user/:token', function(req, response){
 //Get a list of all the user playlists
 router.get('/spotify/user/playlists/:token', function(req, response){
   console.log(req.params.token);
+  console.log("here");
+  options = "";
     if(req.params.token == 'null'){
       console.log("error invalid token");
       response.send("error invalid token");
     } else {
       options = { // set request options
           uri: 'https://api.spotify.com/v1/me/playlists',
-          Authorization: { 'Authorization': 'Bearer ' + req.params.token},
+          Authorization: { 'Authorization': 'Bearer ' + req.params.token },
           json: true
         };
     request.get(options, function(error, res, body) {
@@ -188,6 +190,7 @@ router.get('/spotify/user/playlists/:token', function(req, response){
             response.send("ERROR getting list of user playlist" + error);
         } else {
             console.log(body);
+            console.log("here2")
             retval = { playlists: []}
             for(i = 0; i < body.items.length; i++){
                 retval.playlists.push({
