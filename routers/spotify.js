@@ -150,7 +150,7 @@ router.get('/spotify/user/playlists/:token', function(req, response){
     } else {
       options = { // set request options
           uri: 'https://api.spotify.com/v1/me/playlists',
-          Authorization: 'Bearer ' + req.params.token,
+          Authorization: {'Bearer ' + req.params.token},
           json: true
         };
     request.get(options, function(error, res, body) {
