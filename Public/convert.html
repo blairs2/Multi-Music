@@ -198,7 +198,7 @@ async function addPlaylist(body, appleToken){
     var url = (new URL(document.location));
     var playlist_name = url.searchParams.get("name");
     music.authorize().then((musicUserToken)=>{
-      dbRetrieveConvert().then(resp => {
+      dbRetrieveConvert().then(async function(resp){
         var resp_obj = JSON.parse(resp);
         if(resp_obj != false){
           var data = [];
