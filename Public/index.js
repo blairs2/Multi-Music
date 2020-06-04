@@ -131,12 +131,16 @@ document.getElementById('search-input').addEventListener("keyup", async function
     document.getElementById("generated-content").innerHTML = "<h4 style='text-align: center;'>Loading Search</h4>"; //Clear the screen for the search results
     //Using promises ensures that both functions will be completed before the final step
     try {
-      var applePromise = await searchByTerm("term=" + searchTerm + "&limit=10&types=songs,albums,playlists");
+      // var applePromise = await searchByTerm("term=" + searchTerm + "&limit=10&types=songs,albums,playlists");
+      var applePromise = await searchByTerm("term=" + searchTerm + "&limit=10&types=playlists");
+
     } catch(e) {
       console.log(e);
     }
     try {
-      var spotifyPromise = await spotifySearch('q=' + searchTerm + '&type=track,album,playlist');
+      // var spotifyPromise = await spotifySearch('q=' + searchTerm + '&type=track,album,playlist');
+      var spotifyPromise = await spotifySearch('q=' + searchTerm + '&type=playlist');
+
     } catch(e) {
       console.log(e);
     }
@@ -604,7 +608,7 @@ function displayPlaylistTracks(playlist_tracks){
    title = playlist_tracks[i].title;
    artist = playlist_tracks[i].artist;
    songId = playlist_tracks[i].id;
-   if(playlist_tracks[i].hasOwnProperty("artwork")){
+   if(playlist_tracks[i].hasOwnProperty("artwork") && playlist_tracks[i].artwork != null){
      url = playlist_tracks[i].artwork;
 
    } else {
