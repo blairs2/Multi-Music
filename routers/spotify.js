@@ -157,8 +157,6 @@ router.get('/spotify/user/playlists/:token', function(req, response){
         if (error) { //if request fails
             response.send("ERROR getting list of user playlist" + error);
         } else {
-
-            console.log(body);
             retval = { playlists: []}
             for(i = 0; i < body.items.length; i++){
                 retval.playlists.push({

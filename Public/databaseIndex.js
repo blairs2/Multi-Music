@@ -57,6 +57,7 @@ async function login(){
 			var name = document.forms["login-form"]["email"].value;
 			var pass = document.forms["login-form"]["password"].value;
 			await dbGetUser(name, hashCode(pass)).then((value) => {
+						console.log(value);
 						var x = JSON.parse(value);
 						if (x[0] == false){
 								reject(false);
@@ -73,17 +74,14 @@ async function RegisterUser(){
     var pass = document.forms["register"]["password"].value;
     var passC = document.forms["register"]["password_confirm"].value;
     if (pass == passC){
-        dbAddUser(name, pass);
-        setTimeout(function() {window.location = 'http://' + url + '/index.html' });
-        await dbGetUser(name, pass).then((value) => {
-            x = JSON.parse(value);
-            if (x == false){
-           // if (name != "Nathan") {
-                console.log("error this shouldn't happen");
-            } else {
-                setCookie(x[0].userID);
-                //setCookie("REG");
-            }
+      await dbAddUser(name, pass).then(insert =>{
+					if(JSON.parse(insert).insertId){
+						setCookie(x[0].userID);
+						setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+					} else {
+						alert("Invalid credentials");
+					}
+
         });
     } else {
         alert("Passwords do not match please try again");

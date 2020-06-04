@@ -108,7 +108,7 @@
         document.getElementById('login-btn').disabled = !cansubmit;
 
     }
-
+    
       document.getElementById('apple-login').addEventListener('click', async function(){
         fetch('/token').then(response => response.json()).then(res => {
           /***
