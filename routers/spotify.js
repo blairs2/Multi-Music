@@ -103,7 +103,7 @@ router.get('/spotify/callback', function(req, response) {
         const { expires_in, access_token, refresh_token } = data.body;
         // console.log(accessToken);
         response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
-        response.cookie("spotifyRefresToken", refresh_token)
+        response.cookie("spotifyRefreshToken", refresh_token)
         console.log("REFRESH")
         console.log(refresh_token);
         response.redirect(`/index.html`); //redirect to home page
@@ -140,20 +140,23 @@ router.get('/spotify/callback/convert', function(req, response) {
     };
 });
 
-router.get('/spotify/refresh/:refresh', function(req, response) {
-  spotifyApi.setRefreshToken(req.params.refresh);
-  spotifyApi.refreshAccessToken().then(
-    function(data) {
-      console.log('The access token has been refreshed!');
-
-      // Save the access token so that it's used in future calls
-      spotifyApi.setAccessToken(data.body['access_token']);
-      response.cookie("spotifyUserToken", data.body['access_token']);
-    },
-    function(err) {
-      console.log('Could not refresh access token', err);
-    }
-  );
+router.post('/spotify/refresh/:refresh', function(req, response) {
+    // requesting access token from refresh token
+    var refresh_token = req.params.refresh;
+     options = {
+      url: 'https://accounts.spotify.com/api/token',
+      headers: { 'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))},              
+      form: {
+        grant_type: 'refresh_token',
+        refresh_token: refresh_token
+      },
+      json: true
+    };
+    request.post(authOptions, function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        response.cookie("spotifyUserToken", body.access_token);
+      }
+    });
 })
 
 //Get user data for the current user
