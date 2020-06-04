@@ -56,7 +56,7 @@ async function login(){
 		return new Promise(async function(resolve, reject){
 			var name = document.forms["login-form"]["email"].value;
 			var pass = document.forms["login-form"]["password"].value;
-			await dbGetUser(name, pass).then((value) => {
+			await dbGetUser(name, hashCode(pass)).then((value) => {
 						var x = JSON.parse(value);
 						if (x[0] == false){
 								reject(false);

@@ -27,7 +27,7 @@ function spotifyGetUser(){
             console.log(JSON.parse(this.responseText));
         }
     };
-    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    spotifyToken = getCookie("spotifyUserToken") || null ; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/user/' + spotifyToken , true);
     xhttp.send(); // Gets the response
 }
@@ -47,7 +47,7 @@ async function spotifyGetUserPlaylists(){
         }
       }
     };
-    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/user/playlists/' + spotifyToken , true);
     xhttp.send(); // Gets the response
     });
@@ -92,7 +92,7 @@ async function spotifyGetPlaylistAttributes(playlistid){
     }
    }
   };
-  spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+  spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
   xhttp.open('GET', 'http://' + url + '/spotify/playlist/' + playlistid + '/' + spotifyToken, true);
   xhttp.send(); // Gets the response
   });
@@ -110,7 +110,7 @@ function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
             console.log(JSON.parse(this.responseText));
         }
     };
-    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/playlist/delete/' + playlistid + '/' + trackURI + "/" + spotifyToken, true);
     xhttp.send(); // Gets the response
 }
@@ -127,7 +127,7 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
             console.log(JSON.parse(this.responseText));
         }
     };
-    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
     xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + spotifyToken , true);
     xhttp.send(trackURI); // Gets the response
 }
@@ -155,7 +155,7 @@ function spotifyRenamePlaylist(playlistid, name){
             console.log(JSON.parse(this.responseText));
         }
     };
-    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/playlist/details/' + playlistid + '/' + name + "/" + spotifyToken, true);
     xhttp.send(); // Gets the response
 }
@@ -175,7 +175,7 @@ function spotifyCreateNewPlaylist(userID, name, public = false, description = ''
             console.log(JSON.parse(this.responseText));
         }
     };
-    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + spotifyToken, true);
     xhttp.send(); // Gets the response
 }
@@ -194,7 +194,7 @@ function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
             console.log(JSON.parse(this.responseText));
         }
     };
-    spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
+    spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/playlist/reorder/' + playlistid + '/' + start + '/' + index + '/' + length +  "/" + spotifyToken, true);
     xhttp.send(); // Gets the response
 }
