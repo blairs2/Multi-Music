@@ -104,6 +104,7 @@ router.get('/spotify/callback', function(req, response) {
         // console.log(accessToken);
         response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
         response.cookie("spotifyRefresToken", refresh_token)
+        console.log(refresh_token);
         response.redirect(`/index.html`); //redirect to home page
       }).catch(err => {
         response.redirect('/#/error/invalid token');
@@ -309,7 +310,7 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
 });
 
 //Add the specified track to the specifed playlist
-router.post('/spotify/playlist/add/:playlistid/:token', function(req, response){
+router.post('/spotify/playlist/add/:playlistid/:uris/:token', function(req, response){
   if(req.params.token == null){
     console.log("error invalid token");
   } else {

@@ -130,7 +130,7 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
         }
     };
     spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
-    xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + spotifyToken , true);
+    xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + trackURI + '/' + spotifyToken , true);
     xhttp.send(trackURI); // Gets the response
 }
 
@@ -142,7 +142,7 @@ function testSend(){
       }
   };
   xhttp.open('POST', 'http://' + url + '/spotify/test' , true);
-  //xhttp.setRequestHeader('Content-type', '"application/json;charset=UTF-8");');
+  xhttp.setRequestHeader('Content-type', '"application/json;charset=UTF-8");');
   xhttp.send(JSON.stringify({stuff: "here", other: "stuff"})); // Gets the response
 }
 
