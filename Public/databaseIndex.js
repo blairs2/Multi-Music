@@ -62,8 +62,7 @@ async function login(){
 						if (x[0] == false){
 								reject(false);
 						} else {
-								resolve(true);
-								setCookie(x[0].user_ID, "userID"); //Sets the userID cookie to hold the user id from the database
+								resolve(x[0].user_ID);
 						}
 				});
 		});
@@ -75,8 +74,8 @@ async function RegisterUser(){
     var passC = document.forms["register"]["password_confirm"].value;
     if (pass == passC){
       await dbAddUser(name, pass).then(insert =>{
-					if(JSON.parse(insert).insertId){
-						setCookie(x[0].userID);
+					if(insert!= 'false'){ //insertedId is the id of the recently added user
+						setCookie(JSON.parse(insert).insertId, "userID");
 						setTimeout(function() {window.location = 'http://' + url + '/index.html' });
 					} else {
 						alert("Invalid credentials");
