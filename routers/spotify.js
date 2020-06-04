@@ -179,33 +179,34 @@ router.get('/spotify/user/playlists/:token', function(req, response){
     response.send("error invalid token");
   } else {
     options = { // set request options
-        uri: 'https://api.spotify.com/v1/me/playlists',
-        Authorization: 'Bearer ' + req.params.token,
-        json: true
-      };
-  request.get(options, function(error, res, body) {
+      uri: 'https://api.spotify.com/v1/me/playlists',
+      Authorization: { 'Authorization': 'Bearer ' + req.params.token},
+      json: true
+    };
+    request.get(options, function(error, res, body) {
       if (error) { //if request fails
-          response.send("ERROR getting list of user playlist" + error);
+        response.send("ERROR getting list of user playlist" + error);
       } else {
-          //console.log(body);
-          retval = { playlists: []}
-          for(i = 0; i < body.items.length; i++){
-              retval.playlists.push({
-                title: body.items[i].name,
-                description: body.items[i].description,
-                href: body.items[i].href,
-                id: body.items[i].id,
-                artwork: body.items[i].images.length != 0 ?
-                         body.items[i].images.length == 1 ?
-                         body.items[i].images[0].url :
-                         body.items[i].images[1].url : null
-              });
-          }
-          response.send(retval);
-      }
-  });
-}
+        console.log(body);
+        retval = { playlists: []}
+        for(i = 0; i < body.items.length; i++){
+          retval.playlists.push({
+            title: body.items[i].name,
+            description: body.items[i].description,
+            href: body.items[i].href,
+            id: body.items[i].id,
+            artwork: body.items[i].images.length != 0 ?
+                     body.items[i].images.length == 1 ?
+                     body.items[i].images[0].url :
+                     body.items[i].images[1].url : null
+          });
+        }
+        response.send(retval);
+     }
+    });
+  }
 });
+
 
 
 //Get the tracks of a playlist specified by the playlistid
