@@ -6,7 +6,6 @@ const Spotify = require('spotify-web-api-node');
 const spotifyApi = new Spotify({
   clientId: '832b12a20fb943ed9ef4b49ceca24b65', // Spotify client id
   clientSecret: '191f46cbc6e04274bff4214a782e13b2', // Spotify secret
-  redirectUri: 'http://18.216.254.104:8080/spotify/callback' // Spotify redirect uri
 });
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
@@ -29,8 +28,6 @@ setServerToken();
   'playlist-modify-public', //used to mofify public playlists
   'user-read-email', //used to get users email address *we may not need this?
   'user-read-private']; //used to read the users account details to so if they have premium
-
-
 
 let timerId = setInterval(() => setServerToken(), 60 * 60 * 1000);
 
@@ -69,55 +66,72 @@ function generateRandomString(length) {
   return text;
 };
 
+function login(){
+  const state = generateRandomString(16);
+  response.cookie(stateKey, state);
+  //console.log("stateB");
+  //console.log(state);
+  response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
+}
 router.get('/spotify/login', function(req, response) {
-    const state = generateRandomString(16);
-    response.cookie(stateKey, state);
-    console.log("stateB");
-    console.log(state);
-    response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
-  });
-
-router.get('/spotify/callback', function(req, response) {
-      // request refresh and access tokens
-      // after checking the state parameter
-      const { code, state } = req.query;
-      // console.log("code");
-      // console.log(code);
-      // console.log("state");
-      // console.log(state);
-      const storedState = req.cookies ? req.cookies[stateKey] : null;
-      if (state === null || state !== storedState) { // if the state is vailid
-        response.redirect('/#' +
-          querystring.stringify({
-            error: 'state_mismatch'
-          }));
-      } else {
-        spotifyApi.authorizationCodeGrant(code).then(data => {
-          const { expires_in, access_token, refresh_token } = data.body;
-          accessToken = access_token;
-          refreshToken = refresh_token;
-          //id = getCookie(); //get userid from cookie
-          //dbUpdateSpotifyToken(id, access_token);
-          // console.log(accessToken);
-          refreshToken = refresh_token;
-          response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
-          response.redirect(`/index.html`); //redirect to home page
-        }).catch(err => {
-          response.redirect('/#/error/invalid token');
-        });
-
-      };
-
-
+  spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback');
+  login();
 });
 
-router.get('/spotify/refresh', function(req, response) {
+router.get('/spotify/login/convert', function(req, response) {
+  spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback/convert');
+  login()
+});
+
+// the inerds of the callback function for spotify 
+function callback(location){
+  // request refresh and access tokens after checking the state parameter
+  const { code, state } = req.query;
+  // console.log("code");
+  // console.log(code);
+  // console.log("state");
+  // console.log(state);
+  const storedState = req.cookies ? req.cookies[stateKey] : null;
+  if (state === null || state !== storedState) { // if the state is vailid
+    response.redirect('/#' +
+      querystring.stringify({
+        error: 'state_mismatch'
+      }));
+  } else {
+    spotifyApi.authorizationCodeGrant(code).then(data => {
+      const { expires_in, access_token, refresh_token } = data.body;
+      // console.log(accessToken);
+      response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
+      response.cookie("spotifyRefresToken", refresh_token)
+      if (location == "index"){
+        response.redirect(`/index.html`); //redirect to home page
+      } else {
+        response.redirect(`/convert.html`); //redirect to convert page
+      }
+    }).catch(err => {
+      response.redirect('/#/error/invalid token');
+    });
+  };
+}
+// callback funciton for logging in on the home page
+router.get('/spotify/callback', function(req, response) {
+  callback("index");
+});
+
+// callback funciton for loogining in on the convert page
+router.get('/spotify/callback/convert', function(req, response) { 
+  callback("convert")
+});
+
+router.get('/spotify/refresh/:refresh', function(req, response) {
+  spotifyApi.setRefreshToken(req.params.refresh);
   spotifyApi.refreshAccessToken().then(
     function(data) {
       console.log('The access token has been refreshed!');
 
       // Save the access token so that it's used in future calls
       spotifyApi.setAccessToken(data.body['access_token']);
+      response.cookie("spotifyUserToken", data.body['access_token']);
     },
     function(err) {
       console.log('Could not refresh access token', err);
@@ -276,13 +290,15 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
 });
 
 //Add the specified track to the specifed playlist
-router.post('/spotify/playlist/add/:playlistid/:trackURI/:token', function(req, response){
+router.post('/spotify/playlist/add/:playlistid/:token', function(req, response){
   if(req.params.token == null){
     console.log("error invalid token");
   } else {
+    console.log(req.body);
     options = { // set request optinos
-        uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks?uris=' + req.params.trackURI,
+        uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks',
         headers: { 'Authorization': 'Bearer ' + req.params.token },
+        body: req.body,
         json: true
       };
       request.post(options, function(error, res, body){
@@ -295,6 +311,11 @@ router.post('/spotify/playlist/add/:playlistid/:trackURI/:token', function(req, 
       });
     }
 });
+
+router.get('/spotify/test', function(req, response){
+  console.log(req.body);
+  response.send(req.body);
+})
 
 //Changes the name of the playlist to the specifed name
 router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, response){

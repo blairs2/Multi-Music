@@ -48,6 +48,9 @@
            <li class="nav-item">
              <a class="nav-link" onclick="contactLoad()" href="#">Contact</a>
            </li>
+           <li class="nav-item">
+            <button id="test">TEST</button>
+          </li> 
           <!-- <li class="nav-item">
             <button id="login-btn">Login to Apple Music</button>
           </li> -->
@@ -139,6 +142,11 @@
   <script type="text/javascript" src="/spotifyIndex.js"></script>
   <script type="text/javascript" src="/databaseIndex.js"></script>
   <script type="text/javascript" src="/cookiesIndex.js"></script>
+  <script type="text/javascript">
+    document.getElementById("test").addEventListener('click', ()=>{
+      testSend();
+    })
+  </script>
 
 
 </body>

@@ -337,13 +337,13 @@ function retrieveUserSongs(){
 
 //Gets the users library of artists (default 25)
 function retrieveUserArtists(){
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function ReceivedCallback() {
-  if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-    console.log(JSON.parse(this.responseText));
-    //Code to change the generated-content inner html
-  }
-};
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+      console.log(JSON.parse(this.responseText));
+      //Code to change the generated-content inner html
+    }
+  };
 
   appleToken = getCookie("appleUserToken"); //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + appleToken.replace(/\//g, '%2F'), true);

@@ -2,16 +2,17 @@ const url = window.location.host;
 /**
  * Redirects to the spotify login for user to authorize our program
  */
-function spotifyLogin(){
+function spotifyLogin(extra){
     console.log("CLICK");
     location.href = "http://"+ url +"/spotify/login";
+    console.log(url);
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         // Typical action to be performed when the document is ready:    }
         console.log(xhttp.responseText);
     }
-    xhttp.open("GET", "http://"+ url +"/spotify/login", true);
+    xhttp.open("GET", "http://"+ url +"/spotify/login" + extra, true);
     xhttp.send();
     }
 }
@@ -127,8 +128,18 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
         }
     };
     spotifyToken = getCookie("spotifyUserToken"); //get spotify user token from cookie
-    xhttp.open('GET', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + trackURI + "/" + spotifyToken , true);
-    xhttp.send(); // Gets the response
+    xhttp.open('GET', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + spotifyToken , true);
+    xhttp.send(trackURI); // Gets the response
+}
+function testSend(){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+          console.log(JSON.parse(this.responseText));
+      }
+  };
+  xhttp.open('GET', 'http://' + url + '/spotify/test' , true);
+  xhttp.send({stuff: "here", other: "stuff"}); // Gets the response
 }
 
 /**
@@ -197,7 +208,6 @@ function spotifySearch(searchTerm){
      xhttp.onreadystatechange = function ReceivedCallback() {
        if (this.readyState == 4) { //Upon getting a response
          if(this.status == 200){
-           // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
            resolve(this.responseText);
          } else {
          reject("Error");
@@ -205,6 +215,27 @@ function spotifySearch(searchTerm){
       }
      };
     xhttp.open('GET', 'http://' + url + '/spotify/search/' + searchTerm, true);
+    xhttp.send(); // Gets the response
+  });
+}
+
+/**
+ * use refresh token to get new access token and set cookie
+ */
+function refreshToken(){
+  refresh = getCookie("spotifyRefreshToken")
+  var xhttp = new XMLHttpRequest();
+  return new Promise(function(resolve, reject) {
+    xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+          reject("Error");
+        }
+      }
+    };
+    xhttp.open('GET', 'http://' + url + '/spotify/refresh/' + refresh, true);
     xhttp.send(); // Gets the response
   });
 }

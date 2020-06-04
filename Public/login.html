@@ -136,7 +136,7 @@
         login().then((resp) => {
           if(resp == true){
             console.log("good credentials")
-            spotifyLogin();//will route user to home page after they log in
+            spotifyLogin("");//will route user to home page after they log in
           } else {
             alert("Invalid Username or Password please try agian.");
           }
