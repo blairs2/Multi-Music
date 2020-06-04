@@ -152,7 +152,7 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
       },
       json: true
     };
-    request.post(authOptions, function(error, response, body) {
+    request.post(options, function(error, response, body) {
       if (!error && response.statusCode === 200) {
         response.cookie("spotifyUserToken", body.access_token);
       }
