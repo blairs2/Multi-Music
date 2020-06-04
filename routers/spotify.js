@@ -331,8 +331,9 @@ router.post('/spotify/playlist/add/:playlistid/:token', function(req, response){
     }
 });
 
-router.get('/spotify/test', function(req, response){
+router.post('/spotify/test', function(req, response){
   console.log(req.body);
+  console.log("test");
   response.send(req.body);
 })
 

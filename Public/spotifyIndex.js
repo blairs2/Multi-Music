@@ -133,6 +133,7 @@ function spotifyAddTrackToPlaylist(playlistid, trackURI){
     xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistid + '/' + spotifyToken , true);
     xhttp.send(trackURI); // Gets the response
 }
+
 function testSend(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function ReceivedCallback() {
