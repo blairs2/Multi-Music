@@ -28,7 +28,6 @@ function spotifyGetUser(){
         }
     };
     spotifyToken = getCookie("spotifyUserToken") || null ; //get spotify user token from cookie
-    console.log(spotifyToken);
     xhttp.open('GET', 'http://' + url + '/spotify/user/' + spotifyToken , true);
     xhttp.send(); // Gets the response
 }
@@ -48,6 +47,7 @@ async function spotifyGetUserPlaylists(){
         }
       }
     };
+    console.log(spotifyToken);
     spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/user/playlists/' + spotifyToken , true);
     xhttp.send(); // Gets the response
