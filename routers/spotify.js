@@ -104,6 +104,7 @@ router.get('/spotify/callback', function(req, response) {
         // console.log(accessToken);
         response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
         response.cookie("spotifyRefresToken", refresh_token)
+        console.log("REFRESH")
         console.log(refresh_token);
         response.redirect(`/index.html`); //redirect to home page
       }).catch(err => {
