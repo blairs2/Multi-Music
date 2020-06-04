@@ -28,6 +28,7 @@ function spotifyGetUser(){
         }
     };
     spotifyToken = getCookie("spotifyUserToken") || null ; //get spotify user token from cookie
+    console.log(spotifyToken);
     xhttp.open('GET', 'http://' + url + '/spotify/user/' + spotifyToken , true);
     xhttp.send(); // Gets the response
 }
