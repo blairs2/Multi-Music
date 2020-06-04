@@ -69,9 +69,9 @@
                     <div><h6>Choose your streaming platform</h6></div><br>
                     <button id="spotify-login" disabled type="button" class="btn"><img style="width:100px;height:30px;" src="assets/Spotify.png" alt=""></button>&emsp;
                     <button id="apple-login" disabled type="button" class="btn"><img style="width:100px;height:25px;" src="assets/apple.png" alt=""></button>
-                    <button id="login-btn" class="btn btn-default" disabled type="submit" submit="loginAction(); return false;" >Login</button><br><br><br>
                     <div><h6>New to Multi Music? Register <a href="register.html">here</a></h6></div><br>
                 </form>
+                <button id="login-btn" class="btn btn-default" disabled onclick="loginAction()" >Login</button><br><br><br>
             </div>
         </section>
       </div>
@@ -149,7 +149,7 @@
           if(resp){
             console.log(resp);
             setCookie(resp, "userID");
-            setTimeout(function() { window.location = 'http://' + url + '/index.html'; });
+            setTimeout(function() { location.href = 'http://' + url + '/index.html'; });
           } else {
             console.log(resp);
             alert("Invalid Username or Password please try agian.");
