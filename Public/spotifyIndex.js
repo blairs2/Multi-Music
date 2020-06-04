@@ -139,6 +139,7 @@ function testSend(){
       }
   };
   xhttp.open('GET', 'http://' + url + '/spotify/test' , true);
+  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhttp.send({stuff: "here", other: "stuff"}); // Gets the response
 }
 
