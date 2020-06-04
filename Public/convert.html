@@ -162,7 +162,6 @@
        xhttp.onreadystatechange = function ReceivedCallback() {
        if (this.readyState == 4) { //Upon getting a response
          if(this.status == 200){
-           // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
            resolve(this.responseText);
          } else {
            reject("Error");
@@ -176,19 +175,23 @@
   }
 
   //Creates a new empty playlist
-  function addPlaylist(body, appleToken){
+async function addPlaylist(body, appleToken){
      var xhttp = new XMLHttpRequest();
-     xhttp.onreadystatechange = function ReceivedCallback() {
-       if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-         // console.log(JSON.parse(this.responseText));
-
-            // document.getElementById("generated-content").innerHTML = displaySearch(JSON.parse(this.responseText));
+     return new Promise(function(resolve, reject) {
+       xhttp.onreadystatechange = function ReceivedCallback() {
+       if (this.readyState == 4) { //Upon getting a response
+         if(this.status == 200){
+           resolve(this.responseText);
+         } else {
+           reject("Error");
        }
+      }
      };
      xhttp.open("POST", "http://" + window.location.host + "/apple-music/library/playlist/" + appleToken.replace(/\//g, '%2F'), true);
      xhttp.setRequestHeader("Content-Type", "application/json");
      xhttp.send(body); // Gets the response
-    }
+    });
+}
 
   document.getElementById("convert-apple-btn").addEventListener("click", ()=>{
     document.getElementById("convert-apple-btn").disabled = true;
@@ -214,7 +217,7 @@
             };
 
             console.log(body, musicUserToken);
-            addPlaylist(JSON.stringify(body), musicUserToken).then((response)=>{
+            await addPlaylist(JSON.stringify(body), musicUserToken).then(response =>{
               if(JSON.parse(response).hasOwnProperty("error")){
                 document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your library.</b>";
               } else {
