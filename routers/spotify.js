@@ -66,61 +66,76 @@ function generateRandomString(length) {
   return text;
 };
 
-function login(){
+router.get('/spotify/login', function(req, response) {
+  spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback');
   const state = generateRandomString(16);
   response.cookie(stateKey, state);
   //console.log("stateB");
   //console.log(state);
   response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
-}
-router.get('/spotify/login', function(req, response) {
-  spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback');
-  login();
 });
 
 router.get('/spotify/login/convert', function(req, response) {
   spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback/convert');
-  login()
+  const state = generateRandomString(16);
+  response.cookie(stateKey, state);
+  //console.log("stateB");
+  //console.log(state);
+  response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
 });
 
-// the inerds of the callback function for spotify 
-function callback(location){
-  // request refresh and access tokens after checking the state parameter
-  const { code, state } = req.query;
-  // console.log("code");
-  // console.log(code);
-  // console.log("state");
-  // console.log(state);
-  const storedState = req.cookies ? req.cookies[stateKey] : null;
-  if (state === null || state !== storedState) { // if the state is vailid
-    response.redirect('/#' +
-      querystring.stringify({
-        error: 'state_mismatch'
-      }));
-  } else {
-    spotifyApi.authorizationCodeGrant(code).then(data => {
-      const { expires_in, access_token, refresh_token } = data.body;
-      // console.log(accessToken);
-      response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
-      response.cookie("spotifyRefresToken", refresh_token)
-      if (location == "index"){
-        response.redirect(`/index.html`); //redirect to home page
-      } else {
-        response.redirect(`/convert.html`); //redirect to convert page
-      }
-    }).catch(err => {
-      response.redirect('/#/error/invalid token');
-    });
-  };
-}
 // callback funciton for logging in on the home page
 router.get('/spotify/callback', function(req, response) {
-  callback("index");
+    // request refresh and access tokens after checking the state parameter
+    const { code, state } = req.query;
+    // console.log("code");
+    // console.log(code);
+    // console.log("state");
+    // console.log(state);
+    const storedState = req.cookies ? req.cookies[stateKey] : null;
+    if (state === null || state !== storedState) { // if the state is vailid
+      response.redirect('/#' +
+        querystring.stringify({
+          error: 'state_mismatch'
+        }));
+    } else {
+      spotifyApi.authorizationCodeGrant(code).then(data => {
+        const { expires_in, access_token, refresh_token } = data.body;
+        // console.log(accessToken);
+        response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
+        response.cookie("spotifyRefresToken", refresh_token)
+        response.redirect(`/index.html`); //redirect to home page
+      }).catch(err => {
+        response.redirect('/#/error/invalid token');
+      });
+    };
 });
 
 // callback funciton for loogining in on the convert page
 router.get('/spotify/callback/convert', function(req, response) { 
-  callback("convert")
+    // request refresh and access tokens after checking the state parameter
+    const { code, state } = req.query;
+    // console.log("code");
+    // console.log(code);
+    // console.log("state");
+    // console.log(state);
+    const storedState = req.cookies ? req.cookies[stateKey] : null;
+    if (state === null || state !== storedState) { // if the state is vailid
+      response.redirect('/#' +
+        querystring.stringify({
+          error: 'state_mismatch'
+        }));
+    } else {
+      spotifyApi.authorizationCodeGrant(code).then(data => {
+        const { expires_in, access_token, refresh_token } = data.body;
+        // console.log(accessToken);
+        response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
+        response.cookie("spotifyRefresToken", refresh_token)
+        response.redirect(`/convert.html`); //redirect to convert page
+      }).catch(err => {
+        response.redirect('/#/error/invalid token');
+      });
+    };
 });
 
 router.get('/spotify/refresh/:refresh', function(req, response) {
