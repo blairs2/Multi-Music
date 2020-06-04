@@ -36,7 +36,7 @@ window.addEventListener('load', async function(){
       try{
         document.getElementById('user-playlists').innerHTML += displayPlaylistLibrary(values[1], "Spotify");
       } catch {
-        
+
       }
     });
 
@@ -694,19 +694,10 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
                 if(song_matches.length > 0){
                   //add the new song to db
                   //Wait for it to be added
-                  await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), song_matches[0].id, track.id).then(async function(resp){
-                    console.log("parsed add song", JSON.parse(resp));
-                    //Just added it should be
-                    ////Change this to just check the resonse of dbAddSong
-                    await dbHasSong(track.id).then(async function(resp1){
-                      var response_json = JSON.parse(resp1);
-                      if(response_json != false){
-                      var song_id = response_json[0].song_ID;
-                      // console.log("Add song:", song_id);
-                      await dbAddSongToPlaylist(mm_playlist_id, song_id);
-                    }
+                  await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), song_matches[0].id, track.id).then(async function(inserted){
+                    var song_id = JSON.parse(inserted).insertId; //Gets the recently inserted song ID
+                    await dbAddSongToPlaylist(mm_playlist_id, song_id);
                   });
-                });
               } else {
                 console.log(track.title, "NOT FOUND");
               }
@@ -718,18 +709,10 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
             if(response.hasOwnProperty("songs")){
               var song_matches = response.songs.data;
               if(song_matches.length > 0){
-                await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), track.id, song_matches[0].id,).then(async function(){
-                  // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
-                  await dbHasSong(track.id).then(async function(resp1){
-                    var response_json = JSON.parse(resp1);
-                    if(response_json != false){
-                      var song_id = response_json[0].song_ID;
-                      await dbAddSongToPlaylist(mm_playlist_id, song_id);
-                    }
-
-                  });
+                await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), track.id, song_matches[0].id,).then(async function(inserted){
+                  var song_id = JSON.parse(inserted).insertId; //Gets the recently inserted song ID
+                  await dbAddSongToPlaylist(mm_playlist_id, song_id);
                 });
-
               } else {
                 console.log(track.title, "NOT FOUND");
               }
@@ -773,21 +756,24 @@ async function establishPlaylist(playlist_id, title, user_id, current_service, c
      var db_playlist_id = dbPlaylistExists(playlist_id).then(response => {
        if(response == 'false'){
          if(current_service == "Apple Music"){
-           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=null, appleID=playlist_id).then(()=>{
-               // console.log(title, user_id, current_service, playlist_id);
+           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=null, appleID=playlist_id).then((inserted)=>{
+             var mm_playlist_id = JSON.parse(inserted).insertId;
+             convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
            });
          } else if (current_service == "Spotify"){
-           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=playlist_id, appleID=null).then(()=>{
-             // console.log(title, user_id, current_service, playlist_id);
+           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=playlist_id, appleID=null).then((inserted)=>{
+             var mm_playlist_id = JSON.parse(inserted).insertId;
+             convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
            });
          } else {
            console.log("Invalid Service");
          }
-         dbPlaylistExists(playlist_id).then(value => {
-           var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
-           console.log("New playlist: ", mm_playlist_id);
-           convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
-         });
+         // dbPlaylistExists(playlist_id).then(value => {
+         //
+         //   var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
+         //   console.log("New playlist: ", mm_playlist_id);
+         //   convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
+         // });
        } else {
          var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
          console.log("playlist id:",mm_playlist_id);
