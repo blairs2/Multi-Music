@@ -185,26 +185,26 @@ router.get('/spotify/user/playlists/:token', function(req, response){
           Authorization: { 'Authorization': 'Bearer ' + req.params.token },
           json: true
         };
-    request.get(options, function(error, res, body) {
+      request.get(options, function(error, res, body) {
         if (error) { //if request fails
             response.send("ERROR getting list of user playlist" + error);
         } else {
             console.log(body);
             console.log("here2")
-            retval = { playlists: []}
-            for(i = 0; i < body.items.length; i++){
-                retval.playlists.push({
-                  title: body.items[i].name,
-                  description: body.items[i].description,
-                  href: body.items[i].href,
-                  id: body.items[i].id,
-                  artwork: body.items[i].images.length != 0 ?
-                           body.items[i].images.length == 1 ?
-                           body.items[i].images[0].url :
-                           body.items[i].images[1].url : null
-                });
-            }
-            response.send(retval);
+            // retval = { playlists: []}
+            // for(i = 0; i < body.items.length; i++){
+            //     retval.playlists.push({
+            //       title: body.items[i].name,
+            //       description: body.items[i].description,
+            //       href: body.items[i].href,
+            //       id: body.items[i].id,
+            //       artwork: body.items[i].images.length != 0 ?
+            //                body.items[i].images.length == 1 ?
+            //                body.items[i].images[0].url :
+            //                body.items[i].images[1].url : null
+            //     });
+            // }
+            // response.send(retval);
         }
     });
   }
