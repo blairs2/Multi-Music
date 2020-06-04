@@ -62,17 +62,16 @@
       <div>
         <section class="clean-block clean-form dark">
             <div class="container">
-                <form id="login-form" name="login-form">
+                <form id="login-form" name="login-form" autocomplete="off">
                     <div class="form-group" style="text-align:left"><label for="email">Email</label><input class="form-control item" type="text" id="email" name="email" onkeyup="check()" required></div>
                     <div class="form-group" style="text-align:left"><label for="password">Password</label><input class="form-control" type="password" id="password" name="password" onkeyup="check()" required></div>
-                    <div class="form-group">
                     <br>
                     <div><h6>Choose your streaming platform</h6></div><br>
                     <button id="spotify-login" disabled type="button" class="btn"><img style="width:100px;height:30px;" src="assets/Spotify.png" alt=""></button>&emsp;
                     <button id="apple-login" disabled type="button" class="btn"><img style="width:100px;height:25px;" src="assets/apple.png" alt=""></button>
-                  </div><button id="login-btn" class="btn btn-default" disabled type="submit" >Login</button><br><br><br>
-                    <div><h6>New to Multi Music? Register <a href="register.html">here</a></h6></div><br>
                 </form>
+                <br><br><button id="login-btn" class="btn btn-default" disabled onclick="loginAction()" >Login</button><br><br><br>
+                <div><h6>New to Multi Music? Register <a href="register.html">here</a></h6></div><br>
             </div>
         </section>
       </div>
@@ -134,24 +133,33 @@
 
       document.getElementById("spotify-login").addEventListener('click', () => {
         login().then((resp) => {
-          if(resp == true){
+          if(resp){
             console.log("good credentials")
+            console.log(resp);
+            setCookie(resp, "userID");
             spotifyLogin();//will route user to home page after they log in
           } else {
             alert("Invalid Username or Password please try agian.");
           }
+        }).catch((error) => {
+          alert("Invalid Username or Password please try agian.");
         });
       });
 
-      document.getElementById("login-btn").addEventListener('click', () =>{
-        login().then((resp) => {
-          if(resp == true){
-            setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+      async function loginAction(){
+        await login().then((resp) => {
+          if(resp){
+            console.log(resp);
+            setCookie(resp, "userID");
+            setTimeout(function() { location.href = 'http://' + url + '/index.html'; });
           } else {
+            console.log(resp);
             alert("Invalid Username or Password please try agian.");
           }
+        }).catch((error) => {
+          alert("Invalid Username or Password please try agian.");
         });
-      });
+      };
 
     </script>
 

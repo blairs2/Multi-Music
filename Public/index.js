@@ -36,7 +36,7 @@ window.addEventListener('load', async function(){
       try{
         document.getElementById('user-playlists').innerHTML += displayPlaylistLibrary(values[1], "Spotify");
       } catch {
-        
+
       }
     });
 
@@ -131,12 +131,16 @@ document.getElementById('search-input').addEventListener("keyup", async function
     document.getElementById("generated-content").innerHTML = "<h4 style='text-align: center;'>Loading Search</h4>"; //Clear the screen for the search results
     //Using promises ensures that both functions will be completed before the final step
     try {
-      var applePromise = await searchByTerm("term=" + searchTerm + "&limit=10&types=songs,albums,playlists");
+      // var applePromise = await searchByTerm("term=" + searchTerm + "&limit=10&types=songs,albums,playlists");
+      var applePromise = await searchByTerm("term=" + searchTerm + "&limit=10&types=playlists");
+
     } catch(e) {
       console.log(e);
     }
     try {
-      var spotifyPromise = await spotifySearch('q=' + searchTerm + '&type=track,album,playlist');
+      // var spotifyPromise = await spotifySearch('q=' + searchTerm + '&type=track,album,playlist');
+      var spotifyPromise = await spotifySearch('q=' + searchTerm + '&type=playlist');
+
     } catch(e) {
       console.log(e);
     }
@@ -308,7 +312,7 @@ function retreiveUserPlaylists(){
       }
     }
   };
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken") || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
   });
@@ -326,7 +330,7 @@ function retrieveUserSongs(){
      //Code to change the generated-content inner html
    }
  };
- appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+ appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
  xhttp.open("GET", "http://" + url + "/apple-music/library/songs/" + appleToken.replace(/\//g, '%2F'), true);
  xhttp.send(); // Gets the response
 }
@@ -344,7 +348,7 @@ xhttp.onreadystatechange = function ReceivedCallback() {
   }
 };
 
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
 }
@@ -363,7 +367,7 @@ function retrieveUserAlbums(){
    }
  };
 
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/albums/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
 }
@@ -421,7 +425,7 @@ function addTrackToPlaylist(playlist_id){
 
       }
     };
-    appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+    appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
     xhttp.open("POST", "http://" + url + "/apple-music/library/" + playlist_id + "/playlist/" + appleToken.replace(/\//g, '%2F'), true);
     xhttp.send(); // Gets the response
 }
@@ -442,7 +446,7 @@ async function appleUserPlaylistTracks(playlist_id){
     }
    }
   };
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/relationships/" + appleToken.replace(/\//g, '%2F') , true);
   xhttp.send(); // Gets the response
   });
@@ -464,7 +468,7 @@ async function appleUserPlaylistAttributes(playlist_id){
     }
    }
   };
-  appleToken = getCookie("appleUserToken"); //get apple music token from cookie
+  appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + playlist_id + "/" + appleToken.replace(/\//g, '%2F') , true);
   xhttp.send(); // Gets the response
   });
@@ -604,7 +608,7 @@ function displayPlaylistTracks(playlist_tracks){
    title = playlist_tracks[i].title;
    artist = playlist_tracks[i].artist;
    songId = playlist_tracks[i].id;
-   if(playlist_tracks[i].hasOwnProperty("artwork")){
+   if(playlist_tracks[i].hasOwnProperty("artwork") && playlist_tracks[i].artwork != null){
      url = playlist_tracks[i].artwork;
 
    } else {
@@ -694,19 +698,10 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
                 if(song_matches.length > 0){
                   //add the new song to db
                   //Wait for it to be added
-                  await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), song_matches[0].id, track.id).then(async function(resp){
-                    console.log("parsed add song", JSON.parse(resp));
-                    //Just added it should be
-                    ////Change this to just check the resonse of dbAddSong
-                    await dbHasSong(track.id).then(async function(resp1){
-                      var response_json = JSON.parse(resp1);
-                      if(response_json != false){
-                      var song_id = response_json[0].song_ID;
-                      // console.log("Add song:", song_id);
-                      await dbAddSongToPlaylist(mm_playlist_id, song_id);
-                    }
+                  await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), song_matches[0].id, track.id).then(async function(inserted){
+                    var song_id = JSON.parse(inserted).insertId; //Gets the recently inserted song ID
+                    await dbAddSongToPlaylist(mm_playlist_id, song_id);
                   });
-                });
               } else {
                 console.log(track.title, "NOT FOUND");
               }
@@ -718,18 +713,10 @@ async function convertPlaylist(playlist_id, current_service, mm_playlist_id, pla
             if(response.hasOwnProperty("songs")){
               var song_matches = response.songs.data;
               if(song_matches.length > 0){
-                await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), track.id, song_matches[0].id,).then(async function(){
-                  // console.log("added: ",new_service, song_matches[0].title, song_matches[0].artist, song_matches[0].id, track.id)
-                  await dbHasSong(track.id).then(async function(resp1){
-                    var response_json = JSON.parse(resp1);
-                    if(response_json != false){
-                      var song_id = response_json[0].song_ID;
-                      await dbAddSongToPlaylist(mm_playlist_id, song_id);
-                    }
-
-                  });
+                await dbAddSong(encodeURIComponent(song_matches[0].title), encodeURIComponent(song_matches[0].artist), track.id, song_matches[0].id,).then(async function(inserted){
+                  var song_id = JSON.parse(inserted).insertId; //Gets the recently inserted song ID
+                  await dbAddSongToPlaylist(mm_playlist_id, song_id);
                 });
-
               } else {
                 console.log(track.title, "NOT FOUND");
               }
@@ -773,21 +760,24 @@ async function establishPlaylist(playlist_id, title, user_id, current_service, c
      var db_playlist_id = dbPlaylistExists(playlist_id).then(response => {
        if(response == 'false'){
          if(current_service == "Apple Music"){
-           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=null, appleID=playlist_id).then(()=>{
-               // console.log(title, user_id, current_service, playlist_id);
+           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=null, appleID=playlist_id).then((inserted)=>{
+             var mm_playlist_id = JSON.parse(inserted).insertId;
+             convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
            });
          } else if (current_service == "Spotify"){
-           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=playlist_id, appleID=null).then(()=>{
-             // console.log(title, user_id, current_service, playlist_id);
+           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=playlist_id, appleID=null).then((inserted)=>{
+             var mm_playlist_id = JSON.parse(inserted).insertId;
+             convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
            });
          } else {
            console.log("Invalid Service");
          }
-         dbPlaylistExists(playlist_id).then(value => {
-           var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
-           console.log("New playlist: ", mm_playlist_id);
-           convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
-         });
+         // dbPlaylistExists(playlist_id).then(value => {
+         //
+         //   var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
+         //   console.log("New playlist: ", mm_playlist_id);
+         //   convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
+         // });
        } else {
          var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
          console.log("playlist id:",mm_playlist_id);
