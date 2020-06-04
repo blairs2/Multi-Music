@@ -173,6 +173,7 @@ router.get('/spotify/user/:token', function(req, response){
 
 //Get a list of all the user playlists
 router.get('/spotify/user/playlists/:token', function(req, response){
+  console.log(this.params.token);
     if(req.params.token == 'null'){
       console.log("error invalid token");
       response.send("error invalid token");
