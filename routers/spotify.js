@@ -140,7 +140,7 @@ router.get('/spotify/callback/convert', function(req, response) {
     };
 });
 
-router.post('/spotify/refresh/:refresh', function(req, response) {
+router.post('/spotify/refresh/:refresh', function(req, res) {
     // requesting access token from refresh token
     var refresh_token = req.params.refresh;
      options = {
@@ -154,7 +154,7 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
     };
     request.post(options, function(error, response, body) {
       if (!error && response.statusCode === 200) {
-        response.cookie("spotifyUserToken", body.access_token);
+        res.cookie("spotifyUserToken", body.access_token);
       }
     });
 })
