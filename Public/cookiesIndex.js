@@ -8,10 +8,11 @@ async function getCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
   } else {
-    expirationTime = getCookie("spotifyExpiration") || null;
+    var expirationTime = getCookie("spotifyExpiration") || null;
+    var d = new Date();
     if (expirationTime == null){ // if no expiration time return null
       return null;
-    } else if (expirationTime < Date.getTime()){ // if token expired
+    } else if (expirationTime < d.getTime()){ // if token expired
       await refreshToken(); // refresh the token
       const value = `; ${document.cookie}`; // get the new token
       const parts = value.split(`; ${name}=`);
