@@ -182,6 +182,7 @@ async function spotifyCreateNewPlaylist(userID, name, public = false, descriptio
   return new Promise(function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
+        console.log(this.status);
         if(this.status == 200){
           resolve(this.responseText);
         } else {
