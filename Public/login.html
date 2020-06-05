@@ -125,7 +125,7 @@
           //Then it sets the appleUserToken cookie for our site
           music.authorize().then(musicUserToken => {
 
-            alert("successfully signed in to Apple Music");
+            alert("Successfully signed in to Apple Music");
             setCookie(musicUserToken, "appleUserToken")
           });
         });
@@ -139,10 +139,10 @@
             setCookie(resp, "userID");
             spotifyLogin();//will route user to home page after they log in
           } else {
-            alert("Invalid Username or Password please try agian.");
+            alert("Invalid Username or Password please try again.");
           }
         }).catch((error) => {
-          alert("Invalid Username or Password please try agian.");
+          alert("Invalid Username or Password please try again.");
         });
       });
 
@@ -154,10 +154,10 @@
             setTimeout(function() { location.href = 'http://' + url + '/index.html'; });
           } else {
             console.log(resp);
-            alert("Invalid Username or Password please try agian.");
+            alert("Invalid Username or Password please try again.");
           }
         }).catch((error) => {
-          alert("Invalid Username or Password please try agian.");
+          alert("Invalid Username or Password please try again.");
         });
       };
 
