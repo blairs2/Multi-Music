@@ -251,6 +251,7 @@ async function addPlaylist(body, appleToken){
           }
           spotifyGetUser().then(userData =>{ // get user id from spotify
             user = JSON.parse(userData);
+            console.log(user.id);
             spotifyCreateNewPlaylist(user.id, name).then(playlist =>{ // create new empty playlist
               var newPlaylist = JSON.parse(playlist);
               spotifyAddTrackToPlaylist(newPlaylist.id, uris); // add tracks to playlist
