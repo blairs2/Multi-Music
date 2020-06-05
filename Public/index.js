@@ -24,8 +24,7 @@ document.addEventListener('musickitloaded', () => {
 window.addEventListener('load', async function(){
   //Populates the left hand side of screen with all the playlsits in the users library
   //user logged into both apple and spotify
-  spotifyToken = getCookie("spotifyUserToken") || null;
-  if(getCookie("appleUserToken") != null && spotifyToken != null){
+  if(getCookie("appleUserToken") != null && getCookie("spotifyUserToken") != null){
     document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGO.png");
     document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGO.png");
     var applePlaylsits = await retreiveUserPlaylists();
@@ -53,7 +52,7 @@ window.addEventListener('load', async function(){
       document.getElementById('user-playlists').innerHTML = retval;
     });
   }
-  else if(spotifyToken != null){ //user logged into spotify
+  else if(getCookie("spotifyUserToken") != null){ //user logged into spotify
     document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGOBW.png");
     document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGO.png");
     await spotifyGetUserPlaylists().then(playlists =>{
@@ -322,6 +321,7 @@ function retreiveUserPlaylists(){
     }
   };
   appleToken = getCookie("appleUserToken") || null; //get apple music token from cookie
+  console.log(appleToken);
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
   });
