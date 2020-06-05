@@ -191,7 +191,7 @@ async function spotifyCreateNewPlaylist(userID, name, public = false, descriptio
       }
     };
     spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
-    xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + spotifyToken, true);
+    xhttp.open('POST', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + spotifyToken, true);
     xhttp.send(); // Gets the response
   });
 }
