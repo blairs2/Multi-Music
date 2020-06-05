@@ -25,6 +25,8 @@ window.addEventListener('load', async function(){
   //Populates the left hand side of screen with all the playlsits in the users library
   //user logged into both apple and spotify
   if(getCookie("appleUserToken") != null && getCookie("spotifyUserToken") != null){
+    document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGO.png");
+    document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGO.png");
     var applePlaylsits = await retreiveUserPlaylists();
     try{
       var spotifyPlaylists = await spotifyGetUserPlaylists();
@@ -42,6 +44,8 @@ window.addEventListener('load', async function(){
 
   }
   else if(getCookie("appleUserToken") != null){ //user logged into apple
+    document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGO.png");
+    document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGOBW.png");
     await retreiveUserPlaylists().then(playlists =>{
       //This generates the list of playlists on the left hand side of the screen
       var retval = displayPlaylistLibrary(playlists, "Apple Music");
@@ -49,7 +53,8 @@ window.addEventListener('load', async function(){
     });
   }
   else if(getCookie("spotifyUserToken") != null){ //user logged into spotify
-
+    document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGOBW.png");
+    document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGO.png");
     await spotifyGetUserPlaylists().then(playlists =>{
       //This generates the list of playlists on the left hand side of the screen
       var retval = displayPlaylistLibrary(playlists, "Spotify");
@@ -91,7 +96,7 @@ window.addEventListener('load', async function(){
 
        Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
          //sets up divs to be populated
-         document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+         document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" style="display: flex"> </div> <div id="playlist-songs" class="col-11" style="padding-left: 25%"> </div> </div>';
          //The response should be a list with only one element
          var playlistAttr = JSON.parse(values[0]).playlists[0];
          document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(playlistAttr, this.getAttribute("data-service"));
@@ -593,7 +598,7 @@ function displayPlaylistAttributes(playlist_attributes, service){
 //  retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button>`;
  if (playlist_attributes.hasOwnProperty("artwork")) {
      var artworkDisplay = playlist_attributes.artwork;
-     retval += `<div><a href="#" style="padding: 15px"><img class='card-img-top' src="${artworkDisplay}" alt='' style="width: 300px"></a>`;
+     retval += `<div><a href="#" style="padding: 15px"><img class='card-img-top' src="${artworkDisplay}" alt='' style="width: 300px; height: 300px"></a>`;
      retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center; margin: 10px 0px 0px 30%">Convert Playlist</button>`;
      retval += '<div id="convert-link"></div></div>';
  } else{

@@ -16,7 +16,7 @@
   <!-- Custom styles for this template -->
   <link href="css/shop-homepage.css" rel="stylesheet">
     <script src="publicIndex.js"></script>
-    <link rel="shortcut icon" href="">
+    <link rel="icon" href="assets/MULTILOGOBLACK.png">
 </head>
 
 <body>
@@ -48,6 +48,21 @@
            <li class="nav-item">
              <a class="nav-link" onclick="contactLoad()" href="#">Contact</a>
            </li>
+           <div style="align-items: center; display: flex; justify-content: center;">
+           <li>
+             <a><img onclick="toggleAppleLogo()" src="assets/APPLEMUSICLOGOBW.png" style="width: 35px;" title="Login to Apple Music" id="appleLogo"></a>           
+           </li>
+          </div>
+           <div style="align-items: center; display: flex; justify-content: center;">
+            <li>
+              <a style="padding:15px;"><img onclick="toggleSpotifyLogo()" src="assets/SPOTIFYLOGOBW.png" style="width: 35px;" title="Login to Spotify" id="spotifyLogo"></a>           
+            </li>
+           </div>
+           <div style="align-items: center; display: flex; justify-content: center;">
+           <li>
+             <button style="border-radius:5px; background-color:whitesmoke;">Log Out</button>
+           </li>
+           </div>
            <!-- <li class="nav-item">
             <button id="login-btn">Login to Apple Music</button>
           </li> -->

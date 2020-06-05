@@ -176,3 +176,27 @@ function convertPlaylist() {
          '</div>' +
          '</div>' ;
 }
+
+function toggleAppleLogo() {
+   var x = document.getElementById("appleLogo");
+   if (x.getAttribute("src") == "assets/APPLEMUSICLOGOBW.png") {
+      x.setAttribute("src", "assets/APPLEMUSICLOGO.png");
+      x.setAttribute("title", "Log out of Apple Music");
+   }
+   else {
+      x.setAttribute("src", "assets/APPLEMUSICLOGOBW.png");
+      x.setAttribute("title", "Login to Apple Music");
+   }
+}
+
+function toggleSpotifyLogo() {
+   var x = document.getElementById("spotifyLogo");
+   if (x.getAttribute("src") == "assets/SPOTIFYLOGOBW.png") {
+      x.setAttribute("src", "assets/SPOTIFYLOGO.png");
+      x.setAttribute("title", "Log out of Spotify");
+   }
+   else {
+      x.setAttribute("src", "assets/SPOTIFYLOGOBW.png");
+      x.setAttribute("title", "Login to Spotify");
+   }
+}
