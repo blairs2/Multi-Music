@@ -158,10 +158,9 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
         response.cookie("spotifyUserToken", body.access_token);
         console.log("reciveToken")
         console.log(body.access_token)
-        
+        response.send("complete");
       }
     });
-    response.send("complete"); 
 })
 
 //Get user data for the current user
