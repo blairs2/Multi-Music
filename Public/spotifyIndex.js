@@ -177,16 +177,22 @@ function spotifyRenamePlaylist(playlistid, name){
  * @param {string} description a description of the playlist
  * @param {boolean} collaborative true if playlist can be edited by other users
  */
-function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
-    var xhttp = new XMLHttpRequest();
+async function spotifyCreateNewPlaylist(userID, name, public = false, description = '', collaborative = false){
+  var xhttp = new XMLHttpRequest();
+  return new Promise(function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+          reject("Error Creating New Playlist");
         }
+      }
     };
     spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + name + '/' + public + '/' + description + '/' + collaborative + "/" + spotifyToken, true);
     xhttp.send(); // Gets the response
+  });
 }
 
 /**
