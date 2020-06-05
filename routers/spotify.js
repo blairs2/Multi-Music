@@ -143,6 +143,7 @@ router.get('/spotify/callback/convert', function(req, response) {
 router.post('/spotify/refresh/:refresh', function(req, response) {
     // requesting access token from refresh token
     var refresh_token = req.params.refresh;
+    var temp;
      options = {
       url: 'https://accounts.spotify.com/api/token',
       headers: { 'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))},              
@@ -156,10 +157,11 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
       if (!error && res.statusCode === 200) {
         console.log("postToken")
         response.cookie("spotifyUserToken", body.access_token);
+        temp = body.access_token;
         console.log("reciveToken")
       }
     });
-    response.send(getCookie("spotifyUserToken")); 
+    response.send(temp); 
 })
 
 //Get user data for the current user
