@@ -25,8 +25,13 @@ window.addEventListener('load', async function(){
   //Populates the left hand side of screen with all the playlsits in the users library
   //user logged into both apple and spotify
   if(getCookie("appleUserToken") != null && getCookie("spotifyUserToken") != null){
-    document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGO.png");
-    document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGO.png");
+    var appleLogo = document.getElementById("appleLogo");
+    var spotifyLogo = document.getElementById("spotifyLogo");
+    spotifyLogo.setAttribute("src", "assets/SPOTIFYLOGO.png");
+    spotifyLogo.setAttribute("title", "Log out of Spotify");
+    appleLogo.setAttribute("src", "assets/APPLEMUSICLOGO.png");
+    appleLogo.setAttribute("title", "Log out of Apple Music");
+
     var applePlaylsits = await retreiveUserPlaylists();
     try{
       var spotifyPlaylists = await spotifyGetUserPlaylists();
@@ -44,8 +49,12 @@ window.addEventListener('load', async function(){
 
   }
   else if(getCookie("appleUserToken") != null){ //user logged into apple
-    document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGO.png");
-    document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGOBW.png");
+    var appleLogo = document.getElementById("appleLogo");
+    var spotifyLogo = document.getElementById("spotifyLogo");
+    spotifyLogo.setAttribute("src", "assets/SPOTIFYLOGOBW.png");
+    spotifyLogo.setAttribute("title", "Log in to Spotify");
+    appleLogo.setAttribute("src", "assets/APPLEMUSICLOGO.png");
+    appleLogo.setAttribute("title", "Log out of Apple Music");
     await retreiveUserPlaylists().then(playlists =>{
       //This generates the list of playlists on the left hand side of the screen
       var retval = displayPlaylistLibrary(playlists, "Apple Music");
@@ -53,8 +62,12 @@ window.addEventListener('load', async function(){
     });
   }
   else if(getCookie("spotifyUserToken") != null){ //user logged into spotify
-    document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGOBW.png");
-    document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGO.png");
+    var appleLogo = document.getElementById("appleLogo");
+    var spotifyLogo = document.getElementById("spotifyLogo");
+    spotifyLogo.setAttribute("src", "assets/SPOTIFYLOGO.png");
+    spotifyLogo.setAttribute("title", "Log out of Spotify");
+    appleLogo.setAttribute("src", "assets/APPLEMUSICLOGOBW.png");
+    appleLogo.setAttribute("title", "Log in to Apple Music");
     await spotifyGetUserPlaylists().then(playlists =>{
       //This generates the list of playlists on the left hand side of the screen
       var retval = displayPlaylistLibrary(playlists, "Spotify");

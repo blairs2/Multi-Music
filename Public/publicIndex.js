@@ -179,23 +179,29 @@ function convertPlaylist() {
 
 function toggleAppleLogo() {
    var x = document.getElementById("appleLogo");
-   if (x.getAttribute("src") == "assets/APPLEMUSICLOGOBW.png") {
-      x.setAttribute("src", "assets/APPLEMUSICLOGO.png");
-      x.setAttribute("title", "Log out of Apple Music");
+   if (x.getAttribute("src") == "assets/APPLEMUSICLOGOBW.png") { //Log in
+      appleLogin();
+      location.reload();
+      // x.setAttribute("src", "assets/APPLEMUSICLOGO.png");
+      // x.setAttribute("title", "Log out of Apple Music");
    }
-   else {
-      x.setAttribute("src", "assets/APPLEMUSICLOGOBW.png");
-      x.setAttribute("title", "Login to Apple Music");
+   else { //Log out
+      deleteCookie("appleUserToken");
+      location.reload();
+      // x.setAttribute("src", "assets/APPLEMUSICLOGOBW.png");
+      // x.setAttribute("title", "Login to Apple Music");
    }
 }
 
 function toggleSpotifyLogo() {
    var x = document.getElementById("spotifyLogo");
-   if (x.getAttribute("src") == "assets/SPOTIFYLOGOBW.png") {
-      x.setAttribute("src", "assets/SPOTIFYLOGO.png");
-      x.setAttribute("title", "Log out of Spotify");
+   if (x.getAttribute("src") == "assets/SPOTIFYLOGOBW.png") {//log in
+     spotifyLogin(); //will route user to back to home page after they log in
+     // x.setAttribute("src", "assets/SPOTIFYLOGO.png");
+     // x.setAttribute("title", "Log out of Spotify");
    }
-   else {
+   else {//log out
+      deleteCookie("spotifyUserToken");
       x.setAttribute("src", "assets/SPOTIFYLOGOBW.png");
       x.setAttribute("title", "Login to Spotify");
    }
