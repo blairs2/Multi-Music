@@ -236,6 +236,8 @@ async function addPlaylist(body, appleToken){
   });
 
   document.getElementById("convert-spotify").addEventListener('click', ()=>{
+    var url = (new URL(document.location));
+    name = url.searchParams.get("name");
     accessToken = getCookie("spotifyUserToken"); // get access token
     if (accessToken == null){ // if no access token log user into spotify
       spotifyLogin("/convert"); 
@@ -249,7 +251,7 @@ async function addPlaylist(body, appleToken){
           }
           spotifyGetUser().then(userData =>{ // get user id from spotify
             user = JSON.parse(userData);
-            spotifyCreateNewPlaylist(user.id, url.searchParams.get("name")).then(playlist =>{ // create new empty playlist
+            spotifyCreateNewPlaylist(user.id, name).then(playlist =>{ // create new empty playlist
               var newPlaylist = JSON.parse(playlist);
               spotifyAddTrackToPlaylist(newPlaylist.id, uris); // add tracks to playlist
             });
