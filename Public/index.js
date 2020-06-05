@@ -57,7 +57,7 @@ window.addEventListener('load', async function(){
     });
   }
 
-  //all of teh playlsts added to screen from above
+  //all of the playlsts added to screen from above
   var user_playlists = document.getElementsByClassName("playlist-button");
   //Add event listener to each playlist.
   //Clicking on a playlists will trigger two GET requests. One gives attributes of library playlist, two gives tracks of library playlist
@@ -186,7 +186,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
           //waits for all the playlist attributes and tracks before displaying them
           Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
             //sets up divs to be populated
-            document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" class="col-3"> </div> <div id="playlist-songs" class="col-9"> </div> </div>';
+            document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" style="display: flex"> </div> <div id="playlist-songs" class="col-11" style="padding-left: 25%"> </div> </div>';
             //The response should be a list with only one element
             var playlistAttr = JSON.parse(values[0]).playlists[0];
             //Populate the divs with the playlist content
@@ -236,10 +236,10 @@ document.getElementById('search-input').addEventListener("keyup", async function
 *Apple playback features
 *NOT USED IN V1
 */
-document.getElementById('next-btn').addEventListener("click", () =>{ music.skipToNextItem(); });
-document.getElementById('last-btn').addEventListener("click", () =>{ music.skipToPreviousItem(); });
-document.getElementById('play-btn').addEventListener('click', () => {music.play(); });
-document.getElementById('pause-btn').addEventListener('click', () => { music.pause(); });
+//document.getElementById('next-btn').addEventListener("click", () =>{ music.skipToNextItem(); });
+//document.getElementById('last-btn').addEventListener("click", () =>{ music.skipToPreviousItem(); });
+//document.getElementById('play-btn').addEventListener('click', () => {music.play(); });
+//document.getElementById('pause-btn').addEventListener('click', () => { music.pause(); });
 
 //Populates search hints below search bar
 function autocomplete(input, arr) {
@@ -267,11 +267,14 @@ function autocomplete(input, arr) {
        listItem.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
        listItem.addEventListener("click", function(e) {
            input.value = this.getElementsByTagName("input")[0].value;
+           input.dispatchEvent(new KeyboardEvent('keyup', {keyCode: 13}));
            closeAllLists();
        });
+
        first.appendChild(listItem);
 
      }
+
 
 
  //Closes all the items
@@ -517,7 +520,13 @@ async function getCatalogPlaylistAttributes(playlist_id){
  * @param {string} playlist_id Is a apple playlist id. Ex. p.MoGJYM3CYXW09B
  */
 function displaySearch(search_response, service){
-  var searchResults = '<h3>'+service+'</h3><hr><br>'; //Gives a header. Indicating what service the search results came from
+  if (service == "Apple Music") {
+    var searchResults = '<h3><img src="assets/APPLEMUSICLOGO.png" style="width:50px"> '+service+'</h3><hr>';
+  }
+  if (service == "Spotify") {
+    var searchResults = '<h3><img src="assets/SPOTIFYLOGO.png" style="width:50px"> '+service+'</h3><hr>';
+  }
+  //Gives a header. Indicating what service the search results came from
   var h, w, url;
   ////ALBUMS AND SONGS NOT IN V
   // if(search_response.hasOwnProperty("albums")){
@@ -551,9 +560,9 @@ function displaySearch(search_response, service){
   //   }
   //   searchResults += '</ul></div></div><hr>';
   // }
-  if(search_response.hasOwnProperty("playlists")){ //Checks if playlists were in the search response
+  if(search_response.hasOwnProperty("playlists") && search_response.playlists.data.length){ //Checks if playlists were in the search response
     var playlists = search_response.playlists.data;
-    searchResults += '<h2>Playlists</h2><div class="scrolling-wrapper">';
+    searchResults += '<h4>Playlists</h4><div class="scrolling-wrapper">';
     for(var i = 0; i< playlists.length; i++){
        //every playlist in the search should have these attributes
        url = playlists[i].artwork;
@@ -562,6 +571,8 @@ function displaySearch(search_response, service){
        searchResults += `<div class="card playlist-card" value="playlist" data-service="${service}" data-value="${playlistId}"><img src=${url} height=100% width=100%><span class="album-artist-label">${playlistName}</span></div>`;
      }
      searchResults += '</div><hr>';
+  } else {
+    searchResults += '<h5>No results found</h5><br>';
   }
   return searchResults;
 }
@@ -574,21 +585,27 @@ function displaySearch(search_response, service){
 function displayPlaylistAttributes(playlist_attributes, service){
  var retval = "";
  var playlistTitle = playlist_attributes.title;
- retval += `<h4>${playlistTitle}</h4>`;
+//  retval += `<div style="display:flex; align-items:center"><h4>${playlistTitle}</h4>`;
+//  retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button>`;
  if (playlist_attributes.hasOwnProperty("artwork")) {
      var artworkDisplay = playlist_attributes.artwork;
-     retval += `<a href="#"><img class='card-img-top' src="${artworkDisplay}" alt=''></a>`;
+     retval += `<div><a href="#" style="padding: 15px"><img class='card-img-top' src="${artworkDisplay}" alt='' style="width: 300px"></a>`;
+     retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center; margin: 10px 0px 0px 30%">Convert Playlist</button>`;
+     retval += '<div id="convert-link"></div></div>';
  } else{
-   retval += '<a href="#"><img class="card-img-top" src="/assets/Missing_content.png" alt=""></a>';
+   retval += '<a href="#" style="padding: 15px"><img class="card-img-top" src="/assets/Missing_content.png" alt="" style="width: 300px></a>';
  }
- retval += '<div style="text-align:left">';
+
+ retval += `<div style="display:block; margin: auto"><h4>${playlistTitle}</h4> `;
+ //retval += '<div style="text-align:left">';
  if (playlist_attributes.hasOwnProperty("description")){
    var playlistDescription = playlist_attributes.description;
-   retval += `<h7>"${playlistDescription}"</h7>`;
+   retval += `"${playlistDescription}"</div>`;
  }
- retval += '</div>';
- retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button>`;
- retval += '<div id="convert-link"> </div>';
+
+ //retval += '</div>';
+//  retval += `<span><button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button></span>`;
+//  retval += '<div id="convert-link"> </div>';
  return retval;
 }
 
@@ -600,6 +617,7 @@ function displayPlaylistTracks(playlist_tracks){
  var retval = "";
  var title, artist, sondId,url;
  retval += '<ul class="list-group">';
+ retval += '<table><tr style="border-bottom: 0.5px solid grey"><th style="width: 20px"></th><th style="width:400px">Song</th><th>Arist</th></tr>';
  for(var i = 0; i< playlist_tracks.length; i++){
    title = playlist_tracks[i].title;
    artist = playlist_tracks[i].artist;
@@ -610,8 +628,10 @@ function displayPlaylistTracks(playlist_tracks){
    } else {
      url = "/assets/Missing_content.png";
    }
-   retval += `<button type="button" class="list-group-item song-button" value="song" data-value="${songId}"><img class="song-button-img" src=${url}><span>${title}</span>&emsp;<span>${artist}</span></button>`;
- }
+   retval += `<tr style="border-bottom: 0.5px solid grey"><td><img class="song-button-img" data-value="${songId}" src=${url}></td><td>${title}</td><td>${artist}</td></tr>`;
+   //retval += `<button type="button" class="list-group-item song-button" value="song" data-value="${songId}"><img class="song-button-img" src=${url}><span>${title}</span>&emsp;<span>${artist}</span></button>`;
+  }
+retval+= "</table>";
  retval += "</div>";
  return retval;
 }
@@ -623,7 +643,7 @@ function displayPlaylistTracks(playlist_tracks){
 */
 function displayPlaylistLibrary(playlists, service){
   var cloudPlaylists = JSON.parse(playlists).playlists;
-  var retval = `<h5>${service} Playlists</h5>`;
+  var retval = `<h5 style="text-align: center;">${service} Playlists</h5>`;
   for(var i =0; i < cloudPlaylists.length; i++){
     var playlistName = cloudPlaylists[i].title;
     var playlist_id = cloudPlaylists[i].id;
