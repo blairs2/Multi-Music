@@ -316,15 +316,17 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
 });
 
 //Add the specified track to the specifed playlist
-router.post('/spotify/playlist/add/:playlistid/:uris/:token', function(req, response){
+router.post('/spotify/playlist/add/:token', function(req, response){
   if(req.params.token == null){
     console.log("error invalid token");
   } else {
     console.log(req.body);
     options = { // set request optinos
-        uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid + '/tracks',
+        uri: 'https://api.spotify.com/v1/playlists/' + req.playlistID + '/tracks',
         headers: { 'Authorization': 'Bearer ' + req.params.token },
-        body: req.body,
+        body: { 
+          uris: body.uris
+        },
         json: true
       };
       request.post(options, function(error, res, body){
@@ -337,12 +339,6 @@ router.post('/spotify/playlist/add/:playlistid/:uris/:token', function(req, resp
       });
     }
 });
-
-router.post('/spotify/test', function(req, response){
-  console.log(req.body);
-  console.log("test");
-  response.send(req.body);
-})
 
 //Changes the name of the playlist to the specifed name
 router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, response){
@@ -367,18 +363,18 @@ router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, r
 });
 
 //Create a new empty spotify playlist
-router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collaborative/:token', function(req, response){
+router.post('/spotify/playlist/create/:token', function(req, response){
   if(req.params.token == 'null'){
     response.send("error invalid token");
   } else {
     options = {
-        uri: 'https://api.spotify.com/v1/users/' + req.params.userID + '/playlists',
+        uri: 'https://api.spotify.com/v1/users/' + req.body.userID + '/playlists',
         headers: { 'Authorization': 'Bearer ' + req.params.token },
         body: {
-            name: req.params.name,
-            public: req.params.public,
-            description: req.params.description,
-            collaborative: req.params.collaborative},
+            name: req.body.name,
+            public: req.body.public,
+            description: req.body.description,
+            collaborative: req.body.collaborative},
         json: true
       };
     request.post(options, function(error, res, body){
