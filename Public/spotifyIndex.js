@@ -20,16 +20,22 @@ function spotifyLogin(extra){
 /**
  * Get the user data for the currently logged in user
  */
-function spotifyGetUser(){
-    var xhttp = new XMLHttpRequest();
+async function spotifyGetUser(){
+  var xhttp = new XMLHttpRequest();
+  return new Promise(function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error Getting Spotify User");
+      }
+     }
     };
     spotifyToken = getCookie("spotifyUserToken") || null ; //get spotify user token from cookie
     xhttp.open('GET', 'http://' + url + '/spotify/user/' + spotifyToken , true);
     xhttp.send(); // Gets the response
+  });
 }
 
 /**
@@ -43,7 +49,7 @@ async function spotifyGetUserPlaylists(){
         if(this.status == 200){
           resolve(this.responseText);
         } else {
-          reject("Error");
+          reject("Error Getting User Playlists");
         }
       }
     };
@@ -68,7 +74,7 @@ async function spotifyGetPlaylistTracks(playlistid){
        if(this.status == 200){
          resolve(this.responseText);
        } else {
-         reject("Error");
+         reject("Error Getting Playlist Tracks");
      }
     }
    };
@@ -90,7 +96,7 @@ async function spotifyGetPlaylistAttributes(playlistid){
         // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
         resolve(this.responseText);
       } else {
-      reject("Error");
+      reject("Error Getting Playlist Attributes");
     }
    }
   };
@@ -214,7 +220,7 @@ function spotifySearch(searchTerm){
          if(this.status == 200){
            resolve(this.responseText);
          } else {
-         reject("Error");
+         reject("Error Searching Spotify");
        }
       }
      };
@@ -235,7 +241,7 @@ function refreshToken(){
         if(this.status == 200){
           resolve(this.responseText);
         } else {
-          reject("Error");
+          reject("Error Refreshing Token");
         }
       }
     };
