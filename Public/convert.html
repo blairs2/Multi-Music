@@ -235,7 +235,7 @@ async function addPlaylist(body, appleToken){
 
   });
 
-  document.getElementById("convert-spotify").addEventListener('click', ()=>{
+  document.getElementById("convert-spotify").addEventListener('click', async ()=>{
     var url = (new URL(document.location));
     name = url.searchParams.get("name");
     console.log(name);

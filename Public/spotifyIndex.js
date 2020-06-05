@@ -22,7 +22,7 @@ function spotifyLogin(extra){
  */
 async function spotifyGetUser(){
   var xhttp = new XMLHttpRequest();
-  return new Promise(function(resolve, reject) {
+  return new Promise(async function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
         if(this.status == 200){
@@ -47,7 +47,7 @@ async function spotifyGetUser(){
  */
 async function spotifyGetUserPlaylists(){
     var xhttp = new XMLHttpRequest();
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
       xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
         if(this.status == 200){
@@ -97,7 +97,7 @@ async function spotifyGetPlaylistTracks(playlistid){
  */
 async function spotifyGetPlaylistAttributes(playlistid){
   var xhttp = new XMLHttpRequest();
-  return new Promise(function(resolve, reject) {
+  return new Promise(async function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
     if (this.readyState == 4) { //Upon getting a response
       if(this.status == 200){
@@ -123,7 +123,7 @@ async function spotifyGetPlaylistAttributes(playlistid){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be deleted
  */
-function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
+async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -144,7 +144,7 @@ function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be added
  */
-function spotifyAddTrackToPlaylist(body){
+async function spotifyAddTrackToPlaylist(body){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -166,7 +166,7 @@ function spotifyAddTrackToPlaylist(body){
  * @param {string} playlistid id of the playlist to be edited
  * @param {string} name the new name of the playlist
  */
-function spotifyRenamePlaylist(playlistid, name){
+async function spotifyRenamePlaylist(playlistid, name){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -221,7 +221,7 @@ async function spotifyCreateNewPlaylist(body){
  * @param {int} index the index where the tracks are to be moved to
  * @param {int} length the number of tracks to be moved
  */
-function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
+async function spotifyReorderTracksInPlaylist(playlistid, start, index, length = 1){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
