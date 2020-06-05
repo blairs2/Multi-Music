@@ -150,14 +150,13 @@ router.get('/spotify/user/playlists/:token', function(req, response){
     } else {
       options = { // set request options
           uri: 'https://api.spotify.com/v1/me/playlists',
-          Authorization: 'Bearer ' + userToken,
+          headers: { 'Authorization': 'Bearer ' + req.params.token},
           json: true
         };
     request.get(options, function(error, res, body) {
         if (error) { //if request fails
             response.send("ERROR getting list of user playlist" + error);
         } else {
-            //console.log(body);
             retval = { playlists: []}
             for(i = 0; i < body.items.length; i++){
                 retval.playlists.push({
@@ -181,13 +180,12 @@ router.get('/spotify/user/playlists/:token', function(req, response){
 //Get the tracks of a playlist specified by the playlistid
 
 router.get('/spotify/playlist/tracks/:playlistid/:token', function(req, response){
-    var userToken  =  JSON.parse(req.params.token);
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
         json: true
     };
-      if(userToken != null){
-        options.headers = { 'Authorization': 'Bearer ' + userToken};
+      if(req.params.token != 'null'){
+        options.headers = { 'Authorization': 'Bearer ' + req.params.token};
       } else {
         options.headers = { 'Authorization': 'Bearer ' + serverToken };
       }
@@ -223,13 +221,12 @@ router.get('/spotify/playlist/tracks/:playlistid/:token', function(req, response
 
 //Get a playlist specified by the playlistid
 router.get('/spotify/playlist/:playlistid/:token', function(req, response){
-    var userToken =  JSON.parse(req.params.token);
     options = { // set request options
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistid,
         json: true
     };
-      if(userToken != null){
-        options.headers = { 'Authorization': 'Bearer ' + userToken};
+      if(req.params.token != 'null'){
+        options.headers = { 'Authorization': 'Bearer ' + req.params.token};
       } else {
         options.headers = { 'Authorization': 'Bearer ' + serverToken };
       }
