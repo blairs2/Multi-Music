@@ -157,8 +157,9 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
       if (!error && res.statusCode === 200) {
         console.log("postToken")
         response.cookie("spotifyUserToken", body.access_token);
-        temp = body.access_token;
         console.log("reciveToken")
+        temp = body.access_token;
+        
       }
     });
     response.send(temp); 
