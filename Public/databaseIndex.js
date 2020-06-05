@@ -56,13 +56,12 @@ async function login(){
 		return new Promise(async function(resolve, reject){
 			var name = document.forms["login-form"]["email"].value;
 			var pass = document.forms["login-form"]["password"].value;
-			await dbGetUser(name, hashCode(pass)).then((value) => {
-						var x = JSON.parse(value);
-						if (x[0] == false){
+			await dbGetUser(name, pass).then((value) => {
+						console.log(value);
+						if (value == "false"){
 								reject(false);
 						} else {
-								resolve(true);
-								setCookie(x[0].user_ID, "userID"); //Sets the userID cookie to hold the user id from the database
+								resolve(JSON.parse(value)[0].user_ID);
 						}
 				});
 		});
@@ -73,17 +72,14 @@ async function RegisterUser(){
     var pass = document.forms["register"]["password"].value;
     var passC = document.forms["register"]["password_confirm"].value;
     if (pass == passC){
-        dbAddUser(name, pass);
-        setTimeout(function() {window.location = 'http://' + url + '/index.html' });
-        await dbGetUser(name, pass).then((value) => {
-            x = JSON.parse(value);
-            if (x == false){
-           // if (name != "Nathan") {
-                console.log("error this shouldn't happen");
-            } else {
-                setCookie(x[0].userID);
-                //setCookie("REG");
-            }
+      await dbAddUser(name, pass).then(insert =>{
+					if(insert!= 'false'){ //insertedId is the id of the recently added user
+						setCookie(JSON.parse(insert).insertId, "userID");
+						setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+					} else {
+						alert("Invalid credentials");
+					}
+
         });
     } else {
         alert("Passwords do not match please try again");

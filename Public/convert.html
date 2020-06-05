@@ -24,11 +24,11 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Multi Music</a>
-      <button id="last-btn" type="button" name="button">last</button>
+      <a class="navbar-brand" href="/index.html">Multi Music</a>
+      <!-- <button id="last-btn" type="button" name="button">last</button>
       <button id="play-btn" type="button" name="button">play</button>
       <button id="pause-btn" type="button" name="button">pause</button>
-      <button id="next-btn" type="button" name="button">next</button>
+      <button id="next-btn" type="button" name="button">next</button> -->
 
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
             <li class="nav-item active">
-             <a class="nav-link" href="#">Home
+             <a class="nav-link" href="/index.html">Home
                <span class="sr-only">(current)</span>
              </a>
            </li>
@@ -50,11 +50,11 @@
            </li>
         </ul>
 
-        <form class="form-inline">
+        <!-- <form class="form-inline">
           <i class="fas fa-search" aria-hidden="true"></i>
           <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
             aria-label="Search">
-        </form>
+        </form> -->
       </div>
     </div>
   </nav>
@@ -67,23 +67,11 @@
       <div class="col-lg-2">
         <div class="row">
           &emsp;
-          <a href="#"><img class="card-img-top" src="http://placehold.it/80x80" alt=""></a>
+          <a href="/index.html"><img class="card-img-top" src="assets/MULTILOGOBLACK.png" style="height:100px;width:100px;object-fit:cover; margin: auto 60px" alt=""></a>
           &emsp;
-          <h7 class="my-4">Multi Music User</h7>
+          <!-- <h7 class="my-4">Multi Music User</h7> -->
         </div>
         <br>
-        <div>
-        <!-- <div class="list-group">
-          <div class="autocomplete">
-          <input id="search-input" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
-            aria-label="Search">
-          </div>
-
-
-          <br>
-          <a href="#" class="list-group-item">Home</a>
-        </div> -->
-      </div>
       <br>
       <br>
       <div id="user-playlists" class="list-group" class="scroll">
@@ -96,15 +84,12 @@
       <div class="col-lg-10">
 
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
-        <div id="generated-content">
-          <h5>Choose service to add playlist to:</h5>
-          <div class="row">
-              <button id="convert-spotify" type="button" title="Currently in development" class="btn"><img style="width:100px;height:30px;" src="vendor/Spotify.png" alt=""></button>&emsp;
-              <button id="convert-apple-btn" type="button" class="btn"><img style="width:100px;height:25px;" src="vendor/apple.png" alt=""></button>
+        <div id="generated-content" style="text-align: center;">
+          <h5 style="padding-bottom: 1%;">Choose service to add playlist to:</h5>
+              <button id="convert-spotify" type="button" title="Currently in development" class="btn"><img style="width:100px;height:30px;" src="assets/Spotify.png" alt=""></button>&emsp;
+              <button id="convert-apple-btn" type="button" class="btn"><img style="width:100px;height:25px;" src="assets/apple.png" alt=""></button>
               <br><br><br>
-            </div>
-            <div id="message">
-            </div>
+            <div id="message"></div>
         </div>
 
         <!-- /.row -->
@@ -136,26 +121,26 @@
   <script type="text/javascript" src="/cookiesIndex.js"></script>
 
   <script type="text/javascript">
-  document.addEventListener('musickitloaded', () => {
-    // MusicKit global is now defined
-    fetch('/token').then(response => response.json()).then(res => {
-      /***
-        Configure our MusicKit instance with the signed token from server, returns a configured MusicKit Instance
-        https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance
-      ***/
-      const music = MusicKit.configure({
-        developerToken: res.token,
-        app: {
-          name: 'MultiMusic',
-          build: '2020.5.7'
-        }
-      });
-
-      // expose our instance globally for testing
-      window.music = music;
-      //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-  });
-});
+//   document.addEventListener('musickitloaded', () => {
+//     // MusicKit global is now defined
+//     fetch('/token').then(response => response.json()).then(res => {
+//       /***
+//         Configure our MusicKit instance with the signed token from server, returns a configured MusicKit Instance
+//         https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance
+//       ***/
+//       const music = MusicKit.configure({
+//         developerToken: res.token,
+//         app: {
+//           name: 'MultiMusic',
+//           build: '2020.5.7'
+//         }
+//       });
+//
+//       // expose our instance globally for testing
+//       window.music = music;
+//       //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
+//   });
+// });
 
   async function dbRetrieveConvert(){
      var xhttp = new XMLHttpRequest();
@@ -198,38 +183,53 @@ async function addPlaylist(body, appleToken){
     document.getElementById("convert-apple-btn").disabled = true;
     var url = (new URL(document.location));
     var playlist_name = url.searchParams.get("name");
-    music.authorize().then((musicUserToken)=>{
-      dbRetrieveConvert().then(resp => {
-        var resp_obj = JSON.parse(resp);
-        if(resp_obj != false){
-          var data = [];
-          for(var i = 0; i < resp_obj.length; i++){
-            data.push({id:resp_obj[i].apple_Song_ID, type:"songs"});
-          }
-          var body = {
-            attributes:{
-                name:playlist_name,
-               },
-              relationships:{
-                tracks: {
-                  data: data
-                }
-              }
-            };
-
-            console.log(body, musicUserToken);
-            await addPlaylist(JSON.stringify(body), musicUserToken).then(response =>{
-              if(JSON.parse(response).hasOwnProperty("error")){
-                document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your library.</b>";
-              } else {
-                document.getElementById("message").innerHTML += "<b>Your playlist was added to your library!</b>";
-              }
-
-            });
-
-        } else {
-
+    // MusicKit global is now defined
+    fetch('/token').then(response => response.json()).then(res => {
+      /***
+        Configure our MusicKit instance with the signed token from server, returns a configured MusicKit Instance
+        https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance
+      ***/
+      const music = MusicKit.configure({
+        developerToken: res.token,
+        app: {
+          name: 'MultiMusic',
+          build: '2020.5.7'
         }
+      });
+
+      music.authorize().then((musicUserToken)=>{
+        dbRetrieveConvert().then(async function(resp){
+          var resp_obj = JSON.parse(resp);
+          if(resp_obj != false){
+            var data = [];
+            for(var i = 0; i < resp_obj.length; i++){
+              data.push({id:resp_obj[i].apple_Song_ID, type:"songs"});
+            }
+            var body = {
+              attributes:{
+                  name:playlist_name,
+                 },
+                relationships:{
+                  tracks: {
+                    data: data
+                  }
+                }
+              };
+
+              console.log(body, musicUserToken);
+              await addPlaylist(JSON.stringify(body), musicUserToken).then(response =>{
+                if(JSON.parse(response).hasOwnProperty("error")){
+                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your library.</b>";
+                } else {
+                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your library!</b>";
+                }
+
+              });
+
+          } else {
+
+          }
+        });
       });
     });
 

@@ -16,7 +16,7 @@
   <!-- Custom styles for this template -->
   <link href="css/shop-homepage.css" rel="stylesheet">
     <script src="publicIndex.js"></script>
-    <link rel="shortcut icon" href="">
+    <link rel="icon" href="assets/MULTILOGOBLACK.png">
 </head>
 
 <body>
@@ -24,11 +24,11 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Multi Music</a>
-      <button id="last-btn" class="btn" type="button" name="button">last</button>
+      <a class="navbar-brand" href="/index.html">Multi Music</a>
+      <!-- <button id="last-btn" class="btn" type="button" name="button">last</button>
       <button id="play-btn" class="btn" type="button" name="button">play</button>
       <button id="pause-btn" class="btn" type="button" name="button">pause</button>
-      <button id="next-btn" class="btn" type="button" name="button">next</button>
+      <button id="next-btn" class="btn" type="button" name="button">next</button> -->
 
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
             <li class="nav-item active">
-             <a class="nav-link" href="#">Home
+             <a class="nav-link" href="/index.html">Home
                <span class="sr-only">(current)</span>
              </a>
            </li>
@@ -48,10 +48,22 @@
            <li class="nav-item">
              <a class="nav-link" onclick="contactLoad()" href="#">Contact</a>
            </li>
-           <li class="nav-item">
-            <button id="test">TEST</button>
-          </li> 
-          <!-- <li class="nav-item">
+           <div style="align-items: center; display: flex; justify-content: center;">
+           <li>
+             <a><img onclick="toggleAppleLogo()" src="assets/APPLEMUSICLOGOBW.png" style="width: 35px;" title="Login to Apple Music" id="appleLogo"></a>           
+           </li>
+          </div>
+           <div style="align-items: center; display: flex; justify-content: center;">
+            <li>
+              <a style="padding:15px;"><img onclick="toggleSpotifyLogo()" src="assets/SPOTIFYLOGOBW.png" style="width: 35px;" title="Login to Spotify" id="spotifyLogo"></a>           
+            </li>
+           </div>
+           <div style="align-items: center; display: flex; justify-content: center;">
+           <li>
+             <button style="border-radius:5px; background-color:whitesmoke;">Log Out</button>
+           </li>
+           </div>
+           <!-- <li class="nav-item">
             <button id="login-btn">Login to Apple Music</button>
           </li> -->
           <!-- <li class="nav-item">
@@ -65,11 +77,11 @@
           </li> -->
         </ul>
 
-        <form class="form-inline">
+        <!-- <form class="form-inline">
           <i class="fas fa-search" aria-hidden="true"></i>
           <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
             aria-label="Search">
-        </form>
+        </form> -->
       </div>
     </div>
   </nav>
@@ -82,9 +94,9 @@
       <div class="col-lg-2">
         <div class="row">
           &emsp;
-          <a href="#"><img class="card-img-top" src="assets/MULTILOGOBLACK.png" style="height:100px;width:100px;object-fit:cover" alt=""></a>
+          <a href="/index.html"><img class="card-img-top" src="assets/MULTILOGOBLACK.png" style="height:100px;width:100px;object-fit:cover; margin: auto 60px" alt="" ></a>
           &emsp;
-          <h7 class="my-4">Multi Music User</h7>
+          <!-- <h7 class="my-4">Multi Music User</h7> -->
         </div>
         <br>
         <div>
@@ -93,17 +105,11 @@
           <input id="search-input" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
             aria-label="Search">
           </div>
-
-
-          <br>
-          <a href="#" class="list-group-item">Home</a>
-          <!--<a href="#"  class="list-group-item">Playlist Library</a>-->
-          <!-- <a href="#" class="list-group-item">Convert</a> -->
         </div>
       </div>
       <br>
       <br>
-      <div id="user-playlists" class="list-group" class="scroll">
+      <div id="user-playlists" class="list-group" class="scroll" style="margin-left: 15px;">
 
       </div>
 
