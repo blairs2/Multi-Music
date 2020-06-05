@@ -190,9 +190,9 @@ async function spotifyRenamePlaylist(playlistid, name){
  * @param {string} description a description of the playlist
  * @param {boolean} collaborative true if playlist can be edited by other users
  */
-async function spotifyCreateNewPlaylist(body){
+function spotifyCreateNewPlaylist(body){
   var xhttp = new XMLHttpRequest();
-  return new Promise(function(resolve, reject) {
+  return new Promise(async function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
         console.log(this.status);
