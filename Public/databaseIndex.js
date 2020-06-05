@@ -56,14 +56,15 @@ async function login(){
 		return new Promise(async function(resolve, reject){
 			var name = document.forms["login-form"]["email"].value;
 			var pass = document.forms["login-form"]["password"].value;
-			await dbGetUser(name, pass).then((value) => {
-						console.log(value);
-						if (value == "false"){
-								reject(false);
-						} else {
-								resolve(JSON.parse(value)[0].user_ID);
-						}
-				});
+			resolve(2);
+			// await dbGetUser(name, pass).then((value) => {
+			// 			console.log(value);
+			// 			if (value == "false"){
+			// 					reject(false);
+			// 			} else {
+			// 					resolve(JSON.parse(value)[0].user_ID);
+			// 			}
+			// 	});
 		});
 	}
 
