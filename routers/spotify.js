@@ -371,8 +371,6 @@ router.post('/spotify/playlist/create/:userID/:name/:public/:description/:collab
   if(req.params.token == 'null'){
     response.send("error invalid token");
   } else {
-    console.log("UserID");
-    console.log(req.params.userID);
     options = {
         uri: 'https://api.spotify.com/v1/users/' + req.params.userID + '/playlists',
         headers: { 'Authorization': 'Bearer ' + req.params.token },
