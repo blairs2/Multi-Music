@@ -24,11 +24,7 @@ document.addEventListener('musickitloaded', () => {
 window.addEventListener('load', async function(){
   //Populates the left hand side of screen with all the playlsits in the users library
   //user logged into both apple and spotify
-  spotifyToken = getCookie("spotifyUserToken")
-  if (spotifyToken == null){
-    await refreshToken();
-    spotifyToken = getCookie("spotifyUserToken");
-  }
+  spotifyToken = getCookie("spotifyUserToken") || null;
   if(getCookie("appleUserToken") != null && spotifyToken != null){
     document.getElementById("appleLogo").setAttribute("src", "assets/APPLEMUSICLOGO.png");
     document.getElementById("spotifyLogo").setAttribute("src", "assets/SPOTIFYLOGO.png");

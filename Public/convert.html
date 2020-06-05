@@ -241,10 +241,6 @@ async function addPlaylist(body, appleToken){
     console.log(name);
     //name.split(' ').join
     spotifyToken = getCookie("spotifyUserToken"); // get access token
-    if (spotifyToken == null){
-      await refreshToken();
-      spotifyToken = getCookie("spotifyUserToken");
-    }
     if (spotifyToken == null){ // if no access token log user into spotify
       spotifyLogin("/convert"); 
     } else {

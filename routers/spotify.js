@@ -104,6 +104,7 @@ router.get('/spotify/callback', function(req, response) {
         // console.log(accessToken);
         response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
         response.cookie("spotifyRefreshToken", refresh_token)
+        response.cookie("spotifyExpiration", Date.getTime() + expires_in * 1000) // time in millaseconds when token expires
         console.log("REFRESH")
         console.log(refresh_token);
         response.redirect(`/index.html`); //redirect to home page
@@ -133,6 +134,7 @@ router.get('/spotify/callback/convert', function(req, response) {
         // console.log(accessToken);
         response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
         response.cookie("spotifyRefresToken", refresh_token)
+        response.cookie("spotifyExpiration", Date.getTime() + expires_in * 1000) // time in millaseconds when token expires
         response.redirect(`/convert.html`); //redirect to convert page
       }).catch(err => {
         response.redirect('/#/error/invalid token');
@@ -154,10 +156,11 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
     };
     request.post(options, function(error, res, body) {
       if (!error && res.statusCode === 200) {
-        //console.log("postToken")
+        console.log("postToken")
         response.cookie("spotifyUserToken", body.access_token);
-        //console.log("reciveToken")
-        //console.log(body.access_token)
+        response.cookie("spotifyExpiration", Data.getTime() + body.expires_in * 1000) // time in millaseconds when token expires
+        console.log("reciveToken")
+        console.log(body.access_token)
         response.send(body.access_token);
       }
     });
