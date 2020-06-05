@@ -154,11 +154,11 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
     };
     request.post(options, function(error, res, body) {
       if (!error && res.statusCode === 200) {
-        console.log("postToken")
+        //console.log("postToken")
         response.cookie("spotifyUserToken", body.access_token);
-        console.log("reciveToken")
-        console.log(body.access_token)
-        response.send("complete");
+        //console.log("reciveToken")
+        //console.log(body.access_token)
+        response.send(body.access_token);
       }
     });
 })
