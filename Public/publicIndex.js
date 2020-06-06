@@ -197,12 +197,10 @@ function toggleSpotifyLogo() {
    var x = document.getElementById("spotifyLogo");
    if (x.getAttribute("src") == "assets/SPOTIFYLOGOBW.png") {//log in
      spotifyLogin(); //will route user to back to home page after they log in
-     // x.setAttribute("src", "assets/SPOTIFYLOGO.png");
-     // x.setAttribute("title", "Log out of Spotify");
+     //spotify login will automatically reload page
    }
    else {//log out
       deleteCookie("spotifyUserToken");
-      x.setAttribute("src", "assets/SPOTIFYLOGOBW.png");
-      x.setAttribute("title", "Login to Spotify");
+      location.reload();
    }
 }
