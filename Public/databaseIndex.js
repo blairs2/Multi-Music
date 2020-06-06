@@ -183,7 +183,7 @@ i * add playlist to database
  * @param {string} spotifyID the spotifyID of the playlist
  * @param {string} appleID the appleID of the playlist
  */
-async function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
+async function dbAddPlaylist(title, user, spotifyID = null, appleID = null, description= null){
 	 var xhttp = new XMLHttpRequest();
 	 return new Promise(function(resolve, reject) {
 		 xhttp.onreadystatechange = function ReceivedCallback() {
@@ -195,8 +195,9 @@ async function dbAddPlaylist(title, user, spotifyID = null, appleID = null){
 		 }
 		}
 	 };
-	 xhttp.open('PUT', 'http://' + url + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID, true);
-	 xhttp.send(); // Gets the response
+	 xhttp.open('PUT', 'http://' + url + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID , true);
+	 xhttp.setRequestHeader("Content-Type", "application/json");
+	 xhttp.send(JSON.stringify(description)); // Gets the response
 	});
 }
 

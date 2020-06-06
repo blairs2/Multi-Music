@@ -181,6 +181,7 @@ async function addPlaylist(body, appleToken){
         dbRetrieveConvert().then(async function(resp){
           var resp_obj = JSON.parse(resp);
           if(resp_obj != false){
+            var description = resp_obj[0].description;
             var data = [];
             for(var i = 0; i < resp_obj.length; i++){
               data.push({id:resp_obj[i].apple_Song_ID, type:"songs"});
@@ -188,6 +189,7 @@ async function addPlaylist(body, appleToken){
             var body = {
               attributes:{
                   name:playlist_name,
+                  description: description
                  },
                 relationships:{
                   tracks: {
@@ -244,7 +246,7 @@ async function addPlaylist(body, appleToken){
               name: name,
               //userID: user.id,
               public: false,
-              description: " ",
+              description: resp_obj[0].description == null ? " " : res_obj[0].description,
               collaborative: false
             };
             spotifyCreateNewPlaylist(JSON.stringify(body), user.id).then(playlist => { // create new empty playlist

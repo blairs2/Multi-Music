@@ -633,8 +633,9 @@ function displayPlaylistAttributes(playlist_attributes, service){
  //retval += '<div style="text-align:left">';
  if (playlist_attributes.hasOwnProperty("description")){
    var playlistDescription = playlist_attributes.description;
-   retval += `"${playlistDescription}"</div>`;
+   retval += `<div id="playlist-description">"${playlistDescription}"</div>`;
  }
+ retval += "</div>";
 
  //retval += '</div>';
 //  retval += `<span><button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button></span>`;
@@ -806,15 +807,17 @@ function removeFeatureFromSong(song_title){
 *
 */
 async function establishPlaylist(playlist_id, title, user_id, current_service, catalog){
+    var playlist_description = document.getElementById("playlist-description").textContent || null;
+    console.log("textContent", playlist_description);
      var db_playlist_id = dbPlaylistExists(playlist_id).then(response => {
        if(response == 'false'){
          if(current_service == "Apple Music"){
-           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=null, appleID=playlist_id).then((inserted)=>{
+           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=null, appleID=playlist_id, description=playlist_description).then((inserted)=>{
              var mm_playlist_id = JSON.parse(inserted).insertId;
              convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
            });
          } else if (current_service == "Spotify"){
-           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=playlist_id, appleID=null).then((inserted)=>{
+           dbAddPlaylist(encodeURIComponent(title), user_id, spotifyID=playlist_id, appleID=null, description=playlist_description).then((inserted)=>{
              var mm_playlist_id = JSON.parse(inserted).insertId;
              convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
            });
