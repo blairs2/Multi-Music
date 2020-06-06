@@ -275,7 +275,7 @@ async function refreshToken(){
       };
       xhttp.open('GET', 'http://' + url + '/spotify/refresh/' + refresh, true);
       xhttp.send(); // Gets the response
-      console.log("refresh Sent")
+      console.log("refresh Sent");
     });
   } else {
     Promise.reject("no refresh token available");

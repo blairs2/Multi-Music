@@ -322,13 +322,14 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
 
 //Add the specified track to the specifed playlist
 router.post('/spotify/playlist/add/:token', function(req, response){
+  
   if(req.params.token == null){
     console.log("error invalid token");
   } else {
     console.log(req.body);
     console.log(req.params.token);
     options = { // set request optinos
-        uri: 'https://api.spotify.com/v1/playlists/' + req.playlistID + '/tracks',
+        uri: 'https://api.spotify.com/v1/playlists/' + JSON.parse(req.body).playlistID + '/tracks',
         headers: { 'Authorization': 'Bearer ' + req.params.token, 'contentType': 'application/json' },
         body: JSON.stringify(req.body),
         json: true
