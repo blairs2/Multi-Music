@@ -253,7 +253,7 @@ async function addPlaylist(body, appleToken){
         if (resp_obj != false){
           var playlistData = {
             uris: [],
-            playlistID: ""
+            playlistID: "test"
           };
           for (var i = 0; i < resp_obj.length; i++){ // create list of uris to add to spotify playlist
             playlistData.uris.push("spotify:track:" + resp_obj[i].spotify_Song_ID);
@@ -270,7 +270,7 @@ async function addPlaylist(body, appleToken){
             };
             spotifyCreateNewPlaylist(JSON.stringify(body)).then(playlist => { // create new empty playlist
               var newPlaylist = JSON.parse(playlist);
-              playlistData.playlistID = newPlaylist.id;
+              //playlistData.playlistID = newPlaylist.id;
               spotifyAddTrackToPlaylist(JSON.stringify(playlistData)); // add tracks to playlist
             });
           });
