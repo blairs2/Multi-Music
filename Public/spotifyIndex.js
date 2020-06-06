@@ -142,7 +142,7 @@ async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
  * @param {string} playlistid id of the playlist to be edited
  * @param {sting} trackURI URI of the track to be added
  */
-async function spotifyAddTrackToPlaylist(body){
+async function spotifyAddTrackToPlaylist(body, playlistID){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function ReceivedCallback() {
         if (this.readyState == 4 && this.status == 200) { //Upon getting a response
@@ -154,7 +154,7 @@ async function spotifyAddTrackToPlaylist(body){
       await refreshToken();
       spotifyToken = getCookie("spotifyUserToken")
     }
-    xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + spotifyToken , true);
+    xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistID + '/' + spotifyToken , true);
     xhttp.setRequestHeader("Content-Type", "application/json");
     xhttp.send(body); // Gets the response
 }
