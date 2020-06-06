@@ -270,6 +270,7 @@ async function addPlaylist(body, appleToken){
             };
             spotifyCreateNewPlaylist(JSON.stringify(body)).then(playlist => { // create new empty playlist
               var newPlaylist = JSON.parse(playlist);
+              console.log(newPlaylist);
               playlistData.playlistID = newPlaylist.id;
               spotifyAddTrackToPlaylist(JSON.stringify(playlistData)); // add tracks to playlist
             });
