@@ -95,10 +95,12 @@
     <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
     <script type="text/javascript" src="spotifyIndex.js"></script>
     <script type="text/javascript" src="databaseIndex.js"></script>
+    <script type="text/javascript" src="/appleLogin.js"></script>
+
     <script type="text/javascript">
       document.getElementById('apple-login').addEventListener('click', async function(){
         //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-        music.authorize();
+        appleLogin();
       });
 
     </script>
