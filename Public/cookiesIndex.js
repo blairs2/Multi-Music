@@ -3,9 +3,21 @@ function setCookie(token, cookieName){
 }
 
 function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
+  if (name != "spotifyUserToken"){
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  } else {
+    var expirationTime = getCookie("spotifyExpiration") || null;
+    var d = new Date();
+    if (expirationTime != null && expirationTime < d.getTime()){
+      return null;
+    } else {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+  }
 }
 
 function deleteCookie(name) {

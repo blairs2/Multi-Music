@@ -120,7 +120,7 @@
             console.log("good credentials")
             console.log(resp);
             setCookie(resp, "userID");
-            spotifyLogin();//will route user to home page after they log in
+            spotifyLogin("");//will route user to home page after they log in
           } else {
             alert("Invalid Username or Password please try again.");
           }

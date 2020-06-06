@@ -24,6 +24,11 @@ document.addEventListener('musickitloaded', () => {
 window.addEventListener('load', async function(){
   //Populates the left hand side of screen with all the playlsits in the users library
   //user logged into both apple and spotify
+  spotifyToken = getCookie("spotifyUserToken") || null;
+  if (spotifyToken == null){
+      await refreshToken();
+      spotifyToken = getCookie("spotifyUserToken")
+    }
   if(getCookie("appleUserToken") != null && getCookie("spotifyUserToken") != null){
     var appleLogo = document.getElementById("appleLogo");
     var spotifyLogo = document.getElementById("spotifyLogo");
@@ -31,7 +36,7 @@ window.addEventListener('load', async function(){
     spotifyLogo.setAttribute("title", "Log out of Spotify");
     appleLogo.setAttribute("src", "assets/APPLEMUSICLOGO.png");
     appleLogo.setAttribute("title", "Log out of Apple Music");
-
+    
     var applePlaylsits = await retreiveUserPlaylists();
     try{
       var spotifyPlaylists = await spotifyGetUserPlaylists();
@@ -61,7 +66,7 @@ window.addEventListener('load', async function(){
       document.getElementById('user-playlists').innerHTML = retval;
     });
   }
-  else if(getCookie("spotifyUserToken") != null){ //user logged into spotify
+  else if(spotifyToken != null){ //user logged into spotify
     var appleLogo = document.getElementById("appleLogo");
     var spotifyLogo = document.getElementById("spotifyLogo");
     spotifyLogo.setAttribute("src", "assets/SPOTIFYLOGO.png");
@@ -334,6 +339,7 @@ function retreiveUserPlaylists(){
     }
   };
   appleToken = getCookie("appleUserToken") || null; //get apple music token from cookie
+  console.log(appleToken);
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
   });
@@ -361,13 +367,13 @@ function retrieveUserSongs(){
  *NOT USED FOR V1
  */
 function retrieveUserArtists(){
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function ReceivedCallback() {
-  if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-    console.log(JSON.parse(this.responseText));
-    //Code to change the generated-content inner html
-  }
-};
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function ReceivedCallback() {
+    if (this.readyState == 4 && this.status == 200) { //Upon getting a response
+      console.log(JSON.parse(this.responseText));
+      //Code to change the generated-content inner html
+    }
+  };
 
   appleToken = getCookie("appleUserToken")  || null; //get apple music token from cookie
   xhttp.open("GET", "http://" + url + "/apple-music/library/artists/" + appleToken.replace(/\//g, '%2F'), true);
