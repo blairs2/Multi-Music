@@ -328,10 +328,8 @@ router.post('/spotify/playlist/add/:token', function(req, response){
     console.log(req.body);
     options = { // set request optinos
         uri: 'https://api.spotify.com/v1/playlists/' + req.playlistID + '/tracks',
-        headers: { 'Authorization': 'Bearer ' + req.params.token },
-        body: { 
-          uris: body.uris
-        },
+        headers: { 'Authorization': 'Bearer ' + req.params.token, 'contentType': 'application/json' },
+        body: JSON.stringify(req.body),
         json: true
       };
       request.post(options, function(error, res, body){
