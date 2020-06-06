@@ -326,6 +326,7 @@ router.post('/spotify/playlist/add/:token', function(req, response){
     console.log("error invalid token");
   } else {
     console.log(req.body);
+    console.log(req.params.token);
     options = { // set request optinos
         uri: 'https://api.spotify.com/v1/playlists/' + req.playlistID + '/tracks',
         headers: { 'Authorization': 'Bearer ' + req.params.token, 'contentType': 'application/json' },

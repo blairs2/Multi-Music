@@ -278,6 +278,6 @@ async function refreshToken(){
       console.log("refresh Sent")
     });
   } else {
-    Promise.resolve("no refresh token available");
+    Promise.reject("no refresh token available");
   }
 }
