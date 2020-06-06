@@ -374,7 +374,7 @@ router.post('/spotify/playlist/create/:token', function(req, response){
   } else {
     options = {
         uri: 'https://api.spotify.com/v1/users/' + req.body.userID + '/playlists',
-        headers: { 'Authorization': 'Bearer ' + req.params.token, contentType: 'application/json'},
+        headers: { 'Authorization': 'Bearer ' + req.params.token, 'contentType': 'application/json'},
         body: JSON.stringify(req.body),
         json: true
       };
