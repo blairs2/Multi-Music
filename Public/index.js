@@ -808,7 +808,6 @@ function removeFeatureFromSong(song_title){
 */
 async function establishPlaylist(playlist_id, title, user_id, current_service, catalog){
     var playlist_description = document.getElementById("playlist-description").textContent || null;
-    console.log("textContent", playlist_description);
      var db_playlist_id = dbPlaylistExists(playlist_id).then(response => {
        if(response == 'false'){
          if(current_service == "Apple Music"){

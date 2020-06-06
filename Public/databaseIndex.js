@@ -196,8 +196,8 @@ async function dbAddPlaylist(title, user, spotifyID = null, appleID = null, desc
 		}
 	 };
 	 xhttp.open('PUT', 'http://' + url + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID , true);
-	 xhttp.setRequestHeader("Content-Type", "application/json");
-	 xhttp.send(JSON.stringify(description)); // Gets the response
+	 xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	 xhttp.send(encodeURIComponent(description)); // Gets the response
 	});
 }
 

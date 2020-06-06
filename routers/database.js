@@ -125,15 +125,14 @@ router.put('/db/song/:title/:artist/:spotifyID/:appleID', function(req, response
 });
 
 //add playlist to db
-router.put('/db/playlist/:title/:userID/:spotifyID/:appleID/', function(req, response){
-    var description = JSON.stringify(req.body);
-    console.log("routers description:", description);
+router.put('/db/playlist/:title/:userID/:spotifyID/:appleID', function(req, response){
+    var description = req.body.description;
     var format_title = (req.params.title).replace(/"/g, "\\\""); //add escape char before quote
     con.query( "INSERT INTO Playlist(playlist_Name, user_ID, spotify_Playlist_ID, apple_Playlist_ID, description) " +
                 "VALUES (\"" + format_title + "\", " +
                         req.params.userID + ", \"" +
                         req.params.spotifyID + "\", \"" +
-                        req.params.appleID + "\" \""+
+                        req.params.appleID + "\", \"" +
                         description  + "\");", function (err, result, fields) {
         if (err) {
             response.send("ERROR adding playlist to db", err);
@@ -219,7 +218,7 @@ router.get('/db/playlist/exists/:playlist_id', function(req, response){
 
 //This will return the necessary data to make a playlist on either service
 router.get('/playlist/convert/:playlist_id', function(req, response){
-    con.query( "SELECT p.description s.spotify_Song_ID, s.apple_Song_ID, s.title, p.playlist_Name FROM Playlist p " +
+    con.query( "SELECT p.description, s.spotify_Song_ID, s.apple_Song_ID, s.title, p.playlist_Name FROM Playlist p " +
      "JOIN Song_Playlist sxp ON sxp.playlist_ID = p.playlist_ID JOIN Song s ON " +
      "sxp.song_ID = s.song_ID WHERE p.playlist_ID = \"" + req.params.playlist_id +"\";", function (err, result, fields) {
         if (err) {
