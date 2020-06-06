@@ -200,7 +200,8 @@ function toggleSpotifyLogo() {
      //spotify login will automatically reload page
    }
    else {//log out
-      deleteCookie("spotifyUserToken");
+      deleteCookie("spotifyUserToken"); //Delete the spotify cookie
+      deleteCookie("spotifyExpiration"); //Delete the spotify Experation so it doesnt try and recreate a new spotifyUserToken 
       location.reload();
    }
 }

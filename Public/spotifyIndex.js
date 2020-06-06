@@ -144,19 +144,26 @@ async function spotifyDeleteTrackFromPlaylist(playlistid, trackURI){
  */
 async function spotifyAddTrackToPlaylist(body, playlistID){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
+    return new Promise(async function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+        if (this.readyState == 4) { //Upon getting a response
+          if(this.status == 200){
+            // document.getElementById("generated-content").innerHTML += displaySearch(JSON.parse(this.responseText), "Apple Music");
+            resolve(this.responseText);
+          } else {
+          reject(this.responseText);
         }
-    };
-    spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
-    if (spotifyToken == null){
-      await refreshToken();
-      spotifyToken = getCookie("spotifyUserToken")
-    }
-    xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistID + '/' + spotifyToken , true);
-    xhttp.setRequestHeader("Content-Type", "application/json");
-    xhttp.send(body); // Gets the response
+       }
+      };
+      spotifyToken = getCookie("spotifyUserToken") || null; //get spotify user token from cookie
+      if (spotifyToken == null){
+        await refreshToken();
+        spotifyToken = getCookie("spotifyUserToken")
+      }
+      xhttp.open('POST', 'http://' + url + '/spotify/playlist/add/' + playlistID + '/' + spotifyToken , true);
+      xhttp.setRequestHeader("Content-Type", "application/json");
+      xhttp.send(body); // Gets the response
+    });
 }
 
 /**

@@ -116,7 +116,7 @@ router.get('/spotify/callback', function(req, response) {
 });
 
 // callback funciton for loogining in on the convert page
-router.get('/spotify/callback/convert', function(req, response) { 
+router.get('/spotify/callback/convert', function(req, response) {
     // request refresh and access tokens after checking the state parameter
     const { code, state } = req.query;
     // console.log("code");
@@ -149,7 +149,7 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
     var refresh_token = req.params.refresh;
      options = {
       url: 'https://accounts.spotify.com/api/token',
-      headers: { 'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))},              
+      headers: { 'Authorization': 'Basic ' + (Buffer.from(spotifyApi.getClientId() + ':' + spotifyApi.getClientSecret()).toString('base64'))},
       form: {
         grant_type: 'refresh_token',
         refresh_token: refresh_token
@@ -241,7 +241,7 @@ router.get('/spotify/playlist/tracks/:playlistid/:token', function(req, response
       if (error){ // if request fails
         response.send("ERROR getting user playlist")
       } else {
-
+        console.log(body);
         retval = { tracks: []};
 
         for(i = 0; i < body.tracks.limit; i++){

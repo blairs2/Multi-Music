@@ -199,9 +199,9 @@ async function addPlaylist(body, appleToken){
               console.log(body, musicUserToken);
               await addPlaylist(JSON.stringify(body), musicUserToken).then(response =>{
                 if(JSON.parse(response).hasOwnProperty("error")){
-                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your library.</b>";
+                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your Apple Music library.</b>";
                 } else {
-                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your library!</b>";
+                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your Apple Music library!</b>";
                 }
 
               });
@@ -226,7 +226,7 @@ async function addPlaylist(body, appleToken){
       spotifyToken = getCookie("spotifyUserToken")
     }
     if (spotifyToken == null){ // if no access token log user into spotify
-      spotifyLogin("/convert"); 
+      spotifyLogin("/convert");
     } else {
       dbRetrieveConvert().then(resp =>{ // retrive tracks to convert
         var resp_obj = JSON.parse(resp);
@@ -248,13 +248,16 @@ async function addPlaylist(body, appleToken){
               collaborative: false
             };
             spotifyCreateNewPlaylist(JSON.stringify(body), user.id).then(playlist => { // create new empty playlist
-              console.log(playlist);
               var newPlaylist = JSON.parse(playlist);
-              console.log("1");
-              console.log(newPlaylist);
-              console.log("2");
               //playlistData.playlistID = newPlaylist.id;
-              spotifyAddTrackToPlaylist(JSON.stringify(playlistData), newPlaylist.id); // add tracks to playlist
+              spotifyAddTrackToPlaylist(JSON.stringify(playlistData), newPlaylist.id).then(response =>{
+                if(JSON.parse(response).hasOwnProperty("error")){
+                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your Spotify library.</b>";
+                } else {
+                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your Spotify library!</b>";
+                }
+
+                });// add tracks to playlist
             });
           });
         }
