@@ -268,7 +268,7 @@ async function addPlaylist(body, appleToken){
               description: " ",
               collaborative: false
             };
-            spotifyCreateNewPlaylist(JSON.stringify(body)).then(playlist => { // create new empty playlist
+            spotifyCreateNewPlaylist(JSON.stringify(body), user.id).then(playlist => { // create new empty playlist
               console.log(playlist);
               var newPlaylist = JSON.parse(playlist);
               console.log("1");

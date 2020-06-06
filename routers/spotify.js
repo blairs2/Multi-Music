@@ -368,18 +368,18 @@ router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, r
 });
 
 //Create a new empty spotify playlist
-router.post('/spotify/playlist/create/:token', function(req, response){
-  console.log("string");
-  console.log(JSON.stringify(req.body));
-  console.log("body");
-  console.log(req.body);
-  console.log("parse");
-  console.log(JSON.parse(req.body));
+router.post('/spotify/playlist/create/:userID/:token', function(req, response){
+  // console.log("string");
+  // console.log(JSON.stringify(req.body));
+  // console.log("body");
+  // console.log(req.body);
+  // console.log("parse");
+  // console.log(JSON.parse(req.body));
   if(req.params.token == 'null'){
     response.send("error invalid token");
   } else {
     options = {
-        uri: 'https://api.spotify.com/v1/users/' + JSON.parse(req.body).userID + '/playlists',
+        uri: 'https://api.spotify.com/v1/users/' + req.params.userID + '/playlists',
         headers: { 'Authorization': 'Bearer ' + req.params.token, 'contentType': 'application/json'},
         body: JSON.stringify(req.body),
         json: true

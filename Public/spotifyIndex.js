@@ -188,7 +188,7 @@ async function spotifyRenamePlaylist(playlistid, name){
  * @param {string} description a description of the playlist
  * @param {boolean} collaborative true if playlist can be edited by other users
  */
-function spotifyCreateNewPlaylist(body){
+function spotifyCreateNewPlaylist(body, userID){
   var xhttp = new XMLHttpRequest();
   return new Promise(async function(resolve, reject) {
     xhttp.onreadystatechange = function ReceivedCallback() {
@@ -206,7 +206,7 @@ function spotifyCreateNewPlaylist(body){
       await refreshToken();
       spotifyToken = getCookie("spotifyUserToken")
     }
-    xhttp.open('POST', 'http://' + url + '/spotify/playlist/create/' + spotifyToken, true);
+    xhttp.open('POST', 'http://' + url + '/spotify/playlist/create/' + userID + '/' + spotifyToken, true);
     xhttp.setRequestHeader("Content-Type", "application/json");
     xhttp.send(body); // Sends the response
   });
