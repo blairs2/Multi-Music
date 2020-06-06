@@ -202,9 +202,9 @@ async function addPlaylist(body, appleToken){
 
               await addPlaylist(JSON.stringify(body), musicUserToken).then(response =>{
                 if(JSON.parse(response).hasOwnProperty("error")){
-                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your Apple Music library.</b>";
+                  document.getElementById("message").innerHTML = "<b>Your playlist couldn't be added to your Apple Music library.</b>";
                 } else {
-                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your Apple Music library!</b>";
+                  document.getElementById("message").innerHTML = "<b>Your playlist was added to your Apple Music library! (Could take a minute to appear)</b>";
                 }
 
               });
@@ -219,6 +219,7 @@ async function addPlaylist(body, appleToken){
   });
 
   document.getElementById("convert-spotify").addEventListener('click', async ()=>{
+    document.getElementById("convert-spotify").disabled = true;
     var url = (new URL(document.location));
     name = url.searchParams.get("name");
     //name.split(' ').join
@@ -256,9 +257,9 @@ async function addPlaylist(body, appleToken){
               //playlistData.playlistID = newPlaylist.id;
               spotifyAddTrackToPlaylist(JSON.stringify(playlistData), newPlaylist.id).then(response =>{
                 if(JSON.parse(response).hasOwnProperty("error")){
-                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your Spotify library.</b>";
+                  document.getElementById("message").innerHTML = "<b>Your playlist couldn't be added to your Spotify library.</b>";
                 } else {
-                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your Spotify library!</b>";
+                  document.getElementById("message").innerHTML = "<b>Your playlist was added to your Spotify library!</b>";
                 }
 
                 });// add tracks to playlist
