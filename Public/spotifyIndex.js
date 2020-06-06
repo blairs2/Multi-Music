@@ -268,23 +268,23 @@ function spotifySearch(searchTerm){
  */
 async function refreshToken(){
   refresh = getCookie("spotifyRefreshToken")
-  if (refresh != null) {
+  return new Promise(function(resolve, reject) {
+    if (refresh != null) {
     var xhttp = new XMLHttpRequest();
-    return new Promise(function(resolve, reject) {
-      xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4) { //Upon getting a response
-          if(this.status == 200){
-            resolve(this.responseText);
-          } else {
-            reject("Error Refreshing Token");
-         }
-        }
-      };
-      xhttp.open('GET', 'http://' + url + '/spotify/refresh/' + refresh, true);
-      xhttp.send(); // Gets the response
-      console.log("refresh Sent");
-    });
-  } else {
-    Promise.reject("no refresh token available");
-  }
+    xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+          reject("Error Refreshing Token");
+       }
+      }
+    };
+    xhttp.open('POST', 'http://' + url + '/spotify/refresh/' + refresh, true);
+    xhttp.send(); // Gets the response
+    console.log("refresh Sent");
+    } else {
+      reject("no refresh token available");
+    }
+  });
 }
