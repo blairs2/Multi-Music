@@ -369,8 +369,12 @@ router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, r
 
 //Create a new empty spotify playlist
 router.post('/spotify/playlist/create/:token', function(req, response){
+  console.log("string");
   console.log(JSON.stringify(req.body));
+  console.log("body");
   console.log(req.body);
+  console.log("parse");
+  console.log(JSON.parse(req.body));
   if(req.params.token == 'null'){
     response.send("error invalid token");
   } else {
