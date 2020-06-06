@@ -86,7 +86,7 @@
         <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
         <div id="generated-content" style="text-align: center;">
           <h5 style="padding-bottom: 1%;">Choose service to add playlist to:</h5>
-              <button id="convert-spotify" type="button" disabled title="Currently in development" class="btn"><img style="width:100px;height:30px;" src="assets/Spotify.png" alt=""></button>&emsp;
+              <button id="convert-spotify" type="button" title="Currently in development" class="btn"><img style="width:100px;height:30px;" src="assets/Spotify.png" alt=""></button>&emsp;
               <button id="convert-apple-btn" type="button" class="btn"><img style="width:100px;height:25px;" src="assets/apple.png" alt=""></button>
               <br><br><br>
             <div id="message"></div>
@@ -118,28 +118,9 @@
   <!-- <script type="text/javascript" src="/index.js"></script>
   <script type="text/javascript" src="/databaseIndex.js"></script> -->
   <script type="text/javascript" src="/spotifyIndex.js"></script>
+  <script type="text/javascript" src="/cookiesIndex.js"></script>
 
   <script type="text/javascript">
-//   document.addEventListener('musickitloaded', () => {
-//     // MusicKit global is now defined
-//     fetch('/token').then(response => response.json()).then(res => {
-//       /***
-//         Configure our MusicKit instance with the signed token from server, returns a configured MusicKit Instance
-//         https://developer.apple.com/documentation/musickitjs/musickit/musickitinstance
-//       ***/
-//       const music = MusicKit.configure({
-//         developerToken: res.token,
-//         app: {
-//           name: 'MultiMusic',
-//           build: '2020.5.7'
-//         }
-//       });
-//
-//       // expose our instance globally for testing
-//       window.music = music;
-//       //Returns a promise which resolves with a music-user-token when a user successfully authenticates and authorizes
-//   });
-// });
 
   async function dbRetrieveConvert(){
      var xhttp = new XMLHttpRequest();
@@ -218,9 +199,9 @@ async function addPlaylist(body, appleToken){
               console.log(body, musicUserToken);
               await addPlaylist(JSON.stringify(body), musicUserToken).then(response =>{
                 if(JSON.parse(response).hasOwnProperty("error")){
-                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your library.</b>";
+                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your Apple Music library.</b>";
                 } else {
-                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your library!</b>";
+                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your Apple Music library!</b>";
                 }
 
               });
@@ -234,31 +215,55 @@ async function addPlaylist(body, appleToken){
 
   });
 
-  // document.getElementById("convert-spotify").addEventListener('click', ()=>{
-  //   isAuthorized().then((value) => {
-  //     var x = JSON.parse(value);
-  //     if (x == false){
-  //       console.log("ERROR not logged in");
-  //     } else {
-  //       dbRetrieveConvert().then(resp =>{
-  //         var resp_obj = JSON.parse(resp);
-  //         if (resp_obj != false){
-  //           await spotifyGetUser().then(userData =>{
-  //             user = JSON.parse(userData);
-  //             var playlist = await spotifyCreateNewPlaylist(user.id, url.searchParams.get("name"));
-  //             var newPlaylist = JSON.parse(playlist);
-  //             var uris = [];
-  //             for (var i = 0; i < resp_obj.length; i++){
-  //               uris.push("spotify:track:" + resp_obj[i].spotify_Song_ID);
-  //             }
-  //             spotifyAddTrackToPlaylist(newPlaylist.id, uris);
-  //           });
-  //
-  //         }
-  //       })
-  //     }
-  //   });
-  // });
+  document.getElementById("convert-spotify").addEventListener('click', async ()=>{
+    var url = (new URL(document.location));
+    name = url.searchParams.get("name");
+    console.log(name);
+    //name.split(' ').join
+    spotifyToken = getCookie("spotifyUserToken"); // get access token
+    if (spotifyToken == null){
+      await refreshToken();
+      spotifyToken = getCookie("spotifyUserToken")
+    }
+    if (spotifyToken == null){ // if no access token log user into spotify
+      spotifyLogin("/convert");
+    } else {
+      dbRetrieveConvert().then(resp =>{ // retrive tracks to convert
+        var resp_obj = JSON.parse(resp);
+        if (resp_obj != false){
+          var playlistData = {
+            uris: [],
+          };
+          for (var i = 0; i < resp_obj.length; i++){ // create list of uris to add to spotify playlist
+            playlistData.uris.push("spotify:track:" + resp_obj[i].spotify_Song_ID);
+          }
+          spotifyGetUser().then(userData =>{ // get user id from spotify
+            user = JSON.parse(userData);
+            console.log(user.id);
+            var body = {
+              name: name,
+              //userID: user.id,
+              public: false,
+              description: " ",
+              collaborative: false
+            };
+            spotifyCreateNewPlaylist(JSON.stringify(body), user.id).then(playlist => { // create new empty playlist
+              var newPlaylist = JSON.parse(playlist);
+              //playlistData.playlistID = newPlaylist.id;
+              spotifyAddTrackToPlaylist(JSON.stringify(playlistData), newPlaylist.id).then(response =>{
+                if(JSON.parse(response).hasOwnProperty("error")){
+                  document.getElementById("message").innerHTML += "<b>Your playlist couldn't be added to your Spotify library.</b>";
+                } else {
+                  document.getElementById("message").innerHTML += "<b>Your playlist was added to your Spotify library!</b>";
+                }
+
+                });// add tracks to playlist
+            });
+          });
+        }
+      });
+    }
+  });
   </script>
 
 </body>
