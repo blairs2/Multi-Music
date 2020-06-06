@@ -629,13 +629,13 @@ function displayPlaylistAttributes(playlist_attributes, service){
    retval += '<div id="convert-link"></div></div>';
   }
 
- retval += `<div style="display:block; margin: auto"><h4>${playlistTitle}</h4> `;
+ retval += `<div style="display:block; margin: auto"><h4>${playlistTitle}</h4><div id="playlist-description">"`;
  //retval += '<div style="text-align:left">';
  if (playlist_attributes.hasOwnProperty("description")){
    var playlistDescription = playlist_attributes.description;
-   retval += `<div id="playlist-description">"${playlistDescription}"</div>`;
+   retval += playlistDescription;
  }
- retval += "</div>";
+ retval += "</div></div>";
 
  //retval += '</div>';
 //  retval += `<span><button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center;">Convert Playlist</button></span>`;
