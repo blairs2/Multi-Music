@@ -201,7 +201,8 @@ function toggleSpotifyLogo() {
    }
    else {//log out
       deleteCookie("spotifyUserToken"); //Delete the spotify cookie
-      deleteCookie("spotifyExpiration"); //Delete the spotify Experation so it doesnt try and recreate a new spotifyUserToken 
+      deleteCookie("spotifyExpiration"); //Delete the spotify Experation so it doesnt try and recreate a new spotifyUserToken
+      deleteCookie("spotifyRefreshToken");
       location.reload();
    }
 }
