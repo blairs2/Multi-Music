@@ -22,17 +22,21 @@ document.addEventListener('musickitloaded', () => {
 });
 
 window.addEventListener('load', async function(){
+  if(!(getCookie("userID") || null)){//if they arent logged in
+    window.location.replace("http://" + url) //take them back to login page
+  }
   //Populates the left hand side of screen with all the playlsits in the users library
   //user logged into both apple and spotify
   spotifyToken = getCookie("spotifyUserToken") || null;
   spotifyRefreshToken = getCookie("spotifyRefreshToken") || null;
+  appleUserToken = getCookie("appleUserToken") || null;
   if (spotifyToken == null && spotifyRefreshToken != null){
       await refreshToken().then(() =>{spotifyToken = getCookie("spotifyUserToken")
     }).catch(e => {
       console.log(e);
     });
   }
-  if(getCookie("appleUserToken") != null && getCookie("spotifyUserToken") != null){
+  if(appleUserToken != null && spotifyToken != null){
     var appleLogo = document.getElementById("appleLogo");
     var spotifyLogo = document.getElementById("spotifyLogo");
     spotifyLogo.setAttribute("src", "assets/SPOTIFYLOGO.png");
@@ -56,7 +60,7 @@ window.addEventListener('load', async function(){
     });
 
   }
-  else if(getCookie("appleUserToken") != null){ //user logged into apple
+  else if(appleUserToken != null){ //user logged into apple
     var appleLogo = document.getElementById("appleLogo");
     var spotifyLogo = document.getElementById("spotifyLogo");
     spotifyLogo.setAttribute("src", "assets/SPOTIFYLOGOBW.png");
@@ -342,7 +346,6 @@ function retreiveUserPlaylists(){
     }
   };
   appleToken = getCookie("appleUserToken") || null; //get apple music token from cookie
-  console.log(appleToken);
   xhttp.open("GET", "http://" + url + "/apple-music/library/playlists/" + appleToken.replace(/\//g, '%2F'), true);
   xhttp.send(); // Gets the response
   });
@@ -820,18 +823,11 @@ async function establishPlaylist(playlist_id, title, user_id, current_service, c
              var mm_playlist_id = JSON.parse(inserted).insertId;
              convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
            });
-         } else {
+         } else { //Shouldnt happen
            console.log("Invalid Service");
          }
-         // dbPlaylistExists(playlist_id).then(value => {
-         //
-         //   var mm_playlist_id = JSON.parse(value)[0].playlist_ID;
-         //   console.log("New playlist: ", mm_playlist_id);
-         //   convertPlaylist(playlist_id, current_service, mm_playlist_id, title, catalog);
-         // });
        } else {
          var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
-         console.log("playlist id:",mm_playlist_id);
          dbDeleteTracks(mm_playlist_id).then(()=>{
            convertPlaylist(playlist_id, current_service, mm_playlist_id,title, catalog);
          }); // delete the tracks currently associated with the playlist

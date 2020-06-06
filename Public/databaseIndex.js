@@ -57,7 +57,6 @@ async function login(){
 			var name = document.forms["login-form"]["email"].value;
 			var pass = document.forms["login-form"]["password"].value;
 			await dbGetUser(name, pass).then((value) => {
-						console.log(value);
 						if (value == "false"){
 								reject(false);
 						} else {
@@ -98,7 +97,6 @@ async function dbGetUser(name, code){
     return new Promise(function(resolve, reject) {
       xhttp.onreadystatechange = function ReceivedCallback() {
       if (this.readyState == 4) { //Upon getting a response
-	      console.log(this.status);
         if(this.status == 200){
           resolve(this.responseText);
         } else {

@@ -44,7 +44,6 @@ function setServerToken(){
     if (!error && response.statusCode === 200) {
       // sever token to access the Spotify Web API without logging in.
       serverToken = body.access_token;
-      console.log(serverToken);
     } else {
       console.log("ERROR getting server token");
     }
@@ -70,8 +69,6 @@ router.get('/spotify/login', function(req, response) {
   spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback');
   const state = generateRandomString(16);
   response.cookie(stateKey, state);
-  //console.log("stateB");
-  //console.log(state);
   response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
 });
 
@@ -79,8 +76,6 @@ router.get('/spotify/login/convert', function(req, response) {
   spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback/convert');
   const state = generateRandomString(16);
   response.cookie(stateKey, state);
-  //console.log("stateB");
-  //console.log(state);
   response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
 });
 
@@ -88,10 +83,6 @@ router.get('/spotify/login/convert', function(req, response) {
 router.get('/spotify/callback', function(req, response) {
     // request refresh and access tokens after checking the state parameter
     const { code, state } = req.query;
-    // console.log("code");
-    // console.log(code);
-    // console.log("state");
-    // console.log(state);
     const storedState = req.cookies ? req.cookies[stateKey] : null;
     if (state === null || state !== storedState) { // if the state is vailid
       response.redirect('/#' +
@@ -101,13 +92,10 @@ router.get('/spotify/callback', function(req, response) {
     } else {
       spotifyApi.authorizationCodeGrant(code).then(data => {
         const { expires_in, access_token, refresh_token } = data.body;
-        // console.log(accessToken);
         response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
         response.cookie("spotifyRefreshToken", refresh_token)
         var d = new Date();
         response.cookie("spotifyExpiration", d.getTime() + expires_in * 1000) // time in millaseconds when token expires
-        console.log("REFRESH")
-        console.log(refresh_token);
         response.redirect(`/index.html`); //redirect to home page
       }).catch(err => {
         response.redirect('/#/error/invalid token');
@@ -119,10 +107,6 @@ router.get('/spotify/callback', function(req, response) {
 router.get('/spotify/callback/convert', function(req, response) {
     // request refresh and access tokens after checking the state parameter
     const { code, state } = req.query;
-    // console.log("code");
-    // console.log(code);
-    // console.log("state");
-    // console.log(state);
     const storedState = req.cookies ? req.cookies[stateKey] : null;
     if (state === null || state !== storedState) { // if the state is vailid
       response.redirect('/#' +
@@ -132,7 +116,6 @@ router.get('/spotify/callback/convert', function(req, response) {
     } else {
       spotifyApi.authorizationCodeGrant(code).then(data => {
         const { expires_in, access_token, refresh_token } = data.body;
-        // console.log(accessToken);
         response.cookie("spotifyUserToken", access_token) //Sets the spotifyUserToken in the client side
         response.cookie("spotifyRefresToken", refresh_token)
         var d = new Date();
@@ -158,12 +141,9 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
     };
     request.post(options, function(error, res, body) {
       if (!error && res.statusCode === 200) {
-        console.log("postToken")
         response.cookie("spotifyUserToken", body.access_token);
         var d = new Date();
         response.cookie("spotifyExpiration", d.getTime() + body.expires_in * 1000) // time in millaseconds when token expires
-        console.log("reciveToken")
-        console.log(body.access_token)
         response.send(body.access_token);
       }
     });
@@ -188,11 +168,8 @@ router.get('/spotify/user/:token', function(req, response){
 
 //Get a list of all the user playlists
 router.get('/spotify/user/playlists/:token', function(req, response){
-  console.log(req.params.token);
-  console.log("here");
   options = "";
     if(req.params.token == 'null'){
-      console.log("error invalid token");
       response.send("error invalid token");
     } else {
       options = { // set request options
@@ -313,7 +290,6 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
         if (error){ // if request fails
           response.send("ERROR deleteing track from playlist" + error);
         } else {
-          //console.log(body);
           response.send(body);
         }
       });
@@ -322,12 +298,9 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
 
 //Add the specified track to the specifed playlist
 router.post('/spotify/playlist/add/:playlistID/:token', function(req, response){
-  console.log(req.body)
   if(req.params.token == null){
-    console.log("error invalid token");
+    response.send("error invalid token");
   } else {
-    console.log(req.body);
-    console.log(req.params.token);
     options = { // set request optinos
         uri: 'https://api.spotify.com/v1/playlists/' + req.params.playlistID + '/tracks',
         headers: { 'Authorization': 'Bearer ' + req.params.token, 'contentType': 'application/json' },
@@ -338,7 +311,6 @@ router.post('/spotify/playlist/add/:playlistID/:token', function(req, response){
         if (error){ // if request fails
           response.send("ERROR adding track to playlist " + error)
         } else{
-          //console.log(body);
           response.send(body);
         }
       });
@@ -360,7 +332,6 @@ router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, r
         if (error){ // if request fails
           response.send("ERROR changing playlist details " + error);
         } else {
-          //console.log(body);
           response.send(body);
         }
       });
@@ -369,12 +340,6 @@ router.put('/spotify/playlist/details/:playlistid/:name/:token', function(req, r
 
 //Create a new empty spotify playlist
 router.post('/spotify/playlist/create/:userID/:token', function(req, response){
-  // console.log("string");
-  // console.log(JSON.stringify(req.body));
-  // console.log("body");
-  // console.log(req.body);
-  // console.log("parse");
-  // console.log(JSON.parse(req.body));
   if(req.params.token == 'null'){
     response.send("error invalid token");
   } else {

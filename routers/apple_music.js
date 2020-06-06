@@ -124,14 +124,13 @@ router.get('/apple-music/catalog/search/:search_term', function(request, respons
     }
     https.get(options, function (res, body) {
           let data = '';
-          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
           res.setEncoding('utf8');
           //Collect  all the response
           res.on('data', (chunk) => {
             data += chunk;
           });
           res.on('error', ()=>{
-            console.log(e);
+              response.send(e);
 
           });
           // The whole response has been received. send the result.
@@ -159,7 +158,6 @@ router.get('/apple-music/catalog/playlists/:playlist_id', function(request, resp
   }
   https.get(options, function (res, body) {
         let data = '';
-        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
         res.setEncoding('utf8');
         //Collect  all the response
         res.on('data', (chunk) => {
@@ -189,7 +187,6 @@ router.get('/apple-music/catalog/playlists/:playlist_id/relationships/', functio
   }
   https.get(options, function (res, body) {
         let data = '';
-        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
         res.setEncoding('utf8');
         //Collect  all the response
         res.on('data', (chunk) => {
@@ -223,7 +220,6 @@ router.get('/apple-music/catalog/search/hints/:search_term', function(request, r
     }
     https.get(options, function (res, body) {
           let data = '';
-          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
           res.setEncoding('utf8');
           //Collect  all the response
           res.on('data', (chunk) => {
@@ -260,7 +256,6 @@ router.get('/apple-music/library/playlists/:playlist_id/:token', function(reques
     }
     https.get(options, function (res, body) {
           let data = '';
-          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
           res.setEncoding('utf8');
           //Collect  all the response
           res.on('data', (chunk) => {
@@ -290,7 +285,6 @@ router.get('/apple-music/library/playlists/:playlist_id/relationships/:token', f
     }
     https.get(options, function (res, body) {
           let data = '';
-          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
           res.setEncoding('utf8');
           //Collect  all the response
           res.on('data', (chunk) => {
@@ -321,7 +315,6 @@ router.get('/apple-music/library/playlists/:token', function(request, response){
     }
     https.get(options, function (res, body) {
           let data = '';
-          console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
           res.setEncoding('utf8');
           //Collect  all the response
           res.on('data', (chunk) => {
@@ -350,7 +343,6 @@ router.get('/apple-music/library/albums/:token', function(request, response){
   }
   https.get(options, function (res, body) {
         let data = '';
-        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
         res.setEncoding('utf8');
         //Collect  all the response
         res.on('data', (chunk) => {
@@ -379,7 +371,6 @@ router.get('/apple-music/library/songs/:token', function(request, response){
   }
   https.get(options, function (res, body) {
         let data = '';
-        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
         res.setEncoding('utf8');
         //Collect  all the response
         res.on('data', (chunk) => {
@@ -408,7 +399,6 @@ router.get('/apple-music/library/artists/:token', function(request, response){
   }
   https.get(options, function (res, body) {
         let data = '';
-        console.log('statusCode:',res.statusCode); // Print the response status code if a response was received
         res.setEncoding('utf8');
         //Collect  all the response
         res.on('data', (chunk) => {
@@ -437,25 +427,23 @@ router.post('/apple-music/library/playlist/:token', function(request, response){
             'Content-Length': Buffer.byteLength(post_obj)
       }
     }
-  const req = https.request(options, res => {
-    var data = '';
-    console.log(`statusCode: ${res.statusCode}`)
-
-    res.on('data', (chunk) => {
-      data += chunk;
+    const req = https.request(options, res => {
+      var data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      // The whole response has been received. send the result.
+      res.on('end', () => {
+        response.send(data);
+      });
     });
-    // The whole response has been received. send the result.
-    res.on('end', () => {
-      response.send(data);
+
+    req.on('error', error => {
+      console.error(error)
     });
-  });
 
-req.on('error', error => {
-  console.error(error)
-});
-
-  req.write(post_obj);
-  req.end();
+    req.write(post_obj);
+    req.end();
 
 });
 
@@ -478,8 +466,6 @@ router.post('/apple-music/library/playlists/:playlist_id/tracks/:token', functio
     }
     const req = https.request(options, res => {
       var data = '';
-      console.log(`statusCode: ${res.statusCode}`)
-
       res.on('data', (chunk) => {
         data += chunk;
       });
@@ -489,12 +475,12 @@ router.post('/apple-music/library/playlists/:playlist_id/tracks/:token', functio
       });
     });
 
-req.on('error', error => {
-  console.error(error)
-});
+    req.on('error', error => {
+      console.error(error)
+    });
 
-  req.write(post_obj);
-  req.end();
+    req.write(post_obj);
+    req.end();
 
 
 });
