@@ -322,7 +322,7 @@ router.delete('/spotify/playlist/delete/:playlistid/:trackURI/:token', function(
 
 //Add the specified track to the specifed playlist
 router.post('/spotify/playlist/add/:token', function(req, response){
-  
+  console.log(req.body)
   if(req.params.token == null){
     console.log("error invalid token");
   } else {
