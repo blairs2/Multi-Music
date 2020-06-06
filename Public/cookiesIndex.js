@@ -3,7 +3,7 @@ function setCookie(token, cookieName){
 }
 
 function getCookie(name) {
-  if (name == "spotifyUserToken"){
+  if (name != "spotifyUserToken"){
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
