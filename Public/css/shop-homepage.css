@@ -7,21 +7,20 @@ body {
   padding-top: 56px;
 }
 .has-search .form-control {
-      padding-left: 2.375rem;
+  padding-left: 2.375rem;
 }
-
 .has-search .form-control-feedback {
-      position: absolute;
-      z-index: 2;
-      display: block;
-      width: 2.375rem;
-      height: 2.375rem;
-      line-height: 2.375rem;
-      text-align: center;
-      pointer-events: none;
-      color: #aaa;
-  }
-  .playlist-button {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+   color: #aaa;
+}
+.playlist-button {
   border-radius: 4px;
   background: none;
   color: black;
@@ -36,33 +35,27 @@ body {
 .apple{
 
 }
-
 .song-button {
-
-background: none;
-border: 1px solid LightGrey;
-color: black;
-text-align: left;
-text-decoration: none;
-display: inline-block;
-font-size: 16px;
-height: 100%;
-width: 100%;
-cursor: pointer;
+  background: none;
+  border: 1px solid LightGrey;
+  color: black;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
 }
-
 .song-button-img{
   align-self: left;
   height:50px;
   width:50px;
   margin-right: 10px;
 }
-
 .song-button:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
-
-
 .scrolling-wrapper {
   overflow-x: scroll;
   overflow-y: hidden;
@@ -101,136 +94,157 @@ cursor: pointer;
   margin-left: 17px;
 }
 
-
-
 /* More Button / Dropdown Menu */
 .option-container {
-    position:relative;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
+  position:relative;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
-
-
 .more-btn,
 .more-menu-btn {
-    background: none;
-    border: 0 none;
-    line-height: normal;
-    overflow: visible;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    width: 100%;
-    text-align: left;
-    outline: none;
-    cursor: pointer;
+  background: none;
+  border: 0 none;
+  line-height: normal;
+  overflow: visible;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  width: 100%;
+  text-align: left;
+  outline: none;
+  cursor: pointer;
 }
-
 .more-dot {
-    background-color: #aab8c2;
-    margin: 0 auto;
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    margin-right: 1px;
-    border-radius: 50%;
-    transition: background-color 0.3s;
+  background-color: #aab8c2;
+  margin: 0 auto;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 1px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
 }
-
 .more-menu {
-    position: relative;
-    top: 100%;
-    z-index: 900;
-    float: left;
-    padding: 10px 0;
-    margin-top: 9px;
-    background-color: #fff;
-    border: 1px solid #ccd8e0;
-    border-radius: 4px;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.25);
-    opacity: 0;
-    transform: translate(0, 15px) scale(.95);
-    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
-    pointer-events: none;
+  position: relative;
+  top: 100%;
+  z-index: 900;
+  float: left;
+  padding: 10px 0;
+  margin-top: 9px;
+  background-color: #fff;
+  border: 1px solid #ccd8e0;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: translate(0, 15px) scale(.95);
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  pointer-events: none;
 }
-
 .more-menu-caret {
-    position: absolute;
-    top: -10px;
-    left: 12px;
-    width: 18px;
-    height: 10px;
-    float: left;
-    overflow: hidden;
+  position: absolute;
+  top: -10px;
+  left: 12px;
+  width: 18px;
+  height: 10px;
+  float: left;
+  overflow: hidden;
 }
-
 .more-menu-caret-outer,
 .more-menu-caret-inner {
-    position: absolute;
-    display: inline-block;
-    margin-left: -1px;
-    font-size: 0;
-    line-height: 1;
+  position: absolute;
+  display: inline-block;
+  margin-left: -1px;
+  font-size: 0;
+  line-height: 1;
 }
-
 .more-menu-caret-outer {
-    border-bottom: 10px solid #c1d0da;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    height: auto;
-    left: 0;
-    top: 0;
-    width: auto;
+  border-bottom: 10px solid #c1d0da;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  height: auto;
+  left: 0;
+  top: 0;
+  width: auto;
 }
-
 .more-menu-caret-inner {
-    top: 1px;
-    left: 1px;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 9px solid #fff;
+  top: 1px;
+  left: 1px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 9px solid #fff;
 }
-
 .more-menu-items {
-    margin: 0;
-    list-style: none;
-    padding: 0;
+  margin: 0;
+  list-style: none;
+  padding: 0;
 }
-
 .more-menu-item {
-    display: block;
+  display: block;
 }
-
 .more-menu-btn {
-    min-width: 100%;
-    color: #66757f;
-    cursor: pointer;
-    display: block;
-    font-size: 13px;
-    line-height: 18px;
-    padding: 5px 20px;
-    position: relative;
-    white-space: nowrap;
+  min-width: 100%;
+  color: #66757f;
+  cursor: pointer;
+  display: block;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 5px 20px;
+  position: relative;
+  white-space: nowrap;
 }
-
 .more-menu-item:hover {
-    background-color: #489fe5;
+  background-color: #489fe5;
 }
-
-    .more-menu-item:hover .more-menu-btn {
-        color: #fff;
-    }
-
+.more-menu-item:hover .more-menu-btn {
+  color: #fff;
+}
 .more-btn:hover .more-dot,
 .show-more-menu .more-dot {
-    background-color: #516471;
+  background-color: #516471;
+}
+.show-more-menu .more-menu {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+  pointer-events: auto;
+}
+#user-playlists {
+  margin-left: 15px;
+}
+.logoButtons {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.logoStyling {
+  width: 35px;
+}
+.logOutButtonStyling {
+  border-radius: 5px;
+  background-color: whitesmoke;
+}
+#mmLogoHomePage {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  margin: auto 60px;
+}
+.loadingPlaylist {
+  text-align: center;
+}
+#playlist-attributes {
+  display: flex;
+}
+#playlist-songs {
+  padding-left: 25%;
+}
+#playlist-convert {
+  text-align: center;
+  margin: 10px 0px 0px 30%;
+}
+tr {
+  border-bottom: 0.5px solid grey;
 }
 
-.show-more-menu .more-menu {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-    pointer-events: auto;
-}

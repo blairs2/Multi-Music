@@ -88,7 +88,7 @@ window.addEventListener('load', async function(){
     //user playlist is clicked
      user_playlists[i].addEventListener('click', async function() {
       //Shows loading
-      document.getElementById("generated-content").innerHTML = "<h4 style='text-align: center;'>Loading Playlist</h4>"
+      document.getElementById("generated-content").innerHTML = "<h4 class='loadingPlaylist'>Loading Playlist</h4>"
        //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
        //upon retriving a response the function being called will generate attribute content to dislay on the screen
        try {
@@ -114,7 +114,7 @@ window.addEventListener('load', async function(){
 
        Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
          //sets up divs to be populated
-         document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" style="display: flex"> </div> <div id="playlist-songs" class="col-11" style="padding-left: 25%"> </div> </div>';
+         document.getElementById("generated-content").innerHTML = '<div class="row"><div id="playlist-attributes"></div> <div id="playlist-songs" class="col-11"></div></div>';
          //The response should be a list with only one element
          var playlistAttr = JSON.parse(values[0]).playlists[0];
          document.getElementById("playlist-attributes").innerHTML = displayPlaylistAttributes(playlistAttr, this.getAttribute("data-service"));
@@ -186,7 +186,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
      for (var i = 0; i < playlist_elements.length; i++) {
        //When a playlist is clicked enter the playlist view page
         playlist_elements[i].addEventListener('click', async function() {
-        document.getElementById("generated-content").innerHTML = "<h4 style='text-align: center;'>Loading Playlist</h4>" //Loading message
+        document.getElementById("generated-content").innerHTML = "<h4 class='loadingPlaylist'>Loading Playlist</h4>" //Loading message
           //triggers get request to retrieve the playlists attributes from apple music's catalog (NOT USER Library)
           //upon retriving a response the function being called will generate attribute content to dislay on the screen
           try {
@@ -213,7 +213,7 @@ document.getElementById('search-input').addEventListener("keyup", async function
           //waits for all the playlist attributes and tracks before displaying them
           Promise.all([playlistAttributesPromise, playlistTracksPromise]).then((values) => {
             //sets up divs to be populated
-            document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes" style="display: flex"> </div> <div id="playlist-songs" class="col-11" style="padding-left: 25%"> </div> </div>';
+            document.getElementById("generated-content").innerHTML = '<div class="row"> <div id="playlist-attributes"> </div> <div id="playlist-songs" class="col-11"> </div> </div>';
             //The response should be a list with only one element
             var playlistAttr = JSON.parse(values[0]).playlists[0];
             //Populate the divs with the playlist content
@@ -618,11 +618,13 @@ function displayPlaylistAttributes(playlist_attributes, service){
  if (playlist_attributes.hasOwnProperty("artwork")) {
      var artworkDisplay = playlist_attributes.artwork;
      retval += `<div><a href="#" style="padding: 15px"><img class='card-img-top' src="${artworkDisplay}" alt='' style="width: 300px; height: 300px"></a>`;
-     retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary" style="text-align: center; margin: 10px 0px 0px 30%">Convert Playlist</button>`;
+     retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary">Convert Playlist</button>`;
      retval += '<div id="convert-link"></div></div>';
  } else{
-   retval += '<a href="#" style="padding: 15px"><img class="card-img-top" src="/assets/Missing_content.png" alt="" style="width: 300px></a>';
- }
+   retval += '<div><a href="#" style="padding: 15px"><img class="card-img-top" src="/assets/Missing_content.png" alt="" style="width: 300px"></a>';
+   retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary">Convert Playlist</button>`;
+   retval += '<div id="convert-link"></div></div>';
+  }
 
  retval += `<div style="display:block; margin: auto"><h4>${playlistTitle}</h4> `;
  //retval += '<div style="text-align:left">';
@@ -645,7 +647,7 @@ function displayPlaylistTracks(playlist_tracks){
  var retval = "";
  var title, artist, sondId,url;
  retval += '<ul class="list-group">';
- retval += '<table><tr style="border-bottom: 0.5px solid grey"><th style="width: 20px"></th><th style="width:400px">Song</th><th>Arist</th></tr>';
+ retval += '<table><tr><th style="width: 20px"></th><th style="width:400px">Song</th><th>Arist</th></tr>';
  for(var i = 0; i< playlist_tracks.length; i++){
    title = playlist_tracks[i].title;
    artist = playlist_tracks[i].artist;
@@ -656,7 +658,7 @@ function displayPlaylistTracks(playlist_tracks){
    } else {
      url = "/assets/Missing_content.png";
    }
-   retval += `<tr style="border-bottom: 0.5px solid grey"><td><img class="song-button-img" data-value="${songId}" src=${url}></td><td>${title}</td><td>${artist}</td></tr>`;
+   retval += `<tr><td><img class="song-button-img" data-value="${songId}" src=${url}></td><td>${title}</td><td>${artist}</td></tr>`;
    //retval += `<button type="button" class="list-group-item song-button" value="song" data-value="${songId}"><img class="song-button-img" src=${url}><span>${title}</span>&emsp;<span>${artist}</span></button>`;
   }
 retval+= "</table>";

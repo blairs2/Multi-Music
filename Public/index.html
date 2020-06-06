@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
@@ -20,7 +19,6 @@
 </head>
 
 <body>
-
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
@@ -29,8 +27,6 @@
       <button id="play-btn" class="btn" type="button" name="button">play</button>
       <button id="pause-btn" class="btn" type="button" name="button">pause</button>
       <button id="next-btn" class="btn" type="button" name="button">next</button> -->
-
-
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -41,11 +37,11 @@
              <a class="nav-link" href="/index.html">Home
                <span class="sr-only">(current)</span>
              </a>
-           </li>
-           <li class="nav-item">
+            </li>
+            <li class="nav-item">
              <a class="nav-link" onclick="aboutLoad()" href="#">About</a>
-           </li>
-           <li class="nav-item">
+            </li>
+            <li class="nav-item">
              <a class="nav-link" onclick="contactLoad()" href="#">Contact</a>
            </li>
            <div style="align-items: center; display: flex; justify-content: center;">
@@ -57,12 +53,21 @@
             <li>
               <a style="padding:15px;"><img onclick="toggleSpotifyLogo()" src="assets/SPOTIFYLOGOBW.png" style="width: 35px;" title="Login to Spotify" id="spotifyLogo"></a>
             </li>
-           </div>
-           <div style="align-items: center; display: flex; justify-content: center;">
-           <li>
-             <button style="border-radius:5px; background-color:whitesmoke;">Log Out</button>
-           </li>
-           </div>
+            <div class="logoButtons">
+              <li>
+                <a><img onclick="toggleAppleLogo()" src="assets/APPLEMUSICLOGOBW.png" class="logoStyling" title="Login to Apple Music" id="appleLogo"></a>           
+              </li>
+            </div>
+            <div class="logoButtons">
+              <li>
+                <a style="padding:15px;"><img onclick="toggleSpotifyLogo()" src="assets/SPOTIFYLOGOBW.png" class="logoStyling" title="Login to Spotify" id="spotifyLogo"></a>           
+              </li>
+            </div>
+            <div class="logoButtons">
+              <li>
+                <button class="logOutButtonStyling">Log Out</button>
+              </li>
+            </div>
            <!-- <li class="nav-item">
             <button id="login-btn">Login to Apple Music</button>
           </li> -->
@@ -76,7 +81,6 @@
             <button id="getCookie">get cookie</button>
           </li> -->
         </ul>
-
         <!-- <form class="form-inline">
           <i class="fas fa-search" aria-hidden="true"></i>
           <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
@@ -89,55 +93,38 @@
   <!-- Page Content -->
   <div>
     <br>
-    <div class="row">
-
-      <div class="col-lg-2">
-        <div class="row">
-          &emsp;
-          <a href="/index.html"><img class="card-img-top" src="assets/MULTILOGOBLACK.png" style="height:100px;width:100px;object-fit:cover; margin: auto 60px" alt="" ></a>
-          &emsp;
-          <!-- <h7 class="my-4">Multi Music User</h7> -->
-        </div>
-        <br>
-        <div>
-        <div class="list-group">
-          <div class="autocomplete">
-          <input id="search-input" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
-            aria-label="Search">
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="row">
+            &emsp;
+            <a href="/index.html"><img class="card-img-top" src="assets/MULTILOGOBLACK.png" id="mmLogoHomePage" alt="" ></a>
+            &emsp;
           </div>
+          <br>
+          <div>
+            <div class="list-group">
+              <div class="autocomplete">
+                <input id="search-input" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
+                  aria-label="Search">
+              </div>
+            </div>
+          </div>
+          <br>
+          <br>
+        <div id="user-playlists" class="list-group" class="scroll"></div>
+        </div>
+        <div class="col-lg-10">
+          <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
+            <div id="generated-content"></div>
         </div>
       </div>
-      <br>
-      <br>
-      <div id="user-playlists" class="list-group" class="scroll" style="margin-left: 15px;">
-
-      </div>
-
-    </div>
-      <!-- /.col-lg-3 -->
-
-      <div class="col-lg-10">
-
-        <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel"></div>
-        <div id="generated-content">
-        </div>
-        <!-- /.row -->
-
-      </div>
-      <!-- /.col-lg-9 -->
-
-    </div>
-    <!-- /.row -->
-
   </div>
-  <!-- /.container -->
 
   <!-- Footer -->
   <footer class="py-5 bg-dark">
     <div class="container">
       <p class="m-0 text-center text-white">Copyright &copy; Multi Music 2020</p>
     </div>
-    <!-- /.container -->
   </footer>
 
   <!-- Bootstrap core JavaScript -->
@@ -149,7 +136,5 @@
   <script type="text/javascript" src="/databaseIndex.js"></script>
   <script type="text/javascript" src="/cookiesIndex.js"></script>
   <script type="text/javascript" src="/appleLogin.js"></script>
-
 </body>
-
 </html>
