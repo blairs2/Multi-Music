@@ -602,7 +602,7 @@ function displayPlaylistAttributes(playlist_attributes, service){
      retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary">Convert Playlist</button>`;
      retval += '<div id="convert-link"></div></div>';
  } else{
-   retval += '<a href="#" style="padding: 15px"><img class="card-img-top" src="/assets/Missing_content.png" alt="" style="width: 300px></a>';
+   retval += '<div><a href="#" style="padding: 15px"><img class="card-img-top" src="/assets/Missing_content.png" alt="" style="width: 300px"></a>';
    retval += `<button id="playlist-convert" data-value='${playlist_attributes.id}' data-service='${service}' type="button" class="btn btn-primary">Convert Playlist</button>`;
    retval += '<div id="convert-link"></div></div>';
   }
