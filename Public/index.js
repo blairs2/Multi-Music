@@ -25,10 +25,13 @@ window.addEventListener('load', async function(){
   //Populates the left hand side of screen with all the playlsits in the users library
   //user logged into both apple and spotify
   spotifyToken = getCookie("spotifyUserToken") || null;
-  if (spotifyToken == null){
-      await refreshToken();
-      spotifyToken = getCookie("spotifyUserToken")
-    }
+  spotifyRefreshToken = getCookie("spotifyRefreshToken") || null;
+  if (spotifyToken == null && spotifyRefreshToken != null){
+      await refreshToken().then(() =>{spotifyToken = getCookie("spotifyUserToken")
+    }).catch(e => {
+      console.log(e);
+    });
+  }
   if(getCookie("appleUserToken") != null && getCookie("spotifyUserToken") != null){
     var appleLogo = document.getElementById("appleLogo");
     var spotifyLogo = document.getElementById("spotifyLogo");
@@ -36,7 +39,7 @@ window.addEventListener('load', async function(){
     spotifyLogo.setAttribute("title", "Log out of Spotify");
     appleLogo.setAttribute("src", "assets/APPLEMUSICLOGO.png");
     appleLogo.setAttribute("title", "Log out of Apple Music");
-    
+
     var applePlaylsits = await retreiveUserPlaylists();
     try{
       var spotifyPlaylists = await spotifyGetUserPlaylists();

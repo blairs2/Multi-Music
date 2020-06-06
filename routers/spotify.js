@@ -159,8 +159,9 @@ router.post('/spotify/refresh/:refresh', function(req, response) {
     request.post(options, function(error, res, body) {
       if (!error && res.statusCode === 200) {
         console.log("postToken")
-        response.cookie("spotifyUserToken", body.access_token);
-        response.cookie("spotifyExpiration", Data.getTime() + body.expires_in * 1000) // time in millaseconds when token expires
+        response.cookie("spotifyUserToken", body.access_token
+        var d = new Date();
+        response.cookie("spotifyExpiration", d.getTime() + body.expires_in * 1000) // time in millaseconds when token expires
         console.log("reciveToken")
         console.log(body.access_token)
         response.send(body.access_token);
