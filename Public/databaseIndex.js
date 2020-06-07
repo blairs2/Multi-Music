@@ -222,14 +222,20 @@ function dbAddSongToPlaylist(playlistID, songID){
  */
 function dbAddUser(name, code){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
     };
-    xhttp.open('PUT', "http://" + url + '/db/user/' + name + '/' + hashCode(code), true);
+  	xhttp.open('PUT', "http://" + url + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
-}
+   });
+  }
 
 /**
  * get the tokens stored on the db for the user
