@@ -74,11 +74,10 @@ async function RegisterUser(){
       await dbAddUser(name, pass).then(insert =>{
 					if(insert!= 'false'){ //insertedId is the id of the recently added user
 						setCookie(JSON.parse(insert).insertId, "userID");
-						setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+						window.location.replace('http://' + url + '/index.html');
 					} else {
 						alert("Invalid credentials");
 					}
-
         });
     } else {
         alert("Passwords do not match please try again");
