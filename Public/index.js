@@ -632,7 +632,7 @@ function displayPlaylistAttributes(playlist_attributes, service){
    retval += '<div id="convert-link"></div></div>';
   }
 
- retval += `<div style="display:block; margin: auto"><h4>${playlistTitle}</h4><div id="playlist-description">"`;
+ retval += `<div style="display:block; margin: auto"><h4>${playlistTitle}</h4><div id="playlist-description">`;
  //retval += '<div style="text-align:left">';
  if (playlist_attributes.hasOwnProperty("description")){
    var playlistDescription = playlist_attributes.description;
@@ -829,6 +829,7 @@ async function establishPlaylist(playlist_id, title, user_id, current_service, c
        } else {
          var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
          dbDeleteTracks(mm_playlist_id).then(()=>{
+           dbUpdateDescription(mm_playlist_id, playlist_description);
            convertPlaylist(playlist_id, current_service, mm_playlist_id,title, catalog);
          }); // delete the tracks currently associated with the playlist
        }

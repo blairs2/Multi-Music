@@ -74,11 +74,10 @@ async function RegisterUser(){
       await dbAddUser(name, pass).then(insert =>{
 					if(insert!= 'false'){ //insertedId is the id of the recently added user
 						setCookie(JSON.parse(insert).insertId, "userID");
-						setTimeout(function() {window.location = 'http://' + url + '/index.html' });
+						window.location.replace('http://' + url + '/index.html');
 					} else {
 						alert("Invalid credentials");
 					}
-
         });
     } else {
         alert("Passwords do not match please try again");
@@ -195,7 +194,7 @@ async function dbAddPlaylist(title, user, spotifyID = null, appleID = null, desc
 	 };
 	 xhttp.open('PUT', 'http://' + url + '/db/playlist/' + title + '/' + user + '/' + spotifyID + '/' + appleID , true);
 	 xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	 xhttp.send(encodeURIComponent(description)); // Gets the response
+	 xhttp.send("description="+description); // Gets the response
 	});
 }
 
@@ -222,14 +221,20 @@ function dbAddSongToPlaylist(playlistID, songID){
  */
 function dbAddUser(name, code){
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function ReceivedCallback() {
-        if (this.readyState == 4 && this.status == 200) { //Upon getting a response
-            console.log(JSON.parse(this.responseText));
-        }
+    return new Promise(function(resolve, reject) {
+      xhttp.onreadystatechange = function ReceivedCallback() {
+      if (this.readyState == 4) { //Upon getting a response
+        if(this.status == 200){
+          resolve(this.responseText);
+        } else {
+        reject("Error");
+      }
+     }
     };
-    xhttp.open('PUT', "http://" + url + '/db/user/' + name + '/' + hashCode(code), true);
+  	xhttp.open('PUT', "http://" + url + '/db/user/' + name + '/' + hashCode(code), true);
     xhttp.send(); // Gets the response
-}
+   });
+  }
 
 /**
  * get the tokens stored on the db for the user
@@ -287,5 +292,22 @@ async function dbPlaylistExists(playlistID){
 		};
 		xhttp.open('GET', 'http://' + url + '/db/playlist/exists/' + playlistID, true);
 		xhttp.send(); // Gets the response
+	});
+}
+async function dbUpdateDescription(playlistID, description){
+		var xhttp = new XMLHttpRequest();
+		return new Promise(function(resolve, reject) {
+			xhttp.onreadystatechange = function ReceivedCallback() {
+			if (this.readyState == 4) { //Upon getting a response
+				if(this.status == 200){
+					resolve(this.responseText);
+				} else {
+					reject("Error");
+			}
+		 }
+		};
+		xhttp.open('POST', 'http://' + url + '/db/playlist/description/' + playlistID, true);
+		xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhttp.send("description="+description); // Gets the response
 	});
 }
