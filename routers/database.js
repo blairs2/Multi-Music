@@ -233,6 +233,21 @@ router.get('/playlist/convert/:playlist_id', function(req, response){
     });
 });
 
+//update users apple token
+router.post('/db/playlist/description/:id', function(req, response){
+    var description = req.body.description;
+    con.query( "UPDATE Playlist " +
+                "SET description = \"" + description +
+                "\" WHERE playlist_ID = \"" + req.params.id + "\";", function (err, result, fields) {
+        if (err) {
+            response.send("ERROR updating playlist", err);
+        }  else {
+            response.send(result);
+        }
+    });
+});
+
+
 
 
 module.exports = router;
