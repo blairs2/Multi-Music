@@ -829,7 +829,7 @@ async function establishPlaylist(playlist_id, title, user_id, current_service, c
        } else {
          var mm_playlist_id = JSON.parse(response)[0].playlist_ID;
          dbDeleteTracks(mm_playlist_id).then(()=>{
-           dbUpdateDescription(mm_playlist_id, description);
+           dbUpdateDescription(mm_playlist_id, playlist_description);
            convertPlaylist(playlist_id, current_service, mm_playlist_id,title, catalog);
          }); // delete the tracks currently associated with the playlist
        }
