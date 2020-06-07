@@ -224,11 +224,11 @@ async function addPlaylist(body, appleToken){
     name = url.searchParams.get("name");
     //name.split(' ').join
     spotifyToken = getCookie("spotifyUserToken"); // get access token
-    if (spotifyToken == null){
+    spotifyRefreshToken = getCookie("spotifyRefreshToken") || null;
+    if (spotifyToken == null && spotifyRefreshToken != null){ //check if spotifyToken is null and that is has been set before
       await refreshToken();
       spotifyToken = getCookie("spotifyUserToken")
-    }
-    if (spotifyToken == null){ // if no access token log user into spotify
+    } else if (spotifyToken == null){ // if no access token log user into spotify
       spotifyLogin("/convert");
     } else {
       dbRetrieveConvert().then(resp =>{ // retrive tracks to convert
