@@ -21,6 +21,11 @@ document.addEventListener('musickitloaded', () => {
  });
 });
 
+document.getElementById("logout-btn").addEventListener("click", () => {
+  deleteCookie("userID");
+  window.location.replace("http://" + url); //take them back to login page
+});
+
 window.addEventListener('load', async function(){
   if(!(getCookie("userID") || null)){//if they arent logged in
     window.location.replace("http://" + url) //take them back to login page
