@@ -10,6 +10,7 @@ const spotifyApi = new Spotify({
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 
+var url = "http://3.129.17.194:8080";
 var accessToken = '';
 var refreshToken = '';
 var serverToken = '';
@@ -66,14 +67,14 @@ function generateRandomString(length) {
 };
 
 router.get('/spotify/login', function(req, response) {
-  spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback');
+  spotifyApi.setRedirectURI(url + '/spotify/callback');
   const state = generateRandomString(16);
   response.cookie(stateKey, state);
   response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
 });
 
 router.get('/spotify/login/convert', function(req, response) {
-  spotifyApi.setRedirectURI('http://18.216.254.104:8080/spotify/callback/convert');
+  spotifyApi.setRedirectURI(url + '/spotify/callback/convert');
   const state = generateRandomString(16);
   response.cookie(stateKey, state);
   response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
