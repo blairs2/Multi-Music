@@ -4,13 +4,12 @@ const request = require('request'); // "Request" library
 const Spotify = require('spotify-web-api-node');
 //const cors = require('cors');
 const spotifyApi = new Spotify({
-  clientId: '832b12a20fb943ed9ef4b49ceca24b65', // Spotify client id
-  clientSecret: '191f46cbc6e04274bff4214a782e13b2', // Spotify secret
+  clientId: '61c197cfb6674649880868c509cdcc3a', // Spotify client id
+  clientSecret: '635b379da5694adbbaa462be0a8b06e1', // Spotify secret
 });
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 
-var url = "http://3.129.17.194:8080";
 var accessToken = '';
 var refreshToken = '';
 var serverToken = '';
