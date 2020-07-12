@@ -67,14 +67,14 @@ function generateRandomString(length) {
 };
 
 router.get('/spotify/login', function(req, response) {
-  spotifyApi.setRedirectURI(url + '/spotify/callback');
+  spotifyApi.setRedirectURI('http://3.129.17.194:8080/spotify/callback');
   const state = generateRandomString(16);
   response.cookie(stateKey, state);
   response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
 });
 
 router.get('/spotify/login/convert', function(req, response) {
-  spotifyApi.setRedirectURI(url + '/spotify/callback/convert');
+  spotifyApi.setRedirectURI('http://3.129.17.194:8080/spotify/callback/convert');
   const state = generateRandomString(16);
   response.cookie(stateKey, state);
   response.redirect(spotifyApi.createAuthorizeURL(scopes, state, {secure: false}));
